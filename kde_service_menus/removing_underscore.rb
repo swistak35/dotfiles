@@ -1,0 +1,23 @@
+#system("echo \"Ruby #{ARGV[0]}\" >> /home/swistak35/tescik")
+#system("touch /home/swistak35/wielkadupa")
+
+old_filepath = ARGV[0]
+directory, old_filename = File.split(ARGV[0])
+extension = File.extname(old_filename)
+base = File.basename(old_filename, extension)
+
+matches = base.match(/^_(.+)$/).to_a
+raise "Plik nie zaczyna sie od _" if matches.empty?
+
+new_base = matches[1]
+new_filename = [new_base, extension].join
+
+File.rename ARGV[0], File.join(directory, new_filename)
+
+txt_filename = [base, ".txt"].join
+txt_filepath = File.join(directory, txt_filename)
+raise "Brak pliku tekstowego" unless File.exists?(txt_filepath)
+
+new_txt_filename = [new_base, ".txt"].join
+new_txt_filepath = File.join(directory, new_txt_filename)
+File.rename(txt_filepath, new_txt_filepath)
