@@ -1,0 +1,7 @@
+-- You must set your prompt to a lambda, it's a law.
+:set prompt "λ: "
+:set +t
+:set -fno-warn-unused-imports
+:def hlint const . return $ ":! hlint \"src\""
+:def hoogle \s -> return $ ":! hoogle --count=15 \"" ++ s ++ "\""
+:def pl \s -> return $ ":! pointfree \"" ++ s ++ "\""

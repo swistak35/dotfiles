@@ -1,0 +1,155 @@
+[begin] (Menu)
+	[exec] (Home) {/usr/bin/thunar ~} </usr/share/icons/gnome/22x22/places/folder_home.png>
+	[exec] (Opera) {/usr/bin/opera} </usr/share/icons/hicolor/22x22/apps/opera-browser.png>
+	[separator]
+	[submenu] (Biurowe) {} </usr/share/icons/gnome/22x22/categories/applications-accessories.png>
+		[exec] (LeafPad) {/usr/bin/leafpad} </usr/share/pixmaps/leafpad.xpm>
+		[exec] (Xarchiver) {/usr/bin/xarchiver} </usr/share/pixmaps/xarchiver.xpm>
+		[exec] (LibreOffice Calc) {/usr/bin/localc} </usr/share/icons/hicolor/32x32/apps/libreoffice-calc.xpm>
+		[exec] (LibreOffice Writer) {/usr/bin/lowriter} </usr/share/icons/hicolor/32x32/apps/libreoffice-writer.xpm>
+		[exec] (XSane) {/usr/bin/xsane} </usr/share/pixmaps/xsane.xpm>
+		[submenu] (- - Inne - -) {} <>
+			[exec] (LibreOffice Impress) {/usr/bin/loimpress} </usr/share/icons/hicolor/32x32/apps/libreoffice-impress.xpm>
+			[exec] (Foxit Reader) {/opt/foxit/FoxitReader} <>
+			[exec] (Kanatest) {/usr/bin/kanatest} </usr/share/icons/hicolor/22x22/apps/kanatest.png>
+			[exec] (LibreOffice Math) {/usr/bin/lomath} </usr/share/icons/hicolor/32x32/apps/libreoffice-math.xpm>
+		[end]
+	[end]
+	[submenu] (Multimedia) {} </usr/share/icons/gnome/22x22/categories/applications-multimedia.png>
+		[exec] (The GIMP) {/usr/bin/gimp} </usr/share/pixmaps/gimp.xpm>
+		[exec] (Exaile) {/usr/bin/exaile} </usr/share/pixmaps/exaile.xpm>
+		[exec] (RecordMyDesktop) {/usr/bin/gtk-recordMyDesktop} </usr/share/pixmaps/gtk-recordmydesktop.xpm>
+		[exec] (VLC media player) {/usr/bin/qvlc} </usr/share/vlc/vlc.xpm>
+		[exec] (Brasero) {/usr/bin/brasero} </usr/share/icons/hicolor/22x22/apps/brasero.png>
+		[exec] (Subtitle Editor) {/usr/bin/subtitleeditor} </usr/share/icons/hicolor/22x22/subtitleeditor.png>
+		[exec] (Rhythmbox) {rhythmbox} <>
+		[submenu] (- - Inne - -) {} <>
+			[exec] (Mirage) {mirage} </usr/share/icons/gnome-colors-common/22x22/apps/mirage.png>
+			[exec] (Last.fm) {/usr/bin/lastfm} </usr/share/pixmaps/lastfm32.xpm>
+			[exec] (Audacity) {/usr/bin/audacity} </usr/share/pixmaps/audacity32.xpm>
+			[exec] (LibreOffice Draw) {/usr/bin/lodraw} </usr/share/icons/hicolor/32x32/apps/libreoffice-draw.xpm>
+		[end]
+	[end]
+	[submenu] (Programowanie) {} </usr/share/icons/gnome/22x22/categories/applications-development.png>
+		[exec] (Geany) {/usr/bin/geany} </usr/share/pixmaps/geany.xpm>
+		[exec] (Glade) {/usr/bin/glade} </usr/share/icons/hicolor/22x22/apps/glade-3.png>
+		[exec] (Agave) {/usr/bin/agave} </usr/share/icons/hicolor/22x22/apps/agave.png>
+		[submenu] (- - Inne - -) {} <>
+			[exec] (Netbeans) {/usr/bin/netbeans} </usr/share/icons/netbeans.png>
+		[end]
+	[end]
+	[submenu] (Różne) {} </usr/share/icons/gnome/22x22/categories/applications-other.png>
+		[exec] (Prof. Henry 1&2) {wine ~/wine/profesor_henry_12/p_slownictwo_50.exe} <~/wine/profesor_henry_12/icon.png>
+		[exec] (Prof. Henry 3&4) {wine ~/wine/profesor_henry_34/p_slownictwo_50.exe} <~/wine/profesor_henry_34/icon.png>
+		[exec] (Prof. Pedro) {wine ~/wine/profesor_pedro/p_slownictwo_50.exe} <~/wine/profesor_pedro/icon.png>
+		[exec] (Prof. Henry 1&2 Prezentacje) {wine ~/wine/profesor_henry_12/Prezentacje.exe} <~/wine/profesor_henry_12/icon.png>
+		[exec] (VirtualBox OSE) {/usr/bin/virtualbox} </usr/share/pixmaps/virtualbox-ose.xpm>
+		[exec] (Homebank) {/usr/bin/homebank} </usr/share/icons/hicolor/22x22/apps/homebank.png>
+	[end]
+	[submenu] (Gry) {} </usr/share/icons/gnome/22x22/categories/applications-games.png>
+		[exec] (Battle for Wesnoth) {/usr/games/wesnoth-1.8-nolog} </usr/share/icons/wesnoth-1.8-icon.png>
+		[exec] (Diablo 2) {wine ~/wine/diablo2/Diablo\ II.exe} <~/wine/diablo2/icon.png>
+		[exec] (Heroes of Might&Magic III) {/opt/heroes3/heroes3.dynamic} </opt/heroes3/icon.xpm>
+		[exec] (World Of Goo) {/opt/WorldOfGoo/WorldOfGoo} </opt/WorldOfGoo/icons/22x22.png>
+		[exec] (Lugaru) {/opt/lugaru/lugaru} </opt/lugaru/lugaru.png>
+		[exec] (Machinarium) {/opt/Machinarium/Machinarium} <>
+		[separator]
+		[exec] (OpenArena) {/usr/games/openarena} </usr/share/pixmaps/openarena32.xpm>
+		[exec] (Hive Rise) {/opt/hiverise/hiverise} </opt/hiverise/hiverise_icon.png>
+		[exec] (Frets on Fire) {/usr/games/fretsonfire} </usr/share/pixmaps/fretsonfire.xpm>		
+		[submenu] (- - Inne - -) {} <>
+			[exec] (Pingus) {/usr/games/pingus} <>
+			[exec] (Chromium BSU) {/usr/games/chromium-bsu} <>
+			[exec] (SuperTux) {/usr/games/supertux} <>
+			[exec] (Robocode) {/usr/games/robocode} <>
+			[exec] (LBreakout2) {/usr/games/lbreakout2} <>
+			[exec] (Mini Car Racing) {wine ~/wine/mini_car_racing/Game/WMDEMO.EXE} <~/wine/mini_car_racing/icon.png>
+			[exec] (Teeworlds) {/usr/games/teeworlds --quiet} </usr/share/pixmaps/teeworlds.xpm>
+			[exec] (Battle for Wesnoth Editor) {/usr/games/wesnoth-1.8_editor} </usr/share/icons/wesnoth-1.8_editor-icon.png>
+		[end]
+	[end]
+	[submenu] (Sieć) {} </usr/share/icons/gnome/22x22/categories/applications-internet.png>
+		[exec] (Icedove Mail) {/usr/bin/icedove} </usr/share/pixmaps/icedove.xpm>
+		[exec] (QNapi) {/usr/bin/qnapi} </usr/share/icons/qnapi-32.xpm>
+		[exec] (Iceweasel) {/usr/bin/iceweasel} </usr/share/pixmaps/iceweasel.xpm>
+		[exec] (Pidgin) {/usr/bin/pidgin} </usr/share/pixmaps/pidgin-menu.xpm>
+		[exec] (Opera) {/usr/bin/opera} </usr/share/icons/hicolor/22x22/apps/opera-browser.png>
+		[exec] (TeamSpeak3) {/opt/TeamSpeak3/ts3client_runscript.sh} <>
+		[exec] (Liferea) {/usr/bin/liferea} </usr/share/icons/hicolor/22x22/apps/liferea.png>
+		[exec] (Transmission) {/usr/bin/transmission-gtk} </usr/share/icons/hicolor/22x22/apps/transmission.png>
+		[exec] (Chromium) {/usr/bin/chromium-browser} </usr/share/icons/hicolor/32x32/apps/chromium-browser.png>
+		[exec] (Filezilla) {filezilla} <>
+		[submenu] (- - Inne - -) {} <>
+			[exec] (gFTP) {/usr/bin/gftp} </usr/share/icons/gnome-colors-common/22x22/apps/gftp.png>
+			[exec] (Ekiga) {/usr/bin/ekiga} </usr/share/icons/hicolor/22x22/apps/ekiga.png>
+			[exec] (Global3G) {/opt/global3g/global3g} <>
+			[exec] (TeamSpeak) {/usr/bin/teamspeak} </usr/share/pixmaps/teamspeak.xpm>
+			[exec] (WICD) {/usr/bin/wicd-gtk} </usr/share/pixmaps/wicd-gtk.xpm>
+			[exec] (X Chat) {/usr/bin/xchat} </usr/share/icons/xchat.xpm>
+			[exec] (Tucan) {/usr/bin/tucan} <>
+		[end]
+	[end]
+	[submenu] (System) {} </usr/share/icons/gnome/22x22/categories/applications-system.png>
+		[submenu] (Style) {} <>
+			[stylesdir] (/usr/share/fluxbox/styles)
+			[stylesdir] (~/.fluxbox/styles)
+		[end]
+		[submenu] (Tapety) {} </usr/share/icons/gnome/22x22/apps/kscreensaver.png>
+			[wallpapers] (~/Obrazy/Tapety) {fbsetbg -f }
+		[end]
+		[exit] (Wyloguj się)
+		[workspaces] (Pulpity)
+		[config] (Konfiguracja)
+		[restart] (Restart fluxa)
+		[reconfigure] (Rekonfiguracja)
+		[exec] (Rozdzielczosc) {~/.fluxbox/scripts/resolution.sh} <>
+		[exec] (Synaptic) {/usr/bin/su-to-root -X -c /usr/sbin/synaptic} </usr/share/synaptic/pixmaps/synaptic_32x32.xpm>
+		[exec] (fluxmenu) {/usr/bin/fluxmenu} <>
+		[exec] (fluxconf) {/usr/bin/fluxconf} <>
+		[exec] (fluxkeys) {/usr/bin/fluxkeys} <>
+		[exec] (GTK+ 2.0 Theme) {/usr/bin/gtk-chtheme} </usr/share/pixmaps/gtk-chtheme.xpm>
+		[exec] (QtConfig) {/usr/bin/qtconfig-qt4} <>
+		[exec] (Wyczysc kosz) {rm -rf ~/.local/share/Trash} <>
+		[exec] (GParted) {gksu gparted} <>
+		[submenu] (Śmieci) {} </usr/share/icons/gnome/22x22/categories/applications-office.png>
+			[exec] (Python (v2.5\)) { x-terminal-emulator -T "Python (v2.5)" -e /usr/bin/python2.5} </usr/share/pixmaps/python2.5.xpm>
+			[exec] (Tclsh8.4) { x-terminal-emulator -T "Tclsh8.4" -e /usr/bin/tclsh8.4} <>
+			[exec] (Tclsh8.5) { x-terminal-emulator -T "Tclsh8.5" -e /usr/bin/tclsh8.5} <>
+			[exec] (TkWish8.5) {x-terminal-emulator -e /usr/bin/wish8.5} <>
+			[exec] (Mutt) { x-terminal-emulator -T "Mutt" -e /usr/bin/mutt} </usr/share/pixmaps/mutt.xpm>
+			[exec] (Telnet) { x-terminal-emulator -T "Telnet" -e /usr/bin/telnet} <>
+			[exec] (Terminal Server Client) {/usr/bin/tsclient -f} </usr/share/pixmaps/tsclient.xpm>
+			[exec] (w3m) { x-terminal-emulator -T "w3m" -e /usr/bin/w3m /usr/share/doc/w3m/MANUAL.html} <>
+			[exec] (VNC Viewer) {xvnc4viewer} <>
+			[exec] (Debian Task selector) { x-terminal-emulator -T "Debian Task selector" -e su-to-root -c tasksel} <>
+			[exec] (Editres) {editres} <>
+			[exec] (OpenJDK Java 6 Policy Tool) {/usr/lib/jvm/java-6-openjdk/bin/policytool} </usr/share/pixmaps/openjdk-6.xpm>
+			[exec] (Orphaner (all\)) { x-terminal-emulator -T "Orphaner (all)" -e su-to-root -c '/usr/sbin/orphaner -a'} <>
+			[exec] (Orphaner (libs\)) { x-terminal-emulator -T "Orphaner (libs)" -e su-to-root -c /usr/sbin/orphaner} <>
+			[exec] (Orphaner - editkeep) { x-terminal-emulator -T "Orphaner - editkeep" -e su-to-root -c '/usr/sbin/editkeep'} <>
+			[exec] (Reportbug) { x-terminal-emulator -T "Reportbug" -e /usr/bin/reportbug --exit-prompt} <>
+			[exec] (Reportbug (GTK+\)) {/usr/bin/reportbug --exit-prompt --ui gtk2} <>
+			[exec] (Xev) {x-terminal-emulator -e xev} <>
+			[exec] (Xvidtune) {xvidtune} <>
+			[exec] (Aviplay AVI/ASF/WMF player) {/usr/bin/aviplay} </usr/share/avifile-0.7/test.xpm>
+			[exec] (gmplayer) {/usr/bin/gmplayer} <>
+			[exec] (mc) { x-terminal-emulator -T "mc" -e /usr/bin/mc} </usr/share/pixmaps/mc.xpm>
+			[exec] (Lock Screen (XScreenSaver\)) {/usr/bin/xscreensaver-command -lock} <>
+			[exec] (Activate ScreenSaver (Next\)) {/usr/bin/xscreensaver-command -next} <>
+			[exec] (Activate ScreenSaver (Previous\)) {/usr/bin/xscreensaver-command -prev} <>
+			[exec] (Activate ScreenSaver (Random\)) {/usr/bin/xscreensaver-command -activate} <>
+			[exec] (Demo Screen Hacks) {/usr/bin/xscreensaver-command -demo} <>
+			[exec] (Disable XScreenSaver) {/usr/bin/xscreensaver-command -exit} <>
+			[exec] (Enable XScreenSaver) {/usr/bin/xscreensaver} <>
+			[exec] (Reinitialize XScreenSaver) {/usr/bin/xscreensaver-command -restart} <>
+			[exec] (ScreenSaver Preferences) {/usr/bin/xscreensaver-command -prefs} <>
+		[end]
+	[end]
+	[separator]
+	[exec] (Przełącz na windowsa) {sudo grub-reboot 2} <>
+	[exec] (Zahibernuj) {sudo pm-hibernate} <>
+	[exec] (Zablokuj) {xtrlock} <>
+	[exec] (Uśpij) {sudo pm-suspend} <>
+	[exec] (Reset) {sudo shutdown -r now} </usr/share/icons/oxygen/22x22/actions/object-rotate-right.png>
+	[exec] (Wyłącz) {sudo shutdown -h now} </usr/share/icons/gnome/22x22/actions/application-exit.png>
+[end]

@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+input = STDIN.isatty ? nil : STDIN.read
+
+if input.nil?
+        print `xsel --clipboard --output`
+else
+        IO.popen('xsel --clipboard --input','w').print(input)
+end
