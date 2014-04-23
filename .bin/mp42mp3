@@ -1,0 +1,11 @@
+#!/bin/env ruby
+name = ARGV[0]
+names = name.split(".")
+
+if names.last == 'mp4'
+	new_name = names[0..-2].join(".") + ".mp3"
+else
+	new_name = name + ".mp3"
+end
+	
+system "ffmpeg -i '#{name}' -vn -ar 44100 -ac 2 -ab 192k -f mp3 '#{new_name}'"
