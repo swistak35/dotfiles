@@ -1,0 +1,41 @@
+Apr 29 00:47 : avahi: Service 'Music Player' successfully established.
+Apr 29 00:49 : db: No database
+Apr 29 00:51 : player: played "mms://stream.polskieradio.pl/program3"
+Apr 29 01:02 : player: played "mms://stream.polskieradio.pl/program3"
+Apr 29 01:05 : player: played "mms://stream.polskieradio.pl/program3"
+Apr 29 01:53 : avahi: Service 'Music Player' successfully established.
+Apr 29 01:53 : player: played "mms://195.94.205.211/rm"
+Apr 29 01:54 : player: played "mms://stream.polskieradio.pl/program3"
+Apr 29 01:58 : avahi: Service 'Music Player' successfully established.
+Apr 29 01:59 : player: played "mms://stream.polskieradio.pl/program3"
+May 01 16:45 : avahi: Service 'Music Player' successfully established.
+May 01 16:45 : player: played "mms://stream.polskieradio.pl/program3"
+May 02 17:30 : player: played "mms://stream.polskieradio.pl/program3"
+May 08 18:30 : avahi: Service 'Music Player' successfully established.
+May 08 18:30 : player: played "mms://stream.polskieradio.pl/program3"
+May 08 19:30 : avahi: Service 'Music Player' successfully established.
+May 08 19:30 : player: played "mms://stream.polskieradio.pl/program3"
+May 08 20:30 : player: played "mms://stream.polskieradio.pl/program3"
+May 08 22:30 : player: played "mms://stream.polskieradio.pl/program3"
+May 08 23:36 : player: played "mms://stream.polskieradio.pl/program3"
+ALSA lib pcm_dmix.c:1022:(snd_pcm_dmix_open) unable to open slave
+May 09 00:30 : alsa_output: Failed to open "default detected output" [alsa]: Failed to open ALSA device "default": Device or resource busy
+May 09 00:30 : output: Failed to open audio output
+May 09 00:30 : player: problems opening audio device while playing "mms://stream.polskieradio.pl/program3"
+May 09 01:30 : player: played "mms://stream.polskieradio.pl/program3"
+ALSA lib pcm_dmix.c:1022:(snd_pcm_dmix_open) unable to open slave
+May 09 01:30 : alsa_output: Failed to open "default detected output" [alsa]: Failed to open ALSA device "default": Device or resource busy
+May 09 01:30 : output: Failed to open audio output
+May 09 01:30 : player: problems opening audio device while playing "mms://stream.polskieradio.pl/program3"
+May 09 02:30 : player: played "mms://stream.polskieradio.pl/program3"
+May 09 02:30 : player: played "mms://stream.polskieradio.pl/program3"
+May 09 09:28 : player: played "mms://stream.polskieradio.pl/program3"
+May 09 16:16 : avahi: Client Disconnected, will reconnect shortly
+May 09 16:16 : avahi: Could not reconnect: An unexpected D-Bus error occured
+May 10 11:11 : avahi: Service 'Music Player' successfully established.
+May 10 11:11 : player: played "mms://stream.polskieradio.pl/program3"
+May 11 09:13 : player: played "mms://stream.polskieradio.pl/program3"
+May 12 11:27 : player: played "mms://stream.polskieradio.pl/program3"
+May 13 00:17 : avahi: Service 'Music Player' successfully established.
+May 13 00:18 : player: played "mms://195.94.205.211/rm"
+May 13 00:19 : player: played "mms://stream.polskieradio.pl/program3"

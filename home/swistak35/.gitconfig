@@ -1,0 +1,18 @@
+[user]
+	name = Rafał Łasocha
+	email = me+dev@swistak35.com
+[alias]
+	log1 = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	punch = push --force
+	tags = tag -l
+	branches = branch -a
+	remotes = remote -v
+	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+[push]
+	default = simple
+[github]
+	user = swistak35
+[ghi]
+	token = 722270c515ab648a3e4d995b0c0f2fc9199ddbcf
+[url "git://github.com/"]
+	insteadOf = gh:

@@ -1,0 +1,15 @@
+[Unit]
+Description=Unified Remote Server
+After=network.target
+
+[Service]
+Type=forking
+#PIDFile=/var/run/urserver.pid
+ExecStart=/opt/urserver/urserver --daemon --config=/etc/default/urserver
+#ExecStart=/opt/urserver/urserver --daemon --config=/etc/default/urserver --pid
+Restart=on-abort
+#ExecReload=/bin/kill $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+

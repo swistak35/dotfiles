@@ -1,0 +1,88 @@
+#!/usr/bin/env ruby
+
+### CONFIGURATION
+# Feel free to edit these
+channels = {
+	"pr1" 	=>		"mms://stream.polskieradio.pl/program1",
+	"pr2" 	=>		"mms://stream.polskieradio.pl/program2",
+	"pr3" 	=>		"mms://stream.polskieradio.pl/program3",
+	"rm"  	=>		"mms://195.94.205.211/rm"
+}
+port = "6601"
+radio_dir = "#{ENV['HOME']}/.mpd_radio"
+### END CONFIGURATION
+
+# TODO: read port automatically from channel
+
+class RadioPlayer
+	def initialize(port, radio_dir, channels)
+		@port = port
+		@radio_dir = radio_dir
+		@channels = channels
+		check_status
+	end
+
+	def execute(command)
+		if command.nil?
+			cmd_switch_status
+		elsif @channels.keys.include? command
+			cmd_play(command)
+		end
+	end
+
+private
+	def check_status
+		#puts "Command: `#{mpc} status`"
+		if `#{mpc} status 2>&1`.include? "Connection refused"
+			#puts "Sprawdzam status"
+			`mpd '#{@radio_dir}/conf.conf'`
+		end
+	end
+
+	def mpc
+		"mpc -p #{@port}"
+	end
+
+	def save_recent(channel)
+		File.open(recent_filepath, 'w') {|f| f.write(channel) }
+	end
+
+	def cmd_play(channel = recent_channel())
+		if @channels.keys.include? channel
+			cmd_stop
+			save_recent(channel)
+			`#{mpc} add #{@channels[channel]}`
+			`#{mpc} play`
+		else
+			raise "Recent played radio is not correct."
+		end
+	end
+
+	def cmd_stop
+		`#{mpc} stop`
+		`#{mpc} clear`
+	end
+
+	def recent_channel
+		if File.exists? recent_filepath
+			File.readlines(recent_filepath).first.strip
+		else
+			raise "There is no recent played radio."
+		end
+	end
+
+	def recent_filepath
+		"#{@radio_dir}/recent"
+	end
+
+	def cmd_switch_status
+		if `#{mpc} status | grep playing`.empty?
+			cmd_play
+		else
+			cmd_stop
+		end
+	end
+
+end
+
+RadioPlayer.new(port, radio_dir, channels).execute(ARGV[0])

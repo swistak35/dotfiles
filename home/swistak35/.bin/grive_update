@@ -1,0 +1,3 @@
+#!/bin/sh
+grive -p /home/swistak35/Dokumenty/GoogleDrive
+date >> /home/swistak35/Dokumenty/GoogleDrive/.grive_log

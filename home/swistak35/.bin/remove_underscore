@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 #system("echo \"Ruby #{ARGV[0]}\" >> /home/swistak35/tescik")
 #system("touch /home/swistak35/wielkadupa")
 

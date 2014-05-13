@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+
+def print_help
+	puts "Available options:"
+	puts "  * ftc"
+	puts "  * ltc"
+	puts "  * vtc"
+	#puts "  * btc"
+	#puts "  * ppc"
+end
+
+Miners = {
+	#"ppc" 	=>	"screen -d -m optirun cudaminer -o stratum+tcp://ppc.give-me-coins.com:3338 -O swistak35.1:X"
+	#"btc" 	=>	"screen -d -m optirun cudaminer -o stratum+tcp://btc-eu.give-me-coins.com:3335 -O swistak35.1:X",
+	"ftc" 	=> 	"screen -d -m optirun cudaminer -o stratum+tcp://ftc.give-me-coins.com:3336 -O swistak35.1:X --algo=scrypt",
+	"ltc" 	=>	"screen -d -m optirun cudaminer -o stratum+tcp://ltc-eu.give-me-coins.com:3333 -O swistak35.1:X --algo=scrypt",
+	"vtc" 	=>	"screen -d -m optirun cudaminer -o stratum+tcp://vtc.give-me-coins.com:3337 -O swistak35.1:X --algo=scrypt:2048"
+}
+
+
+if Miners.keys.include? ARGV[0]
+	system(Miners[ARGV[0]])
+else
+	print_help
+end
+
+
+

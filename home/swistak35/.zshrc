@@ -194,6 +194,8 @@ bindkey -e
 	
 	# App aliases
 	alias ls='ls --color=auto --human-readable --group-directories-first --classify'
+	alias l1='ls -A1'
+	alias ll='ls -Al'
 	alias emu='emulator -avd'
 	alias bakemeup='rdiff-backup --include-filelist /home/swistak35/.rdiff-backup-filelist / /media/danonek/rdiffbackup'
 	alias grep='grep --colour=auto'
@@ -201,13 +203,36 @@ bindkey -e
 	alias diff='colordiff'
 	alias du='du -sh'
 	alias mkdir='mkdir -p'
-	
+	alias timer='echo "Timer started. Stop with Ctrl-D." && date && time cat && date'
+	alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
+	alias netdebug='mtr google.com'
+	alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
+	alias httpdump="sudo tcpdump -i wlp3s0 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""	
+	alias map="xargs -n1"	
+	alias reload!='. ~/.zshrc'
+	alias pubkey="more ~/.ssh/id_rsa.pub | cb | echo '=> Public key copied to pasteboard.'"
+	alias todo="/media/magazyn/Dropbox/Private/todo/todo.sh"
+	alias t='todo'
+	alias tw='todo -@ ls @wideo'
+	alias ti='todo -@ ls @ii'
+	alias tz='todo -@ ls @rozne'
+	alias to='todo ls | grep -v @'
+	alias k9='kill -9'
+	alias localip="ifconfig -a | grep inet | awk '{print \$2}'"
+	alias leavejobs="disown && exit"
+	alias iplocation="curl ipinfo.io"
+	alias checkport="nc -zv localhost"
+	alias pstree_="pstree -ap"
+	alias clearcache="pacman -Sc"
+	alias recentpacs="yaourt -Q --date"
+
 	# Suffix aliases
 	alias -g T='| tail'
 	alias -g H='| head'
 	alias -g L="| less"
 	alias -g C='| wc -l'
 	alias -g G='| grep -i'
+	alias -g UQ='| uniq'
 
 	# GIT aliases
 	alias g='git'
@@ -233,7 +258,6 @@ bindkey -e
 	export EDITOR="nano"
 	export BROWSER="firefox"
 	export XTERM="konsole"
-	# Yep, I know that these below are on github.
 	export FACEBOOK_SECRET=5b04b2bd4277aaca57da23447f791ef5
 	export FACEBOOK_KEY=297537827012809
 	export GITHUB_SECRET=fd74e299b442056dfd23d822638cd3b918bc248f
@@ -279,6 +303,12 @@ bindkey -e
 
 	# Colored man pages
 	source ~/.zsh/plugins/colored_man/colored_man.zsh
+	
+	# Extract function
+	source ~/.zsh/plugins/extract/extract.zsh
+	
+	# Brackets
+	source ~/.zsh/plugins/brackets/brackets.zsh
 # ========================
 # === End
 # ========================
@@ -292,71 +322,12 @@ bindkey -e
 	# RVM
 	# [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 	source $HOME/.rvm/scripts/rvm
+
 	# Opam
 	/home/swistak35/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
 
+	# SSH-agent
+	eval $(ssh-agent)
 # ========================
 # === End
 # ========================
-
-
-# move cursor between chars when typing '', "", (), [], and {}
-magic-single-quotes() { if [[ $LBUFFER[-1] == \' ]]; then zle self-insert; zle .backward-char; else zle self-insert; fi }; bindkey \' magic-single-quotes
-magic-double-quotes() { if [[ $LBUFFER[-1] == \" ]]; then zle self-insert; zle .backward-char; else zle self-insert; fi }; bindkey \" magic-double-quotes
-magic-parentheses() { if [[ $LBUFFER[-1] == \( ]]; then zle self-insert; zle .backward-char; else zle self-insert; fi }; bindkey \) magic-parentheses
-magic-square-brackets() { if [[ $LBUFFER[-1] == \[ ]]; then zle self-insert; zle .backward-char; else zle self-insert; fi }; bindkey \] magic-square-brackets
-magic-curly-brackets() { if [[ $LBUFFER[-1] == \{ ]]; then zle self-insert; zle .backward-char; else zle self-insert; fi }; bindkey \} magic-curly-brackets
-magic-angle-brackets() { if [[ $LBUFFER[-1] == \< ]]; then zle self-insert; zle .backward-char; else zle self-insert; fi }; bindkey \> magic-angle-brackets
-zle -N magic-single-quotes
-zle -N magic-double-quotes
-zle -N magic-parentheses
-zle -N magic-square-brackets
-zle -N magic-curly-brackets
-zle -N magic-angle-brackets
-
-
-function extract()
-{
-     if [ -f $1 ] ; then
-         case $1 in
-            *.tar.bz2)   
-                tar xvjf $1     
-                ;;
-            *.tar.gz)    
-                tar xvzf $1     
-                ;;
-            *.bz2)       
-                bunzip2 $1      
-                ;;
-            *.rar)
-                unrar x $1      
-                ;;
-            *.gz)
-                gunzip $1       
-                ;;
-            *.tar)
-                tar xvf $1      
-                ;;
-            *.tbz2)
-                tar xvjf $1     
-                ;;
-            *.tgz)
-                tar xvzf $1     
-                ;;
-            *.zip)
-                unzip $1        
-                ;;
-            *.Z)
-                uncompress $1   
-                ;;
-            *.7z)
-                7z x $1         
-                ;;
-            *)  
-                echo "'$1' cannot be extracted via extract" 
-                ;;
-        esac
-    else
-        echo "'$1' is not a valid file"
-    fi
-}

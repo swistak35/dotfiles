@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+$DEBUG = (ARGV.include?("--debug") ? true : false)
+
+now = Time.now
+wakeuptime = Time.mktime(now.year, now.month, now.day + (now.hour < 8 ? 0 : 1), 8, 0, 0)
+
+puts "Current time: #{Time.now} | New time: #{wakeuptime}" if $DEBUG
+
+`sudo rtcwake --mode no -t #{wakeuptime.to_i}`
