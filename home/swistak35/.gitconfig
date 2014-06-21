@@ -14,5 +14,5 @@
 	user = swistak35
 [ghi]
 	token = 722270c515ab648a3e4d995b0c0f2fc9199ddbcf
-[url "git://github.com/"]
+[url "git@github.com:"]
 	insteadOf = gh:

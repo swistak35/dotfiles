@@ -6,4 +6,4 @@ Actions=removeUnderscore
 
 [Desktop Action removeUnderscore]
 Name=Remove Underscore
-Exec=ruby /home/swistak35/Projekty/dotfiles/kde_service_menus/removing_underscore.rb "%u"
+Exec=/home/swistak35/.bin/remove_underscore "%u"

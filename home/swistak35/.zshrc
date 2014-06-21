@@ -91,7 +91,13 @@ bindkey -e
 	autoload -U colors && colors
 	# Prompt!
 	# PROMPT="%~%# "
-	PROMPT="%{$fg_bold[white]%}%~%# %{$reset_color%}"
+	if [[ -a ~/.promptcolor ]]; then
+		PROMPTCOLOR=`cat ~/.promptcolor`
+	else
+	  	PROMPTCOLOR=blue
+	fi
+	PROMPT="%{$fg_bold[$PROMPTCOLOR]%}%~%# %{$reset_color%}"
+	# PROMPT="%{$fg_bold[white]%}%~%# %{$reset_color%}"
 	
 	# Autocorrect commands
 	# setopt correctall
@@ -197,7 +203,7 @@ bindkey -e
 	alias l1='ls -A1'
 	alias ll='ls -Al'
 	alias emu='emulator -avd'
-	alias bakemeup='rdiff-backup --include-filelist /home/swistak35/.rdiff-backup-filelist / /media/danonek/rdiffbackup'
+	alias bakemeup='sudo rdiff-backup --include-filelist /home/swistak35/.rdiff-backup-filelist / /media/backup/rdiffbackup'
 	alias grep='grep --colour=auto'
 	alias egrep='egrep --colour=auto'
 	alias diff='colordiff'
@@ -225,6 +231,9 @@ bindkey -e
 	alias pstree_="pstree -ap"
 	alias clearcache="pacman -Sc"
 	alias recentpacs="yaourt -Q --date"
+	alias iitunel="ssh -C2qTnN -D 8979 i258338@tryglaw.ii.uni.wroc.pl"
+	alias prb="pry -r '/home/swistak35/.rozne/myhomelib.rb' -r 'active_support/all'"
+	alias :q="exit"
 
 	# Suffix aliases
 	alias -g T='| tail'

@@ -39,3 +39,140 @@ May 12 11:27 : player: played "mms://stream.polskieradio.pl/program3"
 May 13 00:17 : avahi: Service 'Music Player' successfully established.
 May 13 00:18 : player: played "mms://195.94.205.211/rm"
 May 13 00:19 : player: played "mms://stream.polskieradio.pl/program3"
+May 14 08:10 : avahi: Service 'Music Player' successfully established.
+May 14 10:05 : player: played "mms://stream.polskieradio.pl/program3"
+May 14 13:46 : avahi: Client Disconnected, will reconnect shortly
+May 14 13:46 : avahi: Could not reconnect: An unexpected D-Bus error occured
+May 15 08:10 : avahi: Service 'Music Player' successfully established.
+May 15 09:51 : player: played "mms://stream.polskieradio.pl/program3"
+May 15 18:34 : avahi: Client Disconnected, will reconnect shortly
+May 15 18:34 : avahi: Could not reconnect: An unexpected D-Bus error occured
+May 16 08:10 : avahi: Service 'Music Player' successfully established.
+May 16 09:35 : player: played "mms://stream.polskieradio.pl/program3"
+May 17 10:42 : player: played "mms://stream.polskieradio.pl/program3"
+May 18 08:10 : player: played "mms://stream.polskieradio.pl/program3"
+May 18 09:17 : player: played "mms://stream.polskieradio.pl/program3"
+May 18 23:20 : avahi: Client Disconnected, will reconnect shortly
+May 18 23:20 : avahi: Could not reconnect: An unexpected D-Bus error occured
+May 20 01:25 : avahi: Service 'Music Player' successfully established.
+May 20 01:25 : player: played "mms://stream.polskieradio.pl/program3"
+May 20 10:39 : player: played "mms://stream.polskieradio.pl/program3"
+May 21 02:25 : player: played "mms://stream.polskieradio.pl/program3"
+May 21 09:24 : player: played "mms://stream.polskieradio.pl/program3"
+May 22 08:10 : avahi: Service 'Music Player' successfully established.
+May 22 08:10 : mms: mmsx_connect() failed
+May 22 08:10 : player: played "mms://stream.polskieradio.pl/program3"
+May 22 14:25 : mms: mmsx_connect() failed
+May 22 14:25 : player: played "mms://stream.polskieradio.pl/program3"
+May 22 14:25 : mms: mmsx_connect() failed
+May 22 14:25 : player: played "mms://stream.polskieradio.pl/program3"
+May 22 14:30 : avahi: Client Disconnected, will reconnect shortly
+May 22 14:30 : avahi: Could not reconnect: An unexpected D-Bus error occured
+May 23 08:10 : avahi: Service 'Music Player' successfully established.
+May 23 10:26 : player: played "mms://stream.polskieradio.pl/program3"
+May 23 20:59 : avahi: Client Disconnected, will reconnect shortly
+May 23 20:59 : avahi: Could not reconnect: An unexpected D-Bus error occured
+May 24 08:10 : avahi: Service 'Music Player' successfully established.
+May 24 10:51 : player: played "mms://stream.polskieradio.pl/program3"
+May 24 10:54 : avahi: Client Disconnected, will reconnect shortly
+May 24 10:54 : avahi: Could not reconnect: Daemon connection failed
+May 25 08:10 : avahi: Service 'Music Player' successfully established.
+May 25 11:55 : player: played "mms://stream.polskieradio.pl/program3"
+May 26 09:31 : player: played "mms://stream.polskieradio.pl/program3"
+May 27 13:23 : player: played "mms://stream.polskieradio.pl/program3"
+ALSA lib pcm_dmix.c:1022:(snd_pcm_dmix_open) unable to open slave
+May 28 08:10 : alsa_output: Failed to open "default detected output" [alsa]: Failed to open ALSA device "default": Device or resource busy
+May 28 08:10 : output: Failed to open audio output
+May 28 08:10 : player: problems opening audio device while playing "mms://stream.polskieradio.pl/program3"
+May 28 10:35 : avahi: Client Disconnected, will reconnect shortly
+May 28 10:35 : avahi: Could not reconnect: An unexpected D-Bus error occured
+May 28 10:35 : player: played "mms://stream.polskieradio.pl/program3"
+May 29 08:10 : avahi: Service 'Music Player' successfully established.
+May 29 09:41 : player: played "mms://stream.polskieradio.pl/program3"
+May 29 15:29 : avahi: Client Disconnected, will reconnect shortly
+May 29 15:29 : avahi: Could not reconnect: An unexpected D-Bus error occured
+May 31 08:10 : avahi: Service 'Music Player' successfully established.
+Jun 04 08:10 : avahi: Service 'Music Player' successfully established.
+Jun 04 08:14 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 05 14:17 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 06 01:47 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 06 10:14 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 06 14:44 : avahi: Client Disconnected, will reconnect shortly
+Jun 06 14:44 : avahi: Could not reconnect: An unexpected D-Bus error occured
+Jun 07 00:10 : avahi: Service 'Music Player' successfully established.
+Jun 07 02:15 : player: played "mms://stream.polskieradio.pl/program3"
+ALSA lib pcm_dmix.c:1022:(snd_pcm_dmix_open) unable to open slave
+Jun 07 08:10 : alsa_output: Failed to open "default detected output" [alsa]: Failed to open ALSA device "default": Device or resource busy
+Jun 07 08:10 : output: Failed to open audio output
+Jun 07 08:10 : player: problems opening audio device while playing "mms://stream.polskieradio.pl/program3"
+Jun 07 10:35 : player: played "mms://stream.polskieradio.pl/program3"
+ALSA lib pcm_dmix.c:1022:(snd_pcm_dmix_open) unable to open slave
+Jun 07 10:35 : alsa_output: Failed to open "default detected output" [alsa]: Failed to open ALSA device "default": Device or resource busy
+Jun 07 10:35 : output: Failed to open audio output
+Jun 07 10:35 : player: problems opening audio device while playing "mms://stream.polskieradio.pl/program3"
+Jun 08 03:24 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 08 03:25 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 08 10:30 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 09 03:14 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 09 03:15 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 09 03:16 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 09 03:18 : avahi: Service 'Music Player' successfully established.
+Jun 09 03:18 : mms: mmsx_connect() failed
+Jun 09 03:18 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 09 03:19 : mms: mmsx_connect() failed
+Jun 09 03:19 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 09 03:20 : mms: mmsx_connect() failed
+Jun 09 03:20 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 09 03:20 : mms: mmsx_connect() failed
+Jun 09 03:20 : player: played "mms://stream.polskieradio.pl/program1"
+Jun 09 03:20 : player: played "mms://195.94.205.211/rm"
+Jun 09 03:20 : mms: mmsx_connect() failed
+Jun 09 03:20 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 09 03:24 : player: played "http://156.17.39.65:8000/luzhifi.mp3"
+Jun 09 08:51 : player: played "http://156.17.39.65:8000/luzhifi.mp3"
+Jun 09 08:51 : mms: mmsx_connect() failed
+Jun 09 08:51 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 09 08:51 : mms: mmsx_connect() failed
+Jun 09 08:51 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 10 03:55 : mms: mmsx_connect() failed
+Jun 10 03:55 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 10 03:55 : mms: mmsx_connect() failed
+Jun 10 03:55 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 10 03:56 : player: played "http://156.17.39.65:8000/luzhifi.mp3"
+Jun 10 08:15 : player: played "http://156.17.39.65:8000/luzhifi.mp3"
+Jun 10 12:02 : player: played "http://156.17.39.65:8000/luzhifi.mp3"
+Jun 10 12:02 : mms: mmsx_connect() failed
+Jun 10 12:02 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 10 12:02 : mms: mmsx_connect() failed
+Jun 10 12:02 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 11 02:09 : avahi: Service 'Music Player' successfully established.
+Jun 11 02:09 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 11 02:09 : player: played "http://156.17.39.65:8000/luzhifi.mp3"
+Jun 11 02:09 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 11 02:10 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 11 02:11 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 11 09:41 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 12 02:49 : avahi: Service 'Music Player' successfully established.
+Jun 12 02:50 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 12 12:21 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 13 04:29 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 13 12:04 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 14 03:03 : avahi: Service 'Music Player' successfully established.
+Jun 14 03:03 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 14 04:12 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 14 10:00 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 14 22:30 : avahi: Service 'Music Player' successfully established.
+Jun 14 23:22 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 15 04:15 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 15 11:33 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 16 11:07 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 17 10:06 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 18 00:18 : avahi: Service 'Music Player' successfully established.
+Jun 18 00:18 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 19 00:37 : avahi: Service 'Music Player' successfully established.
+Jun 19 00:37 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 19 08:33 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 20 23:38 : avahi: Service 'Music Player' successfully established.
+Jun 21 01:25 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 21 03:13 : player: played "mms://stream.polskieradio.pl/program3"
+Jun 21 11:07 : player: played "mms://stream.polskieradio.pl/program3"
