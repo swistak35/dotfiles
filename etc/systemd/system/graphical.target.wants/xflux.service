@@ -1,0 +1,10 @@
+[Unit]
+Description=f.lux for X
+Requires=graphical.target
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/xflux -l 51 -g 17 DISPLAY=:0
+
+[Install]
+WantedBy=graphical.target
