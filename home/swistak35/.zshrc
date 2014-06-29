@@ -234,6 +234,7 @@ bindkey -e
 	alias iitunel="ssh -C2qTnN -D 8979 i258338@tryglaw.ii.uni.wroc.pl"
 	alias prb="pry -r '/home/swistak35/.rozne/myhomelib.rb' -r 'active_support/all'"
 	alias :q="exit"
+	alias adb_cleandb="adb shell pm clear"
 
 	# Suffix aliases
 	alias -g T='| tail'

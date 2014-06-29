@@ -1,0 +1,115 @@
+#!/usr/bin/env ruby
+
+require 'net/http'
+require 'net/https'
+require 'json'
+require 'cgi'
+require 'action_view'
+require 'action_view/helpers'
+
+I18n.enforce_available_locales = false
+include ActionView::Helpers::DateHelper 
+
+    
+    # "average adult reading rate is 250 words per minute"
+    # http://en.wikipedia.org/wiki/Speed_reading
+
+class PocketAPI
+  ConsumerKey = "28177-dc9afe992533afd34d1d63d7"
+  RedirectURI = "http://getpocket.com/a/queue/"
+  
+  attr_reader :username
+
+  def initialize
+    uri = URI.parse("https://getpocket.com")
+    @http = Net::HTTP.new(uri.host, uri.port)
+    @http.use_ssl = true
+    @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+  end
+
+  def request_code
+    request = Net::HTTP::Post.new("/v3/oauth/request", initheader = {'Content-Type' => 'application/json'})
+    request.body = { 'consumer_key' => ConsumerKey, 'redirect_uri' => 'nil' }.to_json
+    response = @http.request(request)
+    # puts "Response: #{response.code} #{response.message}:\n#{response.body}"
+    response.body.split('=').last # ugly!
+  end
+
+  def request_access_token(code)
+    request = Net::HTTP::Post.new("/v3/oauth/authorize", initheader = {'Content-Type' => 'application/json'})
+    request.body = { 'consumer_key' => ConsumerKey, 'code' => code }.to_json
+    response = @http.request(request)
+    # puts "Response: #{response.code} #{response.message}:\n#{response.body}"
+    response.body.split("&").map {|x| x.split("=").last } # very ugly!
+  end
+
+  def get_results
+    request = Net::HTTP::Post.new("/v3/get", initheader = {'Content-Type' => 'application/json'})
+    request.body = { 'consumer_key' => ConsumerKey, 'access_token' => @access_token }.to_json
+    response = @http.request(request)
+    JSON.parse(response.body)
+  end
+
+  def set_config(access_token, username)
+    @access_token, @username = access_token, username
+  end
+end
+
+class PocketCounter
+  ConfigFile = ENV['HOME']+"/.pocket_counter"
+
+  def initialize(args)
+    reset_config if args.include? "--reset"
+    @api = PocketAPI.new
+    if config_exists?
+      @api.set_config(*get_file_config)
+    else
+      @api.set_config(*get_new_config)
+    end
+  end
+
+  def get_file_config
+    File.readlines(ConfigFile).map(&:chomp)
+  end
+
+  def get_new_config
+    code = @api.request_code
+    puts "Please, go now to:"
+    puts "https://getpocket.com/auth/authorize?request_token=#{code}&redirect_uri=#{CGI::escape(PocketAPI::RedirectURI)}"
+    print "Please click enter after you authorize an application"
+    gets
+    result = @api.request_access_token(code)
+    save_config(*result)
+    result
+  end 
+
+  def save_config(access_token, username)
+    File.open(ConfigFile, "w") do |f|
+      f.puts access_token
+      f.puts username
+    end
+  end
+
+  def reset_config
+    # ToDo
+  end
+
+  def config_exists?
+    File.exists?(ConfigFile)
+  end
+
+  def run
+    results = @api.get_results
+    puts "Elements count: #{results['list'].count}"
+    words = 0
+    results["list"].each do |id, obj|
+      words += obj['word_count'].to_i
+    end
+    puts "Words count: #{words}"
+    seconds = words * 60 / 250
+    puts "Estimated reading time: #{seconds} seconds, which is #{distance_of_time_in_words(seconds)}"
+    puts "Good luck, #{@api.username}."
+  end
+end
+
+PocketCounter.new(ARGV).run
