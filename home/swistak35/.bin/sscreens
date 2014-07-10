@@ -19,7 +19,7 @@ end
 
 def ext
   	%x[xrandr --output LVDS1 --auto --primary]
-	%x[xrandr --output VGA1 --auto --right-of LVDS1]
+	%x[xrandr --output VGA1 --auto --above LVDS1]
 end
 
 def def_action

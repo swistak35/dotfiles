@@ -223,6 +223,7 @@ bindkey -e
 	alias ti='todo -@ ls @ii'
 	alias tz='todo -@ ls @rozne'
 	alias to='todo ls | grep -v @'
+	alias dly='todo -d /home/swistak35/.daily/todo.cfg'
 	alias k9='kill -9'
 	alias localip="ifconfig -a | grep inet | awk '{print \$2}'"
 	alias leavejobs="disown && exit"
@@ -235,6 +236,7 @@ bindkey -e
 	alias prb="pry -r '/home/swistak35/.rozne/myhomelib.rb' -r 'active_support/all'"
 	alias :q="exit"
 	alias adb_cleandb="adb shell pm clear"
+	alias kcrsa="eval \$(keychain --eval --agents ssh -Q --quiet ~/.ssh/id_rsa)"
 
 	# Suffix aliases
 	alias -g T='| tail'
@@ -252,6 +254,7 @@ bindkey -e
 	alias gu='git pull'
 	alias gs='git status'
 	alias gco='git checkout'
+	alias gd='git diff'
 	alias gb='git branch'
 	alias gpom='git push origin master'
 # ========================
@@ -276,7 +279,8 @@ bindkey -e
 	# export LANG=pl_PL.utf8
 	# export LC_ALL=pl_PL.utf8
 	export PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-	export PATH=$PATH:$HOME/.bin # My custom commands
+	export PATH=$HOME/.bin:$PATH # Add RVM to PATH for scripting
+	# export PATH=$PATH:$HOME/.bin # My custom commands
 # ========================
 # === End
 # ========================
@@ -336,8 +340,6 @@ bindkey -e
 	# Opam
 	/home/swistak35/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
 
-	# SSH-agent
-	eval $(ssh-agent)
 # ========================
 # === End
 # ========================
