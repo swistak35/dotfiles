@@ -8,7 +8,12 @@ alias pacman='sudo pacman'
 alias mount='sudo mount'
 
 # App aliases
-alias ls='ls --color=auto --human-readable --group-directories-first --classify'
+if [[ $(uname -o) = "GNU/Linux" ]]
+then
+	alias ls='ls --color=auto --human-readable --group-directories-first --classify'
+else
+  	alias ls='ls -G'
+fi
 alias l1='ls -A1'
 alias ll='ls -Al'
 alias emu='emulator -avd'
