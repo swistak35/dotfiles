@@ -83,7 +83,7 @@ setopt extendedglob
 
 # Awesome highlighting
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root)
-source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/.zsh/syntax-highlighting/zsh-syntax-highlighting.zsh
 ZSH_HIGHLIGHT_STYLES[path]='fg=green,bold'
 ZSH_HIGHLIGHT_STYLES[globbing]='fg=magenta,bold'
 
