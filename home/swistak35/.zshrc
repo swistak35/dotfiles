@@ -90,13 +90,15 @@ ZSH_HIGHLIGHT_STYLES[globbing]='fg=magenta,bold'
 # Spectrum of colors
 # source ~/.zsh/plugins/spectrum/spectrum.zsh
 
-eval $(keychain --eval --agents ssh --noask -Q --quiet ~/.ssh/id_rsa)
+if type "keychain" > /dev/null; then
+	eval $(keychain --eval --agents ssh --noask -Q --quiet ~/.ssh/id_rsa)
+fi
 
 # Brackets
 # source ~/.zsh/plugins/brackets/brackets.zsh
 
 # RVM
-source $HOME/.rvm/scripts/rvm
+[[ (-s $HOME/.rvm) ]] && source $HOME/.rvm/scripts/rvm
 
 # Opam
-/home/swistak35/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+[[ -s $HOME/.opam ]] && /home/swistak35/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
