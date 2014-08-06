@@ -22,6 +22,11 @@ def ext
 	%x[xrandr --output VGA1 --auto --above LVDS1]
 end
 
+def hor
+  	%x[xrandr --output LVDS1 --auto --primary]
+	%x[xrandr --output VGA1 --auto --right-of LVDS1]
+end
+
 def def_action
   	ext
 end
@@ -30,6 +35,7 @@ case ARGV[0]
 when /lap/i 		then lap
 when /vga/i 		then vga
 when /clone/i 		then clone
+when /hor/i 		then hor
 when /ext/i 		then ext
 when /help/i 		then puts "lap | vga | clone | ext"
 else			def_action

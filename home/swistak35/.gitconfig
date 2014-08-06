@@ -18,3 +18,5 @@
 	insteadOf = gh:
 [core]
 	excludesfile = /home/swistak35/.global_gitignore
+[web]
+	browser = firefox
