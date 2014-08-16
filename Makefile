@@ -1,4 +1,4 @@
-install: install-vim install-zsh install-git install-bin
+install: install-vim install-zsh install-git install-bin install-other
 
 install-vim:
 	rm -rf ~/.vim ~/.vimrc
@@ -9,7 +9,7 @@ install-vim:
 	[ -d ~/.eclim ] && ln -s ~/.eclim ~/.vim/eclim
 
 install-zsh:
-	rm -f ~/.zsh ~/.zshrc 
+	rm -f ~/.zsh ~/.zshrc ~/.oh-my-zsh
 	ln -s `pwd`/zsh ~/.zsh
 	ln -s ~/.zsh/zshrc ~/.zshrc
 	git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
