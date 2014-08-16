@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Service
-ServiceTypes=KonqPopupMenu/Plugin
-MimeType=application/octet-stream
-Actions=removeUnderscore
-
-[Desktop Action removeUnderscore]
-Name=Remove Underscore
-Exec=/home/swistak35/.bin/remove_underscore "%u"
