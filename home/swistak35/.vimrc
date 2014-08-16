@@ -1,4 +1,3 @@
-
 """" Vundle section
 set nocompatible              " be iMproved, required
 filetype off                  " required
@@ -8,6 +7,7 @@ set hidden
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
+" There's plugin for that
 Plugin 'gmarik/Vundle.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
@@ -51,42 +51,69 @@ Plugin 'mileszs/ack.vim'
 Plugin 'tpope/vim-surround'
 Plugin 'Align'
 Plugin 'Rename2'
+Plugin 'mattn/vim-textobj-url'
+Plugin 'whatyouhide/vim-textobj-erb'
+Plugin 'tacahiroy/ctrlp-funky'
+Plugin 'fisadev/vim-ctrlp-cmdpalette'
+Plugin 'mmozuras/vim-github-comment'
+
+
+
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin on    " required
-" filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
 
 " When started as "evim", evim.vim will already have done these settings.
 if v:progname =~? "evim"
   finish
 endif
 
-" Use Vim settings, rather than Vi settings (much better!).
-" This must be first, because it changes other options as a side effect.
+""""""""""""""""
+"""" My options
+""""""""""""""""
 set nocompatible
-
-" allow backspacing over everything in insert mode
 set backspace=indent,eol,start
-
 set backup
-
-" when there are cvs, backup is more trouble than gain
 set noswapfile
 set undofile
 set history=50		" keep 50 lines of command line history
-set ruler		" show the cursor position all the time
 set showcmd		" display incomplete commands
 set incsearch		" do incremental searching
+set ruler		" show the cursor position all the time
+set wildmenu
+set wildmode=list:longest,full
+set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.pyc,*.class,.svn,*.gem
+set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
+set wildignore+=*.jpg,*.png,*.gif,*.avi,*.wmv,*.ogg,*.mp3,*.mov
+set wildignore+=*/vendor/cache/*,*/.sass-cache/*,*/node_modules/*,*/bower_components/*
+set wildignore+=*.swp,*~,._*
+set number
+set shiftround
+set shiftwidth=2
+set laststatus=2        " needed by Airline
+set noshowmode          " as above
+set smartcase
+set scrolloff=5
+set backupdir=~/.vim/tmp,.
+set directory=~/.vim/swp,.
+set undodir=~/.vim/undo,.
+" set expandtab         " Expand tabs to spaces
+" set tabstop=2
+set exrc                " Per directory vimrc
+set secure
+set ignorecase          " Make command autocompletion case insensitive
+set relativenumber
+set gdefault            " Let's make global changing default
+set autowrite
+
+
+""""""""""""""""
+"""" A few different things
+""""""""""""""""
 
 " Don't use Ex mode, use Q for formatting
-map Q gq
-
-" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
-" so that you can undo CTRL-U after inserting a line break.
-inoremap <C-U> <C-G>u<C-U>
+map Q g
 
 " In many terminal emulators the mouse works just fine, thus enable it.
 if has('mouse')
@@ -99,9 +126,6 @@ if &t_Co > 2 || has("gui_running")
   syntax on
   set hlsearch
 endif
-
-
-
 
  """Only do this part when compiled with support for autocommands.
 if has("autocmd")
@@ -130,11 +154,8 @@ if has("autocmd")
     \ endif
 
   augroup END
-
 else
-
   set autoindent		" always set autoindenting on
-
 endif " has("autocmd")
 
 " Convenient command to see the difference between the current buffer and the
@@ -150,49 +171,27 @@ if has('gui_running')
   syntax enable
   set background=dark
   colorscheme solarized
-else
-
 endif
 
-set wildmenu
-set wildmode=list:longest,full
-set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.pyc,*.class,.svn,*.gem
-set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
-set wildignore+=*.jpg,*.png,*.gif,*.avi,*.wmv,*.ogg,*.mp3,*.mov
-set wildignore+=*/vendor/cache/*,*/.sass-cache/*,*/node_modules/*,*/bower_components/*
-set wildignore+=*.swp,*~,._*
-set number
-set shiftround
-set shiftwidth=2
-map <F2> :NERDTreeToggle<CR>
-map <F3> :TlistToggle<CR>
-imap <c-k> <esc>ddi
+
+
+
+
+
+""""""""""""""""
+"""""""" Maps
+""""""""""""""""
 nmap ; :
-set smartcase
 let mapleader=","
 
-set scrolloff=5
+map <F2> :NERDTreeToggle<CR>
+map <F3> :TlistToggle<CR>
 
+" Save even if you don't have permissions
 cmap w!! %!sudo tee > /dev/null %
 
-" Remove trailing spaces after save
-au BufWritePre *.json,*.rb,*.py,*.c,*.h,*.feature,*.conf,*rc,README,CHANGELOG,README.* :%s/\s\+$//e
-
-" Don't create .un~ and swp files in my working directory!
-set backupdir=~/.vim/tmp,.
-set directory=~/.vim/swp,.
-set undodir=~/.vim/undo,.
-
-" Expand tabs to spaces
-" set expandtab
-" set tabstop=2
-
-" Per directory vimrc
-set exrc
-set secure
-
-" Make command autocompletion case insensitive
-set ignorecase
+" Display hidden characters
+nmap <leader>s :set nolist!<CR>
 
 " Arrows? No. Just No. Not now.
 map <Left> <C-w>h
@@ -205,22 +204,24 @@ inoremap <left> <nop>
 inoremap <right> <nop>
 
 inoremap jj <ESC>
-
 nnoremap <leader>w <C-w>v<C-w>l
-
-
 
 " Redrawing the screen also removes the hightlight from search
 noremap <silent> <C-l> :nohls<CR><C-l>
 
-set relativenumber
+noremap [z :tabp<CR>
+noremap ]z :tabn<CR>
 
-" Let's make global changing default
-set gdefault
 
+
+
+""""""""""""""""
 """"""" Plugin settings
+""""""""""""""""
+""" Vim-tags
+let g:vim_tags_auto_generate = 1
 
-" Syntastic
+""" Syntastic
 let g:syntastic_ruby_checkers = ['mri']
 let g:syntastic_auto_jump = 1
 
@@ -245,15 +246,31 @@ let g:gist_browser_command = 'firefox %URL%'
 let g:signify_vcs_list = [ 'git', 'hg' ]
 " let g:signify_line_highlight = 1
 
-""" Airline
-set laststatus=2
-set noshowmode
+""" Align
+"AlignMapsClean
+"vnoremap <leader>asp <Plug>AM_tsp
+"unmap <leader>a=
+"vmap <leader>a= <Plug>AM_t=
 
-""" Emmet (zen coding)
-" map <C-Y>y zey yoyiygyyy
+" CtrlP
+let g:ctrlp_extensions = ['funky']
+let g:ctrlp_funky_syntax_highlight = 1
+nmap <Leader>pp :CtrlP<CR>
+nmap <Leader>pb :CtrlPBuffer<CR>
+nmap <Leader>pf :CtrlPFunky<CR>
+nmap <Leader>pc :CtrlPCmdPalette<CR>
+nmap <leader>pr :ClearCtrlPCache<CR>
+
+""" Github Comment
+let g:github_user='swistak35'
+let g:github_open_browser=1
 
 
+
+""""""""""""""""
 """""""" Other functions
+""""""""""""""""
+
 " This allows for change paste motion cp{motion}
 nmap <silent> cp :set opfunc=ChangePaste<CR>g@
 function! ChangePaste(type, ...)
@@ -274,3 +291,9 @@ augroup BWCCreateDir
   autocmd!
   autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
 augroup END
+
+" Remove trailing spaces after save
+au BufWritePre *.json,*.rb,*.py,*.c,*.h,*.feature,*.conf,*rc,README,CHANGELOG,README.* :%s/\s\+$//e
+
+syn keyword Keyword self
+

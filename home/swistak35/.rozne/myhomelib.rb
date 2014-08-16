@@ -1,3 +1,5 @@
+require 'active_support/all'
+require 'looksee'
 
 class Swistak
 	def ping
@@ -6,3 +8,5 @@ class Swistak
 end
 
 include Math
+include ActiveSupport
+

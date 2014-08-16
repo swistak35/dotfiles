@@ -9,14 +9,29 @@
 	remotes = remote -v
 	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
 [push]
-	default = simple
+	default = current
 [github]
 	user = swistak35
 [ghi]
 	token = 722270c515ab648a3e4d995b0c0f2fc9199ddbcf
 [url "git@github.com:"]
 	insteadOf = gh:
+[url "git@bitbucket.org:"]
+	insteadOf = bb:
 [core]
 	excludesfile = /home/swistak35/.global_gitignore
+	editor = vim
+[merge]
+	tool = vimdiff
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
 [web]
 	browser = firefox

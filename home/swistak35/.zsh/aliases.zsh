@@ -49,7 +49,7 @@ alias pstree_="pstree -ap"
 alias clearcache="pacman -Sc"
 alias recentpacs="yaourt -Q --date"
 alias iitunel="ssh -C2qTnN -D 8979 i258338@tryglaw.ii.uni.wroc.pl"
-alias prb="pry -r '/home/swistak35/.rozne/myhomelib.rb' -r 'active_support/all'"
+alias prb="pry -r '/home/swistak35/.rozne/myhomelib.rb'"
 alias :q="exit"
 alias adb_cleandb="adb shell pm clear"
 alias kcrsa="eval \$(keychain --eval --agents ssh -Q --quiet ~/.ssh/id_rsa)"
@@ -67,17 +67,23 @@ alias -g UQ='| uniq'
 
 # GIT aliases
 alias g='git'
-alias gc='git commit'
-alias gcm='git commit -m'
+alias gc='git commit -v'
+alias gcm='git commit -vm'
+alias gca='git commit --amend --reuse-message=HEAD'
 alias ga='git add'
 alias gp='git push'
 alias gpom='git push origin master'
 alias gu='git pull'
 alias gs='git status'
 alias go='git checkout'
-alias gob='git checkout -b'
-alias gd='git diff'
+alias gcob='git checkout -b'
+alias gd='git diff -w'
 alias gb='git branch'
 alias gbd='git branch -d'
 alias gf='git fetch'
 alias gm='git merge'
+alias glg='git log -p'
+alias gls='git log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate'
+alias gll='git log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat'
+alias gldr='git log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative'
+alias glds='git log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short'
