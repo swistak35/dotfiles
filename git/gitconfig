@@ -35,3 +35,5 @@
 	untracked = cyan
 [web]
 	browser = firefox
+[branch]
+	autosetuprebase = always

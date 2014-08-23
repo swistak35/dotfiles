@@ -19,12 +19,17 @@ end
 
 def ext
   	%x[xrandr --output LVDS1 --auto --primary]
-	%x[xrandr --output VGA1 --auto --above LVDS1]
+	%x[xrandr --output VGA1 --auto --above LVDS1 --rotate normal]
 end
 
 def hor
   	%x[xrandr --output LVDS1 --auto --primary]
 	%x[xrandr --output VGA1 --auto --right-of LVDS1]
+end
+
+def pivot
+  	%x[xrandr --output LVDS1 --auto --primary]
+	%x[xrandr --output VGA1 --auto --above LVDS1 --rotate left]
 end
 
 def def_action
@@ -34,10 +39,13 @@ end
 case ARGV[0]
 when /lap/i 		then lap
 when /vga/i 		then vga
+when /pivot/i		then pivot
 when /clone/i 		then clone
 when /hor/i 		then hor
 when /ext/i 		then ext
 when /help/i 		then puts "lap | vga | clone | ext"
-else			def_action
+else			
+	puts "No argument, using default"
+	def_action
 end
 

@@ -10,7 +10,6 @@ call vundle#begin()
 " There's plugin for that
 Plugin 'gmarik/Vundle.vim'
 Plugin 'scrooloose/nerdtree'
-Plugin 'scrooloose/nerdcommenter'
 Plugin 'kien/ctrlp.vim'
 Plugin 'scrooloose/syntastic'
 Plugin 'vim-ruby/vim-ruby'
@@ -33,6 +32,7 @@ Plugin 'elzr/vim-json'
 Plugin 'tpope/vim-fugitive'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'szw/vim-tags'
+Plugin 'db2ext.vim'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-sleuth'
@@ -49,16 +49,23 @@ Plugin 'tpope/vim-abolish'
 Plugin 'tpope/vim-repeat'
 Plugin 'mileszs/ack.vim'
 Plugin 'tpope/vim-surround'
-Plugin 'Align'
+Plugin 'junegunn/vim-easy-align'
 Plugin 'Rename2'
 Plugin 'mattn/vim-textobj-url'
 Plugin 'whatyouhide/vim-textobj-erb'
 Plugin 'tacahiroy/ctrlp-funky'
 Plugin 'fisadev/vim-ctrlp-cmdpalette'
 Plugin 'mmozuras/vim-github-comment'
-
-
-
+Plugin 'indentLine.vim'
+Plugin 'matchit.zip'
+Plugin 'ecomba/vim-ruby-refactoring'
+Plugin 'wipeout'
+Plugin 'tpope/vim-commentary'
+Plugin 'pipe2eval'
+Plugin 'textobj-indent'
+Plugin 'dbext.vim'
+Plugin 'AndrewRadev/splitjoin.vim'
+Plugin 'AndrewRadev/switch.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -182,6 +189,7 @@ endif
 """""""" Maps
 """"""""""""""""
 nmap ; :
+vnoremap ; :
 let mapleader=","
 
 map <F2> :NERDTreeToggle<CR>
@@ -203,6 +211,9 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 
+nnoremap gj J
+nnoremap J <C-D>
+nnoremap K <C-U>
 inoremap jj <ESC>
 nnoremap <leader>w <C-w>v<C-w>l
 
@@ -212,12 +223,24 @@ noremap <silent> <C-l> :nohls<CR><C-l>
 noremap [z :tabp<CR>
 noremap ]z :tabn<CR>
 
+map gs :Switch<CR>
+
 
 
 
 """"""""""""""""
 """"""" Plugin settings
 """"""""""""""""
+""" Pipe2Eval
+let g:pipe2eval_map_key = '<Leader>el'
+
+""" Fugitive
+map <leader>gtc :Gcommit<CR><C-W><S-T>
+map <leader>gtp :Gpush<CR>
+map <leader>gtu :Gpull<CR>
+map <leader>gtd :Gdiff<CR>
+map <leader>gtb :Gblame<CR>
+
 """ Vim-tags
 let g:vim_tags_auto_generate = 1
 
@@ -246,11 +269,9 @@ let g:gist_browser_command = 'firefox %URL%'
 let g:signify_vcs_list = [ 'git', 'hg' ]
 " let g:signify_line_highlight = 1
 
-""" Align
-"AlignMapsClean
-"vnoremap <leader>asp <Plug>AM_tsp
-"unmap <leader>a=
-"vmap <leader>a= <Plug>AM_t=
+""" Easy Align
+vnoremap <leader>a= :EasyAlign =<CR>
+vnoremap <leader>asp :EasyAlign *\ <CR>
 
 " CtrlP
 let g:ctrlp_extensions = ['funky']
@@ -265,7 +286,10 @@ nmap <leader>pr :ClearCtrlPCache<CR>
 let g:github_user='swistak35'
 let g:github_open_browser=1
 
+""" Other
+cabbrev help tab help
 
+nnoremap Q @q
 
 """"""""""""""""
 """""""" Other functions

@@ -44,7 +44,7 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
-export PATH=$HOME/.rvm/bin:$HOME/.bin:/usr/local/bin:$PATH
+export PATH=/opt/chefdk/bin:$HOME/.rvm/bin:$HOME/.bin:/usr/local/bin:$PATH
 export LESS='-FRSX -i-P%f (%i/%m) Line %lt/%L'
 export EDITOR="vim"
 export BROWSER="firefox"
