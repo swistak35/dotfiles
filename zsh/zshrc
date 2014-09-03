@@ -57,6 +57,8 @@ export ANDROID_HOME=/home/swistak35/android-sdk-linux
 export MANPATH=/usr/local/man:$MANPATH
 export LANG=pl_PL.utf8
 export LC_ALL=pl_PL.utf8
+export WORDCHARS='|*?[]~=&;!#$%^(){}<>'
+export DISABLE_AUTO_TITLE=true
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -66,11 +68,14 @@ export LC_ALL=pl_PL.utf8
 
 source ~/.zsh/keybindings.zsh
 source ~/.zsh/aliases.zsh
+source ~/.zsh/functions.zsh
 source ~/.zsh/promptleft.zsh
 source ~/.zsh/promptright.zsh
 source ~/.zsh/history.zsh
 source ~/.zsh/completion.zsh
 source ~/.zsh/rationalise_dot.zsh
+
+source ~/.zsh/completions/tmuxinator.zsh
 
 zmodload zsh/mathfunc
 autoload zmv

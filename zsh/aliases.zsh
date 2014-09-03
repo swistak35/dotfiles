@@ -56,6 +56,14 @@ alias kcrsa="eval \$(keychain --eval --agents ssh -Q --quiet ~/.ssh/id_rsa)"
 alias fd='find . -type d -name'
 alias ff='find . -type f -name'
 alias largest_packages="pacman -Qi | awk '/Nazwa/ { name=\$3 } /Rozmiar po instalacji/ { printf \"%.3fMB\t%s\n\", \$4/1024, name }' | sort -rh | head -n 20"
+alias muo="/home/swistak35/Projekty/drugpl/muon/bin/muon2"
+alias fsum="paste -sd+ | bc"
+alias lst="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'"
+
+alias tmk="tmux kill-session -t"
+alias tms="mux start"
+alias tml="tmux list-sessions"
+
 
 # Suffix aliases
 alias -g T='| tail'
@@ -64,6 +72,7 @@ alias -g L="| less"
 alias -g C='| wc -l'
 alias -g G='| grep -i'
 alias -g UQ='| uniq'
+alias -g E="| tee"
 
 # GIT aliases
 alias g='git'
@@ -89,3 +98,4 @@ alias gldr='git log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue
 alias glds='git log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short'
 alias gss='git stash save'
 alias gsp='git stash pop'
+alias gds='git diff --staged'
