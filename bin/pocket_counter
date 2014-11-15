@@ -28,7 +28,7 @@ class PocketAPI
   end
 
   def request_code
-    request = Net::HTTP::Post.new("/v3/oauth/request", initheader = {'Content-Type' => 'application/json'})
+    request = Net::HTTP::Post.new("/v3/oauth/request", {'Content-Type' => 'application/json'})
     request.body = { 'consumer_key' => ConsumerKey, 'redirect_uri' => 'nil' }.to_json
     response = @http.request(request)
     # puts "Response: #{response.code} #{response.message}:\n#{response.body}"
@@ -36,7 +36,7 @@ class PocketAPI
   end
 
   def request_access_token(code)
-    request = Net::HTTP::Post.new("/v3/oauth/authorize", initheader = {'Content-Type' => 'application/json'})
+    request = Net::HTTP::Post.new("/v3/oauth/authorize", {'Content-Type' => 'application/json'})
     request.body = { 'consumer_key' => ConsumerKey, 'code' => code }.to_json
     response = @http.request(request)
     # puts "Response: #{response.code} #{response.message}:\n#{response.body}"
@@ -44,7 +44,7 @@ class PocketAPI
   end
 
   def get_results
-    request = Net::HTTP::Post.new("/v3/get", initheader = {'Content-Type' => 'application/json'})
+    request = Net::HTTP::Post.new("/v3/get", {'Content-Type' => 'application/json'})
     request.body = { 'consumer_key' => ConsumerKey, 'access_token' => @access_token }.to_json
     response = @http.request(request)
     JSON.parse(response.body)
@@ -109,6 +109,13 @@ class PocketCounter
     seconds = words * 60 / 250
     puts "Estimated reading time: #{seconds} seconds, which is #{distance_of_time_in_words(seconds)}"
     puts "Good luck, #{@api.username}."
+    if ENV['POCKET_LIST'].present?
+      results["list"].sort_by do |id, obj|
+        obj["word_count"].to_i
+      end.reverse.each do |id, obj|
+        puts "#{obj["word_count"]} #{obj['resolved_title']} #{obj["given_url"]}"
+      end
+    end
   end
 end
 

@@ -13,11 +13,11 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'kien/ctrlp.vim'
 Plugin 'scrooloose/syntastic'
 Plugin 'vim-ruby/vim-ruby'
-Plugin 'tpope/vim-markdown'
+" Plugin 'tpope/vim-markdown'
 Plugin 'pangloss/vim-javascript'
 Plugin 'groenewege/vim-less'
 Plugin 'kchmck/vim-coffee-script'
-Plugin 'jimmyhchan/dustjs.vim'
+" Plugin 'jimmyhchan/dustjs.vim'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'ap/vim-css-color'
 Plugin 'docunext/closetag.vim'
@@ -32,7 +32,6 @@ Plugin 'elzr/vim-json'
 Plugin 'tpope/vim-fugitive'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'szw/vim-tags'
-Plugin 'db2ext.vim'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-sleuth'
@@ -51,6 +50,7 @@ Plugin 'mileszs/ack.vim'
 Plugin 'tpope/vim-surround'
 Plugin 'junegunn/vim-easy-align'
 Plugin 'Rename2'
+
 Plugin 'mattn/vim-textobj-url'
 Plugin 'whatyouhide/vim-textobj-erb'
 Plugin 'tacahiroy/ctrlp-funky'
@@ -66,6 +66,15 @@ Plugin 'textobj-indent'
 Plugin 'dbext.vim'
 Plugin 'AndrewRadev/splitjoin.vim'
 Plugin 'AndrewRadev/switch.vim'
+Plugin 'FredKSchott/CoVim'
+Plugin 'KabbAmine/zeavim.vim'
+Plugin 't9md/vim-chef'
+Plugin 'maxbrunsfeld/vim-yankstack'
+Plugin 'tpope/vim-haml'
+Plugin 'tpope/vim-cucumber'
+Plugin 'haya14busa/incsearch.vim'
+Plugin 'gorkunov/smartgf.vim'
+Plugin 'rorymckinley/vim-symbols-strings'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -105,15 +114,14 @@ set scrolloff=5
 set backupdir=~/.vim/tmp,.
 set directory=~/.vim/swp,.
 set undodir=~/.vim/undo,.
-" set expandtab         " Expand tabs to spaces
-" set tabstop=2
+set expandtab         " Expand tabs to spaces
+set tabstop=4
 set exrc                " Per directory vimrc
 set secure
 set ignorecase          " Make command autocompletion case insensitive
 set relativenumber
 set gdefault            " Let's make global changing default
-set autowrite
-
+set autowriteall
 
 """"""""""""""""
 """" A few different things
@@ -180,11 +188,6 @@ if has('gui_running')
   colorscheme solarized
 endif
 
-
-
-
-
-
 """"""""""""""""
 """""""" Maps
 """"""""""""""""
@@ -223,10 +226,27 @@ noremap <silent> <C-l> :nohls<CR><C-l>
 noremap [z :tabp<CR>
 noremap ]z :tabn<CR>
 
+nmap [w <Plug>yankstack_substitute_older_paste
+nmap ]w <Plug>yankstack_substitute_newer_paste
+
 map gs :Switch<CR>
 
+" Look of invisible characters
+set list
+set listchars=tab:▸\ ,eol:¬
 
+" Insert just one character
+nmap s i_<ESC>r
+nmap S a_<ESC>r
 
+let g:incsearch#magic = '\v'
+
+nnoremap Q @q
+
+map <leader>bls :ls<CR>:b<Space>
+map <leader>cy "*y
+
+command JoinLines execute "g/^$/,/./-j"
 
 """"""""""""""""
 """"""" Plugin settings
@@ -235,7 +255,7 @@ map gs :Switch<CR>
 let g:pipe2eval_map_key = '<Leader>el'
 
 """ Fugitive
-map <leader>gtc :Gcommit<CR><C-W><S-T>
+map <leader>gtc :Gcommit<CR>
 map <leader>gtp :Gpush<CR>
 map <leader>gtu :Gpull<CR>
 map <leader>gtd :Gdiff<CR>
@@ -272,6 +292,11 @@ let g:signify_vcs_list = [ 'git', 'hg' ]
 """ Easy Align
 vnoremap <leader>a= :EasyAlign =<CR>
 vnoremap <leader>asp :EasyAlign *\ <CR>
+vnoremap <leader>as1 :EasyAlign\ <CR>
+
+""" Ack
+let g:ack_autofold_results = 1
+let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case"
 
 " CtrlP
 let g:ctrlp_extensions = ['funky']
@@ -280,16 +305,40 @@ nmap <Leader>pp :CtrlP<CR>
 nmap <Leader>pb :CtrlPBuffer<CR>
 nmap <Leader>pf :CtrlPFunky<CR>
 nmap <Leader>pc :CtrlPCmdPalette<CR>
+nmap <Leader>pm :CtrlPMRUFiles<CR>
 nmap <leader>pr :ClearCtrlPCache<CR>
 
 """ Github Comment
 let g:github_user='swistak35'
 let g:github_open_browser=1
 
+""" CoVIM
+python import sys; sys.path.append("/usr/lib/python3.4/site-packages")
+
+""" Zeal
+let g:zv_zeal_directory = "/opt/zeal/zeal/zeal"
+let g:zv_added_files_type = {
+            \ 'rb': 'Ruby'
+            \ }
+
 """ Other
 cabbrev help tab help
 
-nnoremap Q @q
+""" Incsearch.vim
+map / <Plug>(incsearch-forward)
+map ? <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+
+""" Smartgf
+let g:smartgf_key = 'gu'
+let g:smartgf_no_filter_key = 'gU'
+let g:smartgf_auto_refresh_ctags = 0
+map <F4> :SmargfRefreshTags<CR>
+
+""" vim-symbols-strings
+let g:symbolise_strings_map_keys = 0
+nnoremap <silent> <Leader>sy :set opfunc=symbolsstrings#SymboliseStrings<CR>g@
+nnoremap <silent> <Leader>st :set opfunc=symbolsstrings#StringifySymbols<CR>g@p
 
 """"""""""""""""
 """""""" Other functions

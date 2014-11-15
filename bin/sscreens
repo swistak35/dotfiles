@@ -5,6 +5,7 @@
 def lap
   	%x[xrandr --output LVDS1 --auto]
 	%x[xrandr --output VGA1 --off]
+	%x[xrandr --output HDMI1 --off]
 end
 
 def vga
@@ -19,7 +20,7 @@ end
 
 def ext
   	%x[xrandr --output LVDS1 --auto --primary]
-	%x[xrandr --output VGA1 --auto --above LVDS1 --rotate normal]
+	%x[xrandr --output HDMI1 --auto --above LVDS1 --rotate normal]
 end
 
 def hor
@@ -29,7 +30,7 @@ end
 
 def pivot
   	%x[xrandr --output LVDS1 --auto --primary]
-	%x[xrandr --output VGA1 --auto --above LVDS1 --rotate left]
+	%x[xrandr --output HDMI1 --auto --above LVDS1 --rotate left]
 end
 
 def def_action

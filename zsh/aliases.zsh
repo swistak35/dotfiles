@@ -4,6 +4,7 @@ alias rtfm='man'
 alias moar='more'
 
 # Sudo Aliases
+alias sudo='sudo '
 alias pacman='sudo pacman'
 alias mount='sudo mount'
 
@@ -30,16 +31,9 @@ alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
 alias netdebug='mtr google.com'
 alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
 alias httpdump="sudo tcpdump -i wlp3s0 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""	
-alias map="xargs -n1"
+alias mapx="xargs -n1"
 alias reload!='. ~/.zshrc'
 alias pubkey="more ~/.ssh/id_rsa.pub | cb | echo '=> Public key copied to pasteboard.'"
-alias todo="/media/magazyn/Dropbox/Private/todo/todo.sh"
-alias t='todo'
-alias tw='todo -@ ls @wideo'
-alias ti='todo -@ ls @ii'
-alias tz='todo -@ ls @rozne'
-alias to='todo ls | grep -v @'
-alias dly='todo -d /home/swistak35/.daily/todo.cfg'
 alias k9='kill -9'
 alias localip="ifconfig -a | grep inet | awk '{print \$2}'"
 alias leavejobs="disown && exit"
@@ -60,6 +54,16 @@ alias muo="/home/swistak35/Projekty/drugpl/muon/bin/muon2"
 alias fsum="paste -sd+ | bc"
 alias lst="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'"
 
+# Todo
+alias todo="/media/magazyn/Dropbox/Private/todo/todo.sh"
+alias td='todo'
+alias tdw='todo -@ ls @wideo'
+alias tdi='todo -@ ls @ii'
+alias tdz='todo -@ ls @rozne'
+alias tdo='todo ls | grep -v @'
+alias dly='todo -d /home/swistak35/.daily/todo.cfg'
+
+# Tmux
 alias tmk="tmux kill-session -t"
 alias tms="mux start"
 alias tml="tmux list-sessions"
@@ -71,10 +75,15 @@ alias -g H='| head'
 alias -g L="| less"
 alias -g C='| wc -l'
 alias -g G='| grep -i'
+alias -g S='| sort'
+alias -g ED='| sed -e'
+alias -g SN='| sort -n'
 alias -g UQ='| uniq'
+alias -g UT="| cut"
 alias -g E="| tee"
+alias -g R="| ruby -p -e"
 
-# GIT aliases
+# git
 alias g='git'
 alias gc='git commit -v'
 alias gcm='git commit -vm'
@@ -84,7 +93,7 @@ alias gp='git push'
 alias gpom='git push origin master'
 alias gu='git pull'
 alias gs='git status'
-alias go='git checkout'
+alias gco='git checkout'
 alias gcob='git checkout -b'
 alias gd='git diff -w'
 alias gb='git branch'
@@ -99,3 +108,5 @@ alias glds='git log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue
 alias gss='git stash save'
 alias gsp='git stash pop'
 alias gds='git diff --staged'
+alias go='git show'
+alias goh='git show HEAD'

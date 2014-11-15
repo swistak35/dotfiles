@@ -1,5 +1,5 @@
 #!/bin/sh
-amixer sset 'Speaker' 100%
-amixer sset 'Headphone' 100%
-amixer sset 'Master' 55
+# amixer sset 'Speaker' 100%
+# amixer sset 'Headphone' 100%
+# amixer sset 'Master' 55
 radio

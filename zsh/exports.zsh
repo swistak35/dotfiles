@@ -1,0 +1,20 @@
+export PATH=/usr/local/bin:$PATH
+export PATH=$HOME/.bin:$PATH
+export PATH=$HOME/.rvm/bin:$PATH
+export PATH=/opt/chefdk/bin:$PATH
+export PATH=/home/swistak35/Pobrane/activator:$PATH
+# export PATH=/opt/anaconda/bin:$PATH
+export LESS='-FRSX -i-P%f (%i/%m) Line %lt/%L'
+export EDITOR="vim"
+export BROWSER="firefox"
+export XTERM="konsole"
+export FACEBOOK_SECRET=5b04b2bd4277aaca57da23447f791ef5
+export FACEBOOK_KEY=297537827012809
+export GITHUB_SECRET=fd74e299b442056dfd23d822638cd3b918bc248f
+export GITHUB_KEY=6bfa34fa6519c4a10695
+export ANDROID_HOME=/home/swistak35/android-sdk-linux
+export MANPATH=/usr/local/man:$MANPATH
+export LANG=pl_PL.utf8
+export LC_ALL=pl_PL.utf8
+export WORDCHARS='|*?[]~=&;!#$%^(){}<>'
+export DISABLE_AUTO_TITLE=true
