@@ -6,8 +6,7 @@ install-vim:
 	ln -s ~/.vim/vimrc ~/.vimrc
 	git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 	vim +PluginInstall +qall
-	[ -d ~/.eclim ] && ln -s ~/.eclim ~/.vim/eclim
-	true
+	# [ -d ~/.eclim ] && ln -s ~/.eclim ~/.vim/eclim
 
 install-zsh:
 	rm -f ~/.zsh ~/.zshrc ~/.oh-my-zsh
