@@ -21,6 +21,7 @@
 [core]
 	excludesfile = /home/swistak35/.global_gitignore
 	editor = vim
+	autocrlf = True
 [merge]
 	tool = vimdiff
 [color "diff"]
