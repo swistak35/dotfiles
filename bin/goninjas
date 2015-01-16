@@ -1,0 +1,7 @@
+#!/bin/sh
+bitcoind -daemon
+namecoind -daemon
+twisterd -daemon
+litecoind -daemon
+feathercoind -daemon
+retroshare -m &

@@ -53,14 +53,11 @@ alias largest_packages="pacman -Qi | awk '/Nazwa/ { name=\$3 } /Rozmiar po insta
 alias muo="/home/swistak35/Projekty/drugpl/muon/bin/muon2"
 alias fsum="paste -sd+ | bc"
 alias lst="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'"
+alias be='bundle exec'
 
 # Todo
 alias todo="/media/magazyn/Dropbox/Private/todo/todo.sh"
 alias td='todo'
-alias tdw='todo -@ ls @wideo'
-alias tdi='todo -@ ls @ii'
-alias tdz='todo -@ ls @rozne'
-alias tdo='todo ls | grep -v @'
 alias dly='todo -d /home/swistak35/.daily/todo.cfg'
 
 # Tmux
