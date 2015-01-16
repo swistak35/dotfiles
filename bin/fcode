@@ -1,0 +1,5 @@
+#!/bin/sh
+cp ~/.mozilla/firefox/profiles.ini.code ~/.mozilla/firefox/profiles.ini
+firefox -no-remote &
+sleep 3
+cp ~/.mozilla/firefox/profiles.ini.default ~/.mozilla/firefox/profiles.ini

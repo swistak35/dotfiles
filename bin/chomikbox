@@ -1,0 +1,2 @@
+#!/bin/sh
+wine "/home/swistak35/.wine/drive_c/Program Files (x86)/ChomikBox/chomikbox.exe"
