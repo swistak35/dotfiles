@@ -1,0 +1,3 @@
+#!/bin/sh
+sudo grub-reboot 'Windows Vista (loader) (na /dev/sdb1)'
+reboot

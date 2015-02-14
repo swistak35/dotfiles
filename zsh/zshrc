@@ -56,7 +56,7 @@ source ~/.zsh/history.zsh
 source ~/.zsh/completion.zsh
 source ~/.zsh/directories.zsh
 
-source ~/.zsh/completions/tmuxinator.zsh
+# source ~/.zsh/completions/tmuxinator.zsh
 # source ~/.zsh/completions/zeus.zsh
 
 # zmodload zsh/mathfunc
@@ -74,6 +74,8 @@ ZSH_HIGHLIGHT_STYLES[globbing]='fg=magenta,bold'
 
 if type "keychain" > /dev/null; then
 	eval $(keychain --eval --agents ssh --noask -Q --quiet ~/.ssh/id_rsa)
+	eval $(keychain --eval --agents ssh --noask -Q --quiet /media/projs/repositories/arkency/kitchen/chef.key)
+	eval $(keychain --eval --agents ssh --noask -Q --quiet /media/projs/repositories/pons/kitchen/chef.key)
 fi
 
 # RVM
@@ -81,4 +83,7 @@ fi
 
 # Opam
 [[ -s $HOME/.opam ]] && /home/swistak35/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+
+# rbenv
+eval "$(rbenv init -)"
 

@@ -7,7 +7,8 @@ channels = {
 	"pr2" 	=>		"mms://stream.polskieradio.pl/program2",
 	"pr3" 	=>		"mms://stream.polskieradio.pl/program3",
 	"rm"  	=>		"mms://195.94.205.211/rm",
-	"luz"   => 		"http://156.17.39.65:8000/luzhifi.mp3"
+	"luz"   => 		"http://156.17.39.65:8000/luzhifi.mp3",
+	"krz"   => 		"http://posluchaj.krz.pl"
 }
 port = "6601"
 radio_dir = "#{ENV['HOME']}/.mpd_radio"

@@ -1,0 +1,3 @@
+#!/bin/sh
+cp ~/.mozilla/firefox/profiles.ini.default ~/.mozilla/firefox/profiles.ini
+firefox &

@@ -26,7 +26,3 @@ repeatit() {
     $@ && return
   done
 }
-
-tdaw() {
-  td a "$1 @wideo"
-}
