@@ -1,0 +1,421 @@
+
+call plug#begin('~/.nvim/plugged')
+
+" There's plugin for that
+" Plug 'gmarik/Vundle.vim'
+" Plug 'scrooloose/syntastic'
+" Plug 'tpope/vim-markdown'
+" Plug 'jimmyhchan/dustjs.vim'
+" Plug 'FredKSchott/CoVim'
+" Plug 'szw/vim-tags'
+" Plug 'rorymckinley/vim-symbols-strings'
+
+" Obvious
+Plug 'scrooloose/nerdtree'
+Plug 'kien/ctrlp.vim'
+Plug 'elzr/vim-json'
+Plug 'mattn/webapi-vim'
+Plug 'mattn/gist-vim'
+Plug 'bling/vim-airline'
+Plug 'tpope/vim-rails'
+Plug 'Valloric/YouCompleteMe', { 'do': './install.sh' }
+Plug 'netrw.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'tacahiroy/ctrlp-funky'
+Plug 'fisadev/vim-ctrlp-cmdpalette'
+Plug 'mileszs/ack.vim'
+Plug 'gorkunov/smartgf.vim'
+
+" Languages
+Plug 'vim-ruby/vim-ruby'
+Plug 'pangloss/vim-javascript'
+Plug 'groenewege/vim-less'
+Plug 'kchmck/vim-coffee-script'
+Plug 'tpope/vim-haml'
+Plug 'tpope/vim-cucumber'
+Plug 'hail2u/vim-css3-syntax'
+
+" Color schemes
+Plug 'altercation/vim-colors-solarized'
+
+" Highlight colors in CSS files
+Plug 'ap/vim-css-color'
+" Nice incremental searching
+Plug 'haya14busa/incsearch.vim'
+" Autoclose xml tags
+Plug 'docunext/closetag.vim'
+" Underscoring words which are the same as current
+Plug 'vim-cursorword'
+" Let vim know about end keyword
+Plug 'tpope/vim-endwise'
+" Hunks about modified lines
+Plug 'mhinz/vim-signify'
+" Autocompletion for quotes, braces etc.
+Plug 'Raimondi/delimitMate'
+" Sublime-like multiple cursors
+Plug 'terryma/vim-multiple-cursors'
+" auto good tabswidth
+Plug 'tpope/vim-sleuth'
+" cool ][ mappings
+Plug 'tpope/vim-unimpaired'
+" taglist bound to F3
+Plug 'taglist.vim'
+
+" Text objects
+Plug 'bkad/CamelCaseMotion'
+Plug 'argtextobj.vim'
+Plug 'kana/vim-textobj-user'
+Plug 'nelstrom/vim-textobj-rubyblock'
+Plug 'whatyouhide/vim-textobj-xmlattr'
+Plug 'lucapette/vim-textobj-underscore'
+Plug 'mattn/vim-textobj-url'
+Plug 'whatyouhide/vim-textobj-erb'
+
+Plug 'mattn/emmet-vim'
+Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'junegunn/vim-easy-align'
+Plug 'Rename2'
+Plug 'mmozuras/vim-github-comment'
+Plug 'indentLine.vim'
+Plug 'matchit.zip'
+Plug 'ecomba/vim-ruby-refactoring'
+Plug 'wipeout'
+Plug 'tpope/vim-commentary'
+Plug 'pipe2eval'
+Plug 'textobj-indent'
+Plug 'dbext.vim'
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'AndrewRadev/switch.vim'
+Plug 'KabbAmine/zeavim.vim'
+Plug 't9md/vim-chef'
+Plug 'maxbrunsfeld/vim-yankstack'
+Plug 'benekastah/neomake'
+Plug 'floobits/floobits-neovim'
+
+" VimOS fun
+Plug 'vim-hackernews'
+
+call plug#end()
+
+""""""""""""""""
+"""" My options
+""""""""""""""""
+set nocompatible
+set backspace=indent,eol,start
+set backup
+set noswapfile
+set undofile
+set history=50		" keep 50 lines of command line history
+set showcmd		" display incomplete commands
+set incsearch		" do incremental searching
+set ruler		" show the cursor position all the time
+set wildmenu
+set wildmode=list:longest,full
+set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.pyc,*.class,.svn,*.gem
+set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
+set wildignore+=*.jpg,*.png,*.gif,*.avi,*.wmv,*.ogg,*.mp3,*.mov
+set wildignore+=*/vendor/cache/*,*/.sass-cache/*,*/node_modules/*,*/bower_components/*
+set wildignore+=*.swp,*~,._*
+set number
+set shiftround
+set shiftwidth=2
+set laststatus=2        " needed by Airline
+set noshowmode          " as above
+set smartcase
+set scrolloff=5
+set backupdir=~/.vim/tmp,.
+set directory=~/.vim/swp,.
+set undodir=~/.vim/undo,.
+set expandtab         " Expand tabs to spaces
+set tabstop=4
+set exrc                " Per directory vimrc
+set secure
+set ignorecase          " Make command autocompletion case insensitive
+set relativenumber
+set gdefault            " Let's make global changing default
+set autowriteall
+
+""""""""""""""""
+"""" A few different things
+""""""""""""""""
+
+" Don't use Ex mode, use Q for formatting
+map Q g
+
+" In many terminal emulators the mouse works just fine, thus enable it.
+if has('mouse')
+  set mouse=a
+endif
+
+" Switch syntax highlighting on, when the terminal has colors
+" Also switch on highlighting the last used search pattern.
+if &t_Co > 2 || has("gui_running")
+  syntax on
+  set hlsearch
+endif
+
+ """Only do this part when compiled with support for autocommands.
+if has("autocmd")
+
+  " Enable file type detection.
+  " Use the default filetype settings, so that mail gets 'tw' set to 72,
+  " 'cindent' is on in C files, etc.
+  " Also load indent files, to automatically do language-dependent indenting.
+  filetype plugin indent on
+
+  " Put these in an autocmd group, so that we can delete them easily.
+  augroup vimrcEx
+  au!
+
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=78
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+  " (happens when dropping a file on gvim).
+  " Also don't do it when the mark is in the first line, that is the default
+  " position when opening a file.
+  autocmd BufReadPost *
+    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+
+  augroup END
+else
+  set autoindent		" always set autoindenting on
+endif " has("autocmd")
+
+" Convenient command to see the difference between the current buffer and the
+" file it was loaded from, thus the changes you made.
+" Only define it when not defined already.
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
+			  \ | wincmd p | diffthis
+endif
+
+" Colorscheme
+if has('gui_running')
+  syntax enable
+  set background=dark
+  colorscheme solarized
+endif
+
+""""""""""""""""
+"""""""" Maps
+""""""""""""""""
+nnoremap ; :
+vnoremap ; :
+let mapleader=","
+
+" Save even if you don't have permissions
+cmap w!! %!sudo tee > /dev/null %
+
+" Display hidden characters
+" nmap <leader>s :set nolist!<CR>
+
+" Arrows? No. Just No. Not now.
+nnoremap <Left> <C-w>h
+nnoremap <Right> <C-w>l
+nnoremap <Up> <C-w>k
+nnoremap <Down> <C-w>j
+inoremap <up> <nop>
+inoremap <down> <nop>
+inoremap <left> <nop>
+inoremap <right> <nop>
+
+nnoremap gj J
+nnoremap J <C-D>
+nnoremap K <C-U>
+inoremap jj <ESC>
+nnoremap <leader>v <C-w>v<C-w>l
+
+" Redrawing the screen also removes the hightlight from search
+noremap <silent> <C-l> :nohls<CR><C-l>
+
+noremap [z :tabp<CR>
+noremap ]z :tabn<CR>
+
+" Look of invisible characters
+set list
+set listchars=tab:▸\ ,eol:¬
+
+" Insert just one character
+nnoremap s i_<ESC>r
+nnoremap S a_<ESC>r
+
+nnoremap Q @q
+
+nnoremap <leader>bls :ls<CR>:b<Space>
+nnoremap <leader>cy "*y
+
+command JoinLines execute "g/^$/,/./-j"
+
+nnoremap <leader>w :wa<CR>
+
+""""""""""""""""
+""""""" Plugin settings
+""""""""""""""""
+""" NerdTree
+nnoremap <F2> :NERDTreeToggle<CR>
+inoremap <F2> :NERDTreeToggle<CR>
+
+""" Taglist
+nnoremap <F3> :TlistToggle<CR>
+
+""" Switch.vim
+nnoremap gs :Switch<CR>
+
+""" Closetag.vim
+let g:closetag_filenames = "*.html,*.xml,*.html.erb"
+
+""" Pipe2Eval
+let g:pipe2eval_map_key = '<Leader>el'
+
+""" Fugitive
+nnoremap <leader>gtc :Gcommit<CR>
+nnoremap <leader>gtp :Gpush<CR>
+nnoremap <leader>gtu :Gpull<CR>
+nnoremap <leader>gtd :Gdiff<CR>
+nnoremap <leader>gtb :Gblame<CR>
+
+""" Vim-tags
+" mostly obsolete now, smartgf is cooler than simple CTags
+" let g:vim_tags_auto_generate = 1
+" let g:vim_tags_use_vim_dispatch = 1
+
+""" Syntastic
+" let g:syntastic_ruby_checkers = ['mri']
+" let g:syntastic_auto_jump = 1
+
+""" Neomake
+autocmd! BufWritePost * Neomake
+let g:neomake_coffeescript_enabled_markers = ['coffeelint']
+let g:neomake_ruby_enabled_markers = ['rubocop']
+let g:neomake_sh_enabled_markers = ['shellcheck']
+let g:neomake_zsh_enabled_markers = ['shellcheck']
+let g:neomake_c_enabled_markers = ['clang']
+let g:neomake_cpp_enabled_markers = ['clang++']
+
+""" CamelCase
+map <S-W> <Plug>CamelCaseMotion_w
+map <S-B> <Plug>CamelCaseMotion_b
+map <S-E> <Plug>CamelCaseMotion_e
+
+""" NerdTree
+" Run Nerdtree on startup
+" autocmd vimenter * if !argc() | NERDTree | endif
+" If the only window left when quitting is NERDTree, then quit whole vim
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+""" Gist plugin settings
+let g:gist_detect_filetype = 1
+let g:gist_open_browser_after_post = 1
+let g:gist_post_private = 1
+let g:gist_browser_command = 'firefox %URL%'
+
+""" Signify plugin settings
+let g:signify_vcs_list = [ 'git', 'hg' ]
+" let g:signify_line_highlight = 1
+
+""" Easy Align
+vnoremap <leader>a= :EasyAlign =<CR>
+vnoremap <leader>asp :EasyAlign *\ <CR>
+vnoremap <leader>as1 :EasyAlign\ <CR>
+
+""" Ack
+let g:ack_autofold_results = 0
+let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case"
+
+" CtrlP
+let g:ctrlp_extensions = ['funky']
+let g:ctrlp_funky_syntax_highlight = 1
+nmap <Leader>pp :CtrlP<CR>
+nmap <Leader>pb :CtrlPBuffer<CR>
+nmap <Leader>pf :CtrlPFunky<CR>
+nmap <Leader>pc :CtrlPCmdPalette<CR>
+nmap <Leader>pm :CtrlPMRUFiles<CR>
+nmap <leader>pr :ClearCtrlPCache<CR>
+
+""" Github Comment
+let g:github_user='swistak35'
+let g:github_open_browser=1
+
+""" CoVIM
+" python import sys; sys.path.append("/usr/lib/python3.4/site-packages")
+
+""" Zeal
+let g:zv_zeal_directory = "/usr/bin/zeal"
+let g:zv_added_files_type = {
+            \ 'rb': 'Ruby'
+            \ }
+
+""" Other
+cabbrev help tab help
+
+""" Incsearch.vim
+set hlsearch
+let g:incsearch#magic = '\v'
+let g:incsearch#auto_nohlsearch = 1
+map / <Plug>(incsearch-forward)
+map ? <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+map *  <Plug>(incsearch-nohl-*)
+map #  <Plug>(incsearch-nohl-#)
+map g* <Plug>(incsearch-nohl-g*)
+map g# <Plug>(incsearch-nohl-g#)
+
+""" Smartgf
+let g:smartgf_create_default_mappings = 0
+let g:smartgf_auto_refresh_ctags = 0
+let g:smartgf_enable_gems_search = 1
+nmap gu <Plug>(smartgf-search)
+vmap gu <Plug>(smartgf-search)
+nmap gU <Plug>(smartgf-search-unfiltered)
+vmap gU <Plug>(smartgf-search-unfiltered)
+map <F4> :SmargfRefreshTags<CR>
+autocmd! BufWritePost * SmargfRefreshTags
+
+""" vim-symbols-strings
+" let g:symbolise_strings_map_keys = 0
+" nnoremap <silent> <Leader>sy :set opfunc=symbolsstrings#SymboliseStrings<CR>g@
+" nnoremap <silent> <Leader>st :set opfunc=symbolsstrings#StringifySymbols<CR>g@p
+
+""" Yankstack
+nmap [w <Plug>yankstack_substitute_older_paste
+nmap ]w <Plug>yankstack_substitute_newer_paste
+
+""""""""""""""""
+"""""""" Other functions
+""""""""""""""""
+
+" This allows for change paste motion cp{motion}
+nmap <silent> cp :set opfunc=ChangePaste<CR>g@
+function! ChangePaste(type, ...)
+    silent exe "normal! `[v`]\"_c"
+    silent exe "normal! p"
+endfunction
+
+" Create absent directories on edit
+function s:MkNonExDir(file, buf)
+  if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+    let dir=fnamemodify(a:file, ':h')
+    if !isdirectory(dir)
+      call mkdir(dir, 'p')
+    endif
+  endif
+endfunction
+augroup BWCCreateDir
+  autocmd!
+  autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+augroup END
+
+" Remove trailing spaces after save
+au BufWritePre *.json,*.rb,*.py,*.c,*.h,*.feature,*.conf,*rc,README,CHANGELOG,README.* :%s/\s\+$//e
+
+" Because self is not python keyword stuff
+syn keyword Keyword self
+
