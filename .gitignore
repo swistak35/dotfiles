@@ -1,6 +1,8 @@
 vim/eclim
 vim/bundle
-zsh/cache
 vim/swp/*
 vim/tmp/*
 vim/undo/*
+vim/plugged/*
+
+zsh/cache
