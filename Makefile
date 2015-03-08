@@ -29,3 +29,7 @@ install-other:
 	ln -s `pwd`/other/ghci ~/.ghci
 	rm -f ~/.ocamlinit
 	ln -s `pwd`/other/ocamlinit ~/.ocamlinit
+
+install-nvim:
+	rm -f ~/.nvimrc
+	ln -s `pwd`/nvim/nvimrc ~/.nvimrc
