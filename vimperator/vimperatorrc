@@ -1,0 +1,23 @@
+"3.8.2 (created: 2014/02/13 23:52:43)
+
+map , :
+map = :js gBrowser.tabContainer.advanceSelectedTab(1, true)<CR>
+map -- - :js gBrowser.tabContainer.advanceSelectedTab(-1, true)<CR>
+map _ -------
+map + =======
+map e =
+map s -
+map E +
+map S _
+map <F2> :buffer<Space>
+
+map gs :js if (gBrowser.isCollapsedStack(gBrowser.mCurrentTab)) { gBrowser.expandStack(gBrowser.mCurrentTab); } else { gBrowser.collapseStack(gBrowser.mCurrentTab); }<CR>
+
+
+" Smooziee config
+let g:smooziee_scroll_amount=100
+let g:smooziee_scroll_interval=12
+
+source! /home/swistak35/.vimperatorrc.local
+
+" vim: set ft=vimperator:

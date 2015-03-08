@@ -1,13 +1,11 @@
-install: install-vim install-zsh install-git install-bin install-other
+install: install-vim install-zsh install-git install-bin install-other install-nvim
 
 install-vim:
 	rm -rf ~/.vim ~/.vimrc
 	ln -s `pwd`/vim ~/.vim
 	ln -s ~/.vim/vimrc ~/.vimrc
-	# git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-	vim +PluginInstall +qall
-	[ -d ~/.eclim ] && ln -s ~/.eclim ~/.vim/eclim
-	true
+	vim +PlugInstall +qall
+	# [ -d ~/.eclim ] && ln -s ~/.eclim ~/.vim/eclim
 
 install-zsh:
 	rm -rf ~/.zsh ~/.zshrc ~/.oh-my-zsh
@@ -29,7 +27,20 @@ install-other:
 	ln -s `pwd`/other/ghci ~/.ghci
 	rm -f ~/.ocamlinit
 	ln -s `pwd`/other/ocamlinit ~/.ocamlinit
+	rm -f ~/.tmux.conf
+	ln -s `pwd`/other/tmux.conf ~/.tmux.conf
 
 install-nvim:
-	rm -f ~/.nvimrc
-	ln -s `pwd`/nvim/nvimrc ~/.nvimrc
+	rm -rf ~/.nvimrc ~/.nvim
+	ln -s `pwd`/nvim ~/.nvim
+	ln -s ~/.nvim/nvimrc ~/.nvimrc
+	nvim +PlugInstall +qall
+
+install-vifm:
+	rm -rf ~/.vifm
+	ln -s `pwd`/vifm ~/.vifm
+
+install-vimperator:
+	rm -rf ~/.vimperator ~/.vimperatorrc
+	ln -s `pwd`/vimperator ~/.vimperator
+	ln -s ~/.vimperator/vimperatorrc ~/.vimperatorrc

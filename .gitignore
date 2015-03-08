@@ -5,4 +5,9 @@ vim/tmp/*
 vim/undo/*
 vim/plugged/*
 
+nvim/swp/*
+nvim/tmp/*
+nvim/undo/*
+nvim/plugged/*
+
 zsh/cache

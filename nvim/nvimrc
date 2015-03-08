@@ -34,6 +34,7 @@ Plug 'kchmck/vim-coffee-script'
 Plug 'tpope/vim-haml'
 Plug 'tpope/vim-cucumber'
 Plug 'hail2u/vim-css3-syntax'
+Plug 'elixir-lang/vim-elixir'
 
 " Color schemes
 Plug 'altercation/vim-colors-solarized'
