@@ -2,4 +2,5 @@
 # amixer sset 'Speaker' 100%
 # amixer sset 'Headphone' 100%
 # amixer sset 'Master' 55
+ponymix -d 2 set-volume 35
 radio

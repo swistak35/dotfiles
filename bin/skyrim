@@ -1,0 +1,2 @@
+#!/bin/sh
+wine "/media/magazyn/Program Files (x86)/Steam/steamapps/common/Skyrim/skse_loader.exe"

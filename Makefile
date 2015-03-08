@@ -4,13 +4,13 @@ install-vim:
 	rm -rf ~/.vim ~/.vimrc
 	ln -s `pwd`/vim ~/.vim
 	ln -s ~/.vim/vimrc ~/.vimrc
-	git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+	# git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 	vim +PluginInstall +qall
 	[ -d ~/.eclim ] && ln -s ~/.eclim ~/.vim/eclim
 	true
 
 install-zsh:
-	rm -f ~/.zsh ~/.zshrc ~/.oh-my-zsh
+	rm -rf ~/.zsh ~/.zshrc ~/.oh-my-zsh
 	ln -s `pwd`/zsh ~/.zsh
 	ln -s ~/.zsh/zshrc ~/.zshrc
 	git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
@@ -21,7 +21,7 @@ install-git:
 	ln -s `pwd`/git/gitconfig ~/.gitconfig
 
 install-bin:
-	rm -f ~/.bin
+	rm -rf ~/.bin
 	ln -s `pwd`/bin ~/.bin
 
 install-other:

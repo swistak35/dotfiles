@@ -9,9 +9,9 @@ else
 end
 
 $versions = {
-  "tbc" 	=> "primusrun wine \"/media/magazyn/Program Files/World of Warcraft 2.4.3/Wow.exe\"",
-  "wotlk" 	=> "primusrun wine \"/media/magazyn/Program Files/World of Warcraft 3.3.5a/Wow.exe\"",
-  "vanilla" 	=> "primusrun wine \"/media/magazyn/Program Files/World of Warcraft 1.12.1/Wow.exe\""
+  "tbc" 	=> "wine \"/media/magazyn/Program Files/World of Warcraft 2.4.3/Wow.exe\"",
+  "wotlk" 	=> "wine \"/media/magazyn/Program Files/World of Warcraft 3.3.5a/Wow.exe\"",
+  "vanilla" 	=> "wine \"/media/magazyn/Program Files/World of Warcraft 1.12.1/Wow.exe\""
 }
 
 $cmd = $versions.keys.include?(ARGV[0]) ? ARGV[0] : "tbc"

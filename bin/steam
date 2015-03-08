@@ -1,4 +1,4 @@
 #!/bin/sh
 echo "Uruchamiam steama"
 # optirun /usr/bin/steam
-STEAM_FRAME_FORCE_CLOSE=1 primusrun /usr/bin/steam
+STEAM_FRAME_FORCE_CLOSE=1 /usr/bin/steam
