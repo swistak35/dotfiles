@@ -61,6 +61,8 @@ Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-unimpaired'
 " taglist bound to F3
 Plug 'taglist.vim'
+" Some plugins need it, and then they can run tasks in background
+Plug 'tpope/vim-dispatch'
 
 " Text objects
 Plug 'bkad/CamelCaseMotion'
@@ -71,6 +73,25 @@ Plug 'whatyouhide/vim-textobj-xmlattr'
 Plug 'lucapette/vim-textobj-underscore'
 Plug 'mattn/vim-textobj-url'
 Plug 'whatyouhide/vim-textobj-erb'
+
+" Disables some features when opening very large files ( > 100 MB )
+Plug 'LargeFile'
+
+" Shortcut for changing do..end blocks to {..}
+" Plug 'jgdavey/vim-blockle'
+
+" Extensions (very experimental!) to show commit msgs in fugitive
+Plug 'tommcdo/vim-fugitive-blame-ext'
+
+" Running Ruby specs
+Plug 'gabebw/vim-spec-runner'
+
+" Run cmds in tmux
+Plug 'christoomey/vim-tmux-runner'
+
+" Deleting buffers in CtrlP
+" Plug 'd11wtq/ctrlp_bdelete.vim'
+" Doesn't really work
 
 Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-abolish'
@@ -388,6 +409,18 @@ autocmd! BufWritePost * SmargfRefreshTags
 """ Yankstack
 nmap [w <Plug>yankstack_substitute_older_paste
 nmap ]w <Plug>yankstack_substitute_newer_paste
+
+""" Vim-Tmux-Runner
+let g:VtrPercentage = 15
+let g:VtrInitialCommand = "ls"
+
+""" vim-spec-runner
+let g:spec_runner_dispatcher = 'call VtrSendCommand("{command}")'
+
+""" ctrlp_delete
+" let g:ctrlp_bdelete_map = '<c-_>'
+" execute "nnoremap <buffer> <silent> ".g:ctrlp_bdelete_map." :call <sid>DeleteMarkedBuffers()<cr>"
+" call ctrlp_bdelete#init()
 
 """"""""""""""""
 """""""" Other functions
