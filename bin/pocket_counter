@@ -98,6 +98,22 @@ class PocketCounter
     File.exists?(ConfigFile)
   end
 
+  def pretty_time_distance(seconds)
+    minutes = seconds / 60
+    seconds -= 60 * minutes
+    hours = minutes / 60
+    minutes -= 60 * hours
+    days = hours / 24
+    hours -= 24 * days
+
+    res = []
+    res << "#{days} days" unless days.zero?
+    res << "#{hours} hours" unless hours.zero?
+    res << "#{minutes} minutes" unless minutes.zero?
+    res << "#{seconds} seconds" if days.zero? && hours.zero?
+    res.join(", ")
+  end
+
   def run
     results = @api.get_results
     puts "Elements count: #{results['list'].count}"
@@ -107,7 +123,7 @@ class PocketCounter
     end
     puts "Words count: #{words}"
     seconds = words * 60 / 250
-    puts "Estimated reading time: #{seconds} seconds, which is #{distance_of_time_in_words(seconds)}"
+    puts "Estimated reading time: #{seconds} seconds, which is #{pretty_time_distance(seconds)}"
     puts "Good luck, #{@api.username}."
     if ENV['POCKET_LIST'].present?
       results["list"].sort_by do |id, obj|
