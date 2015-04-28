@@ -54,11 +54,13 @@ alias muo="/home/swistak35/Projekty/opensource/muon/bin/muon2"
 alias fsum="paste -sd+ | bc"
 alias lst="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'"
 alias be='bundle exec'
+alias jsonify='ruby -rjson -e "puts JSON.pretty_generate(JSON.parse(STDIN.read))"'
+alias fix_sudo_display='xhost + > /dev/null'
 
 # Todo
 alias todo="/media/magazyn/Dropbox/Private/todo/todo.sh"
 alias td='todo'
-alias dly='todo -d /home/swistak35/.daily/todo.cfg'
+alias dly='todo -d /home/swistak36/.daily/todo.cfg'
 
 # Tmux
 alias tmk="tmux kill-session -t"
@@ -85,6 +87,8 @@ alias g='git'
 alias gc='git commit -v'
 alias gcm='git commit -vm'
 alias gca='git commit --amend --reuse-message=HEAD'
+alias gch='git cherry-pick'
+alias gchn='git cherry-pick -n'
 alias ga='git add'
 alias gp='git push'
 alias gpom='git push origin master'
