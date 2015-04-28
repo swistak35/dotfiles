@@ -427,6 +427,7 @@ let g:spec_runner_dispatcher = 'call VtrSendCommand("{command}")'
 " execute "nnoremap <buffer> <silent> ".g:ctrlp_bdelete_map." :call <sid>DeleteMarkedBuffers()<cr>"
 " call ctrlp_bdelete#init()
 
+""" Neocomplete
 " let g:neocomplete#sources#omni#input_patterns = {
 "   \   "ruby" : '[^. *\t]\.\w*\|\h\w*::',
 "   \}
