@@ -29,6 +29,8 @@ install-other:
 	ln -s `pwd`/other/ocamlinit ~/.ocamlinit
 	rm -f ~/.tmux.conf
 	ln -s `pwd`/other/tmux.conf ~/.tmux.conf
+	rm -f ~/.gemrc
+	ln -s `pwd`/other/gemrc ~/.gemrc
 
 install-nvim:
 	rm -rf ~/.nvimrc ~/.nvim
