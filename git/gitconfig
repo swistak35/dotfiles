@@ -39,3 +39,5 @@
 	browser = firefox
 [branch]
 	autosetuprebase = always
+[diff]
+	algorithm = patience

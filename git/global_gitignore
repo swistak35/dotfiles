@@ -1,5 +1,15 @@
 .muon/*
+
+# Vim plugin
 .smartgf_tags
 .smartgf_tags_date
+
+# rbenv
 .ruby-version
+
+# zeus
 zeus.json
+custom_plan.rb
+
+# KDE file manager
+.directory
