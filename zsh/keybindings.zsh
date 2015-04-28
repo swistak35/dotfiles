@@ -30,9 +30,14 @@ bindkey -e
 	[[ -n "${key[Right]}"    ]]  && bindkey  "${key[Right]}"    forward-char
 	bindkey "^[[1;5D" backward-word
 	bindkey "^[[1;5C" forward-word
-    	bindkey "^D" backward-kill-word
 	bindkey "^[[1;5A" up-line-or-search
 	bindkey "^[[1;5B" down-line-or-search
+
+	# bindkey "^[[D" backward-word
+	# bindkey "^[[C" forward-word
+    	bindkey "^D" backward-kill-word
+	# bindkey "^[[A" up-line-or-search
+	# bindkey "^[[5B" down-line-or-search
 
 	# Finally, make sure the terminal is in application mode, when zle is
 	# active. Only then are the values from $terminfo valid.
