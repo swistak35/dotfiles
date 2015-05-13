@@ -56,6 +56,7 @@ alias lst="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/
 alias be='bundle exec'
 alias jsonify='ruby -rjson -e "puts JSON.pretty_generate(JSON.parse(STDIN.read))"'
 alias fix_sudo_display='xhost + > /dev/null'
+alias idris="/opt/idris/.cabal-sandbox/bin/idris"
 
 # Todo
 alias todo="/media/magazyn/Dropbox/Private/todo/todo.sh"
@@ -66,6 +67,7 @@ alias dly='todo -d /home/swistak36/.daily/todo.cfg'
 alias tmk="tmux kill-session -t"
 alias tms="mux start"
 alias tml="tmux list-sessions"
+alias tma="tmux attach-session"
 
 
 # Suffix aliases
