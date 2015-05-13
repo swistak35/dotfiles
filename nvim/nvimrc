@@ -3,9 +3,8 @@ call plug#begin('~/.nvim/plugged')
 
 " There's plugin for that
 " Plug 'gmarik/Vundle.vim'
-" Plug 'scrooloose/syntastic'
+Plug 'scrooloose/syntastic'
 " Plug 'tpope/vim-markdown'
-" Plug 'jimmyhchan/dustjs.vim'
 " Plug 'FredKSchott/CoVim'
 " Plug 'szw/vim-tags'
 " Plug 'rorymckinley/vim-symbols-strings'
@@ -21,7 +20,7 @@ Plug 'tpope/vim-rails'
 Plug 'Valloric/YouCompleteMe', { 'do': './install.sh' }
 Plug 'netrw.vim'
 Plug 'tpope/vim-fugitive'
-Plug 'tacahiroy/ctrlp-funky'
+" Plug 'tacahiroy/ctrlp-funky'
 Plug 'fisadev/vim-ctrlp-cmdpalette'
 Plug 'mileszs/ack.vim'
 Plug 'gorkunov/smartgf.vim'
@@ -35,6 +34,8 @@ Plug 'tpope/vim-haml'
 Plug 'tpope/vim-cucumber'
 Plug 'hail2u/vim-css3-syntax'
 Plug 'elixir-lang/vim-elixir'
+Plug 'idris-hackers/idris-vim'
+Plug 'cypok/vim-sml'
 
 " Color schemes
 Plug 'altercation/vim-colors-solarized'
@@ -63,6 +64,8 @@ Plug 'tpope/vim-unimpaired'
 Plug 'taglist.vim'
 " Some plugins need it, and then they can run tasks in background
 Plug 'tpope/vim-dispatch'
+
+Plug 'bruno-/vim-man'
 
 " Text objects
 Plug 'bkad/CamelCaseMotion'
@@ -117,7 +120,7 @@ Plug 'AndrewRadev/switch.vim'
 Plug 'KabbAmine/zeavim.vim'
 Plug 't9md/vim-chef'
 Plug 'maxbrunsfeld/vim-yankstack'
-Plug 'benekastah/neomake'
+" Plug 'benekastah/neomake'
 Plug 'floobits/floobits-neovim'
 
 " VimOS fun
@@ -235,6 +238,7 @@ endif
 nnoremap ; :
 vnoremap ; :
 let mapleader=","
+let maplocalleader="\\"
 
 " Save even if you don't have permissions
 cmap w!! %!sudo tee > /dev/null %
@@ -313,17 +317,18 @@ nnoremap <leader>gtb :Gblame<CR>
 " let g:vim_tags_use_vim_dispatch = 1
 
 """ Syntastic
-" let g:syntastic_ruby_checkers = ['mri']
-" let g:syntastic_auto_jump = 1
+let g:syntastic_ruby_checkers = ['rubocop']
+" Alternative: 'mri'
+let g:syntastic_auto_jump = 1
 
 """ Neomake
-autocmd! BufWritePost * Neomake
-let g:neomake_coffeescript_enabled_markers = ['coffeelint']
-let g:neomake_ruby_enabled_markers = ['rubocop']
-let g:neomake_sh_enabled_markers = ['shellcheck']
-let g:neomake_zsh_enabled_markers = ['shellcheck']
-let g:neomake_c_enabled_markers = ['clang']
-let g:neomake_cpp_enabled_markers = ['clang++']
+" autocmd! BufWritePost * Neomake
+" let g:neomake_coffeescript_enabled_markers = ['coffeelint']
+" let g:neomake_ruby_enabled_markers = ['rubocop']
+" let g:neomake_sh_enabled_markers = ['shellcheck']
+" let g:neomake_zsh_enabled_markers = ['shellcheck']
+" let g:neomake_c_enabled_markers = ['clang']
+" let g:neomake_cpp_enabled_markers = ['clang++']
 
 """ CamelCase
 map <S-W> <Plug>CamelCaseMotion_w
@@ -356,11 +361,11 @@ let g:ack_autofold_results = 0
 let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case"
 
 " CtrlP
-let g:ctrlp_extensions = ['funky']
-let g:ctrlp_funky_syntax_highlight = 1
+" let g:ctrlp_extensions = ['funky']
+" let g:ctrlp_funky_syntax_highlight = 1
 nmap <Leader>pp :CtrlP<CR>
 nmap <Leader>pb :CtrlPBuffer<CR>
-nmap <Leader>pf :CtrlPFunky<CR>
+" nmap <Leader>pf :CtrlPFunky<CR>
 nmap <Leader>pc :CtrlPCmdPalette<CR>
 nmap <Leader>pm :CtrlPMRUFiles<CR>
 nmap <leader>pr :ClearCtrlPCache<CR>
@@ -377,6 +382,9 @@ let g:zv_zeal_directory = "/usr/bin/zeal"
 let g:zv_added_files_type = {
             \ 'rb': 'Ruby'
             \ }
+
+""""""""" vim-man
+" map <leader>
 
 """ Other
 cabbrev help tab help
@@ -417,10 +425,14 @@ nmap ]w <Plug>yankstack_substitute_newer_paste
 
 """ Vim-Tmux-Runner
 let g:VtrPercentage = 15
+let g:VtrClearEmptyLines = 1
 let g:VtrInitialCommand = "ls"
 
 """ vim-spec-runner
-let g:spec_runner_dispatcher = 'call VtrSendCommand("{command}")'
+let g:spec_runner_dispatcher = 'call VtrSendCommand("be {command}")'
+map <localleader>sc <Plug>RunCurrentSpecFile
+map <localleader>sf <Plug>RunFocusedSpec
+map <localleader>sr <Plug>RunMostRecentSpec
 
 """ ctrlp_delete
 " let g:ctrlp_bdelete_map = '<c-_>'
