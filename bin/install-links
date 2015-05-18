@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+DROPBOX_PATH = "/media/magazyn/Dropbox"
+HOME_DIR = "/home/swistak35"
+
+DRY_RUN = false
+
+Links = [
+  "Dokumenty",
+  "Obrazy"
+]
+
+Links.each do |link|
+  cmd1 = "rm #{File.join(HOME_DIR, link)}"
+  cmd2 = "ln -s #{File.join(DROPBOX_PATH, link)} #{File.join(HOME_DIR, link)}"
+  if DRY_RUN
+    puts cmd1
+    puts cmd2
+  else
+    system(cmd1)
+    system(cmd2)
+  end
+end
