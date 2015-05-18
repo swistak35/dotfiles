@@ -26,3 +26,21 @@ repeatit() {
     $@ && return
   done
 }
+
+switch-term-color() {
+  arg="${1:-colors=Solarized}"
+  if [[ -z "$TMUX" ]]
+  then
+    konsoleprofile "$arg"
+  else
+    printf '\033Ptmux;\033\033]50;%s\007\033\\' "$arg"
+  fi
+}
+
+switch-theme-night() {
+  switch-term-color "colors=Solarized"
+}
+
+switch-theme-day() {
+  switch-term-color "colors=SolarizedLight"
+}

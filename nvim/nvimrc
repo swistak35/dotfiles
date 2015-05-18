@@ -39,6 +39,7 @@ Plug 'cypok/vim-sml'
 
 " Color schemes
 Plug 'altercation/vim-colors-solarized'
+Plug 'atelierbram/vim-colors_atelier-schemes'
 
 " Highlight colors in CSS files
 Plug 'ap/vim-css-color'
@@ -64,6 +65,8 @@ Plug 'tpope/vim-unimpaired'
 Plug 'taglist.vim'
 " Some plugins need it, and then they can run tasks in background
 Plug 'tpope/vim-dispatch'
+" Changing theme between day & night
+Plug 'jonstoler/werewolf.vim'
 
 Plug 'bruno-/vim-man'
 
@@ -225,12 +228,15 @@ if !exists(":DiffOrig")
 			  \ | wincmd p | diffthis
 endif
 
+syntax enable
+set background=dark
 " Colorscheme
-if has('gui_running')
-  syntax enable
-  set background=dark
+" if has('gui_running')
   colorscheme solarized
-endif
+" endif
+
+" let g:solarized_termcolors=16
+" let g:solarized_termtrans=1
 
 """"""""""""""""
 """""""" Maps
