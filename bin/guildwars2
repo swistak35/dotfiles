@@ -1,0 +1,2 @@
+#!/bin/sh
+wine "/media/magazyn/Program Files/Guild Wars 2/Gw2.exe"

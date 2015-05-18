@@ -57,6 +57,7 @@ alias be='bundle exec'
 alias jsonify='ruby -rjson -e "puts JSON.pretty_generate(JSON.parse(STDIN.read))"'
 alias fix_sudo_display='xhost + > /dev/null'
 alias idris="/opt/idris/.cabal-sandbox/bin/idris"
+alias rm='rm -I'
 
 # Todo
 alias todo="/media/magazyn/Dropbox/Private/todo/todo.sh"
@@ -89,6 +90,7 @@ alias g='git'
 alias gc='git commit -v'
 alias gcm='git commit -vm'
 alias gca='git commit --amend --reuse-message=HEAD'
+alias gcup='git commit -am"up"'
 alias gch='git cherry-pick'
 alias gchn='git cherry-pick -n'
 alias ga='git add'

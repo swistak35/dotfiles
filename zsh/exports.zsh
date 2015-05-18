@@ -1,9 +1,10 @@
+export PATH=/opt/chefdk/bin:$PATH
+export PATH=/usr/lib/smlnj/bin:$PATH
 export PATH=$HOME/.bin:$PATH
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/.rvm/bin:$PATH
 export PATH=$HOME/.rbenv/bin:$PATH
 export PATH=/usr/local/bin:$PATH
-export PATH=/opt/chefdk/bin:$PATH
 export PATH=/home/swistak35/Pobrane/activator:$PATH
 # export PATH=/opt/anaconda/bin:$PATH
 export LESS='-FRSX -i-P%f (%i/%m) Line %lt/%L'
