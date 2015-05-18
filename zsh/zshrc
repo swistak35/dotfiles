@@ -72,7 +72,10 @@ function switch_term_colors() {
 		switch-theme-day
 	fi
 }
-add-zsh-hook periodic switch_term_colors
+if (( $+commands[konsoleprofile] ))
+then
+	add-zsh-hook periodic switch_term_colors
+fi
 
 # Auto cd in directories
 setopt autocd
