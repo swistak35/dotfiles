@@ -63,7 +63,6 @@ source ~/.zsh/directories.zsh
 autoload zmv
 
 autoload -U add-zsh-hook
-export PERIOD=60
 function switch_term_colors() {
 	if [[ ($(date +%H) -gt 21) || ($(date +%H) -lt 6) ]]
 	then
@@ -74,7 +73,7 @@ function switch_term_colors() {
 }
 if (( $+commands[konsoleprofile] ))
 then
-	add-zsh-hook periodic switch_term_colors
+	add-zsh-hook preexec switch_term_colors
 fi
 
 # Auto cd in directories

@@ -66,7 +66,10 @@ Plug 'taglist.vim'
 " Some plugins need it, and then they can run tasks in background
 Plug 'tpope/vim-dispatch'
 " Changing theme between day & night
-Plug 'jonstoler/werewolf.vim'
+Plug 'swistak35/bgshift.vim'
+
+" For task management
+Plug 'farseer90718/vim-taskwarrior'
 
 Plug 'bruno-/vim-man'
 
