@@ -64,7 +64,7 @@ autoload zmv
 
 autoload -U add-zsh-hook
 function switch_term_colors() {
-	if [[ ($(date +%H) -gt 21) || ($(date +%H) -lt 6) ]]
+	if [[ ($(date +%H) -gt 20) || ($(date +%H) -lt 6) ]]
 	then
 		switch-theme-night
 	else

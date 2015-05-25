@@ -37,9 +37,11 @@ Plug 'elixir-lang/vim-elixir'
 Plug 'idris-hackers/idris-vim'
 Plug 'cypok/vim-sml'
 
-" Color schemes
+""" Color schemes
+" Solarized
 Plug 'altercation/vim-colors-solarized'
-Plug 'atelierbram/vim-colors_atelier-schemes'
+" PaperColor
+Plug 'NLKNguyen/papercolor-theme'
 
 " Highlight colors in CSS files
 Plug 'ap/vim-css-color'
@@ -270,6 +272,7 @@ nnoremap J <C-D>
 nnoremap K <C-U>
 inoremap jj <ESC>
 nnoremap <leader>v <C-w>v<C-w>l
+nnoremap <leader>h <C-w>s<C-w>j
 
 " Redrawing the screen also removes the hightlight from search
 noremap <silent> <C-l> :nohls<CR><C-l>
@@ -299,10 +302,12 @@ nnoremap <leader>w :wa<CR>
 """"""""""""""""
 """ NerdTree
 nnoremap <F2> :NERDTreeToggle<CR>
-inoremap <F2> :NERDTreeToggle<CR>
 
 """ Taglist
 nnoremap <F3> :TlistToggle<CR>
+
+""" Pastemode
+nnoremap <F7> :set paste!<CR>
 
 """ Switch.vim
 nnoremap gs :Switch<CR>
