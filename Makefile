@@ -31,6 +31,8 @@ install-other:
 	ln -s `pwd`/other/tmux.conf ~/.tmux.conf
 	rm -f ~/.gemrc
 	ln -s `pwd`/other/gemrc ~/.gemrc
+	rm -f ~/.Xmodmap
+	ln -s `pwd`/other/Xmodmap ~/.Xmodmap
 
 install-nvim:
 	rm -rf ~/.nvimrc ~/.nvim
