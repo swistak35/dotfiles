@@ -59,6 +59,7 @@
 ; (gtk_accel_path "<Actions>/ThunarWindow/view-location-selector-pathbar" "")
 ; (gtk_accel_path "<Actions>/ThunarWindow/open-trash" "")
 ; (gtk_accel_path "<Actions>/ThunarActions/uca-action-1432301060759322-1" "")
+; (gtk_accel_path "<Actions>/ThunarActions/uca-action-1432640751965915-10" "")
 ; (gtk_accel_path "<Actions>/ThunarActions/uca-action-1432640966776219-11" "")
 ; (gtk_accel_path "<Actions>/ThunarStandardView/properties" "<Alt>Return")
 ; (gtk_accel_path "<Actions>/ThunarStandardView/delete" "")
