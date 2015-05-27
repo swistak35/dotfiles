@@ -267,7 +267,11 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 
-nnoremap gj J
+nnoremap gJ J
+nnoremap j gj
+nnoremap k gk
+nnoremap gj j
+nnoremap gk k
 nnoremap J <C-D>
 nnoremap K <C-U>
 inoremap jj <ESC>
