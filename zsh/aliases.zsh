@@ -67,8 +67,9 @@ alias dly='todo -d /home/swistak36/.daily/todo.cfg'
 # Tmux
 alias tmk="tmux kill-session -t"
 alias tms="mux start"
+alias tmn="tmux new-session -s"
 alias tml="tmux list-sessions"
-alias tma="tmux attach-session"
+alias tma="tmux attach-session -t"
 
 
 # Suffix aliases
