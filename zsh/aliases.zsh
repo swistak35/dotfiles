@@ -60,9 +60,8 @@ alias idris="/opt/idris/.cabal-sandbox/bin/idris"
 alias rm='rm -I'
 
 # Todo
-alias todo="/media/magazyn/Dropbox/Private/todo/todo.sh"
+alias todo="/home/swistak35/Dropbox/Private/todo/todo.sh"
 alias td='todo'
-alias dly='todo -d /home/swistak36/.daily/todo.cfg'
 
 # Tmux
 alias tmk="tmux kill-session -t"

@@ -45,6 +45,9 @@ d/media/magazyn
 d/media/magazyn/tmp
 	Lecture 25 - Clocks and Paxos-ilCpoREhqrM.en.srt
 35
+d/media/magazyn
+	../
+0
 d
 
 # Right window history (oldest to newest):
@@ -55,6 +58,7 @@ D
 
 # Command line history (oldest to newest):
 :wq
+:q
 
 # Search history (oldest to newest):
 
