@@ -1,4 +1,4 @@
-install: install-vim install-zsh install-git install-bin install-other install-nvim
+install: install-vim install-zsh install-git install-bin install-other install-nvim install-xfce
 
 install-vim:
 	rm -rf ~/.vim ~/.vimrc
@@ -33,6 +33,12 @@ install-other:
 	ln -s `pwd`/other/gemrc ~/.gemrc
 	rm -f ~/.Xmodmap
 	ln -s `pwd`/other/Xmodmap ~/.Xmodmap
+
+install-xfce:
+	rm -rf ~/.config/Thunar
+	ln -s `pwd`/thunar ~/.config/Thunar
+	rm -rf ~/.config/xfce4
+	ln -s `pwd`/xfce4 ~/.config/xfce4
 
 install-nvim:
 	rm -rf ~/.nvimrc ~/.nvim

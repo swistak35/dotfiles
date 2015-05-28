@@ -1,0 +1,90 @@
+<?xml encoding="UTF-8" version="1.0"?>
+<actions>
+<action>
+	<icon>utilities-terminal</icon>
+	<name>Otwórz w terminalu</name>
+	<unique-id>1432301060759322-1</unique-id>
+	<command>exo-open --working-directory %f --launch TerminalEmulator</command>
+	<description>Otwiera terminal w bieżącym położeniu</description>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+<action>
+	<icon>qnapi-128</icon>
+	<name>Pobierz napisy</name>
+	<unique-id>1432640279219266-5</unique-id>
+	<command>/usr/bin/qnapi %F</command>
+	<description></description>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>mp4 do mp3</name>
+	<unique-id>1432640415369327-9</unique-id>
+	<command>/home/swistak35/.bin/mp42mp3 %f</command>
+	<description></description>
+	<patterns>*.mp4</patterns>
+	<startup-notify/>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>kopiuj treść do schowka</name>
+	<unique-id>1432640751965915-10</unique-id>
+	<command>cat &quot;%F&quot; | xclip -i -selection clipboard</command>
+	<description></description>
+	<patterns>*</patterns>
+	<text-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>kopiuj ścieżkę do schowka</name>
+	<unique-id>1432640966776219-11</unique-id>
+	<command>echo -n %f | xclip -i</command>
+	<description></description>
+	<patterns>*</patterns>
+	<directories/>
+	<audio-files/>
+	<image-files/>
+	<other-files/>
+	<text-files/>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>konwertuj do PDF</name>
+	<unique-id>1432641035656134-12</unique-id>
+	<command>unoconv -f pdf %F</command>
+	<description></description>
+	<patterns>*.doc;*.docx;*.odt;*.odp;*.pps;*.ppt;*.xls;*.xlsx;*.ods;*.pptx</patterns>
+	<other-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>zmień nazwę napisów</name>
+	<unique-id>1432641181114179-13</unique-id>
+	<command>/home/swistak35/.bin/subrnm %F</command>
+	<description></description>
+	<patterns>*.avi;*.mp4;*.crdownload;*.srt;*.sub;*.part</patterns>
+	<other-files/>
+	<text-files/>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>usuń podkreślnik</name>
+	<unique-id>1432641268964370-14</unique-id>
+	<command>/home/swistak35/.bin/remove_underscore %f</command>
+	<description></description>
+	<patterns>_*</patterns>
+	<directories/>
+	<audio-files/>
+	<image-files/>
+	<other-files/>
+	<text-files/>
+	<video-files/>
+</action>
+</actions>
