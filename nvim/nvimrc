@@ -94,6 +94,16 @@ Plug 'LargeFile'
 " Extensions (very experimental!) to show commit msgs in fugitive
 Plug 'tommcdo/vim-fugitive-blame-ext'
 
+" For writing (i.e. blogposts)
+" Plug 'reedes/vim-pencil'
+" Very nice soft wrapping, but it slows down vim a lot, no idea why
+
+" Distraction free mode
+Plug 'junegunn/goyo.vim'
+
+" Focus only on paragraph
+Plug 'junegunn/limelight.vim'
+
 " Running Ruby specs
 Plug 'gabebw/vim-spec-runner'
 
@@ -239,6 +249,7 @@ set background=dark
 " if has('gui_running')
   colorscheme solarized
 " endif
+
 
 " let g:solarized_termcolors=16
 " let g:solarized_termtrans=1
@@ -451,6 +462,19 @@ let g:spec_runner_dispatcher = 'call VtrSendCommand("be {command}")'
 map <localleader>sc <Plug>RunCurrentSpecFile
 map <localleader>sf <Plug>RunFocusedSpec
 map <localleader>sr <Plug>RunMostRecentSpec
+
+""" limelight
+" let g:limelight_default_coefficient = 0.5
+" let g:limelight_paragraph_span = 0
+autocmd User GoyoEnter Limelight
+autocmd User GoyoLeave Limelight!
+
+""" vim-pencil
+" augroup pencil
+"   autocmd!
+"   autocmd FileType markdown,mkd call pencil#init()
+"   autocmd FileType text         call pencil#init()
+" augroup END
 
 """ ctrlp_delete
 " let g:ctrlp_bdelete_map = '<c-_>'
