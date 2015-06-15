@@ -274,6 +274,9 @@ inoremap jj <ESC>
 nnoremap <leader>v <C-w>v<C-w>l
 nnoremap <leader>h <C-w>s<C-w>j
 
+nnoremap gn ;
+nnoremap gN ,
+
 " Redrawing the screen also removes the hightlight from search
 noremap <silent> <C-l> :nohls<CR><C-l>
 
@@ -333,7 +336,7 @@ nnoremap <leader>gtb :Gblame<CR>
 """ Syntastic
 let g:syntastic_ruby_checkers = ['rubocop']
 " Alternative: 'mri'
-let g:syntastic_auto_jump = 1
+let g:syntastic_auto_jump = 3
 
 """ Neomake
 " autocmd! BufWritePost * Neomake
@@ -371,7 +374,11 @@ vnoremap <leader>asp :EasyAlign *\ <CR>
 vnoremap <leader>as1 :EasyAlign\ <CR>
 
 """ Ack
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
 let g:ack_autofold_results = 0
+let g:ackpreview = 0
 let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case"
 
 " CtrlP
