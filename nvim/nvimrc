@@ -108,6 +108,9 @@ Plug 'christoomey/vim-tmux-runner'
 " Plug 'Shougo/neocomplete.vim'
 " Plug 'osyo-manga/vim-monster'
 
+" Close all invisible buffers
+Plug 'artnez/vim-wipeout'
+
 Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-repeat'
@@ -118,7 +121,6 @@ Plug 'mmozuras/vim-github-comment'
 Plug 'indentLine.vim'
 Plug 'matchit.zip'
 Plug 'ecomba/vim-ruby-refactoring'
-Plug 'wipeout'
 Plug 'tpope/vim-commentary'
 Plug 'pipe2eval'
 Plug 'textobj-indent'
@@ -376,6 +378,9 @@ let g:signify_vcs_list = [ 'git', 'hg' ]
 vnoremap <leader>a= :EasyAlign =<CR>
 vnoremap <leader>asp :EasyAlign *\ <CR>
 vnoremap <leader>as1 :EasyAlign\ <CR>
+
+""" indentLine
+let g:indentLine_noConcealCursor=""
 
 """ Ack
 if executable('ag')
