@@ -289,6 +289,9 @@ inoremap jj <ESC>
 nnoremap <leader>v <C-w>v<C-w>l
 nnoremap <leader>h <C-w>s<C-w>j
 
+" Reloading config
+" nnoremap <leader>R
+
 " Redrawing the screen also removes the hightlight from search
 noremap <silent> <C-l> :nohls<CR><C-l>
 
