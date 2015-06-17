@@ -73,7 +73,7 @@ function switch_term_colors() {
 }
 if (( $+commands[konsoleprofile] ))
 then
-	add-zsh-hook preexec switch_term_colors
+	add-zsh-hook precmd switch_term_colors
 fi
 
 # Auto cd in directories
