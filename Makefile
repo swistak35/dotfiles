@@ -37,8 +37,6 @@ install-other:
 install-xfce:
 	rm -rf ~/.config/Thunar
 	ln -s `pwd`/thunar ~/.config/Thunar
-	rm -rf ~/.config/xfce4
-	ln -s `pwd`/xfce4 ~/.config/xfce4
 
 install-nvim:
 	rm -rf ~/.nvimrc ~/.nvim
