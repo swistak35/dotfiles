@@ -35,9 +35,9 @@ install-other:
 	ln -s `pwd`/other/Xmodmap ~/.Xmodmap
 
 install-xfce:
-	rm -rf ~/.config/Thunar/uca.xml
+	rm ~/.config/Thunar/uca.xml
 	ln -s `pwd`/thunar/uca.xml ~/.config/Thunar/uca.xml
-	rm -rf ~/.config/Thunar/renamerrc
+	rm ~/.config/Thunar/renamerrc
 	ln -s `pwd`/thunar/renamerrc ~/.config/Thunar/renamerrc
 
 install-nvim:
