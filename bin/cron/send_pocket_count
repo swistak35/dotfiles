@@ -1,0 +1,73 @@
+#!/usr/bin/env ruby
+#   */10 *  * * * /bin/zsh -lc '/home/swistak35/.bin/cron/send_pocket_count'¬
+
+require 'net/http'
+require 'net/https'
+require 'json'
+require 'cgi'
+require 'influxdb'
+
+class PocketAPI
+  ConsumerKey = "28177-dc9afe992533afd34d1d63d7"
+  RedirectURI = "http://getpocket.com/a/queue/"
+
+  def initialize(access_token, username)
+    @access_token = access_token
+    @username = username
+
+    uri = URI.parse("https://getpocket.com")
+    @http = Net::HTTP.new(uri.host, uri.port)
+    @http.use_ssl = true
+    @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+  end
+
+  def get_results
+    request = Net::HTTP::Post.new("/v3/get", {'Content-Type' => 'application/json'})
+    request.body = { 'consumer_key' => ConsumerKey, 'access_token' => @access_token }.to_json
+    response = @http.request(request)
+    JSON.parse(response.body)
+  end
+
+  def get_count
+    res = get_results
+    res['list'].count
+  end
+end
+
+class PocketCounter
+  ConfigFile = File.join(ENV['HOME'], ".pocket_counter")
+  InfluxConfigFile = File.join(ENV['HOME'], ".grafana_influxdb")
+  DatabaseName = "carbon"
+  TimeSeries = "pocket"
+
+  def initialize
+    raise ConfigDoesntExist unless File.exists?(ConfigFile)
+    raise InfluxConfigDoesntExist unless File.exists?(InfluxConfigFile)
+    initialize_api
+    initialize_influxdb
+  end
+
+  def initialize_influxdb
+    influx_config = File.readlines(InfluxConfigFile).map(&:chomp)
+    @influxdb = InfluxDB::Client.new "carbon", {
+      username: influx_config[0],
+      password: influx_config[1],
+      host:     influx_config[2],
+    }
+  end
+
+  def initialize_api
+    config = File.readlines(ConfigFile).map(&:chomp)
+    @api = PocketAPI.new(config[0], config[1])
+  end
+
+  def run
+    count = @api.get_count
+    puts "Sending count: #{count}"
+    @influxdb.write_point(TimeSeries, {
+      count: count.to_i
+    })
+  end
+end
+
+PocketCounter.new.run

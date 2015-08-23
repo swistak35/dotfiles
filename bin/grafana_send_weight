@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+require 'influxdb'
+
+class SendWeight
+  InfluxConfigFile = File.join(ENV['HOME'], ".grafana_influxdb")
+  DatabaseName = "carbon"
+  TimeSeries = "weight"
+
+  def initialize
+    raise InfluxConfigDoesntExist unless File.exists?(InfluxConfigFile)
+    initialize_influxdb
+  end
+
+  def initialize_influxdb
+    influx_config = File.readlines(InfluxConfigFile).map(&:chomp)
+    @influxdb = InfluxDB::Client.new "carbon", {
+      username: influx_config[0],
+      password: influx_config[1],
+      host:     influx_config[2],
+    }
+  end
+
+  def run(argv)
+    weight = argv[0].to_f
+    raise "WrongWeight" unless (40..120).include?(weight)
+    puts "Weight: #{weight}"
+    @influxdb.write_point(TimeSeries, {
+      weight: weight
+    })
+  end
+end
+
+SendWeight.new.run(ARGV)
