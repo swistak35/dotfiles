@@ -50,7 +50,7 @@ alias kcrsa="eval \$(keychain --eval --agents ssh -Q --quiet ~/.ssh/id_rsa)"
 alias fd='find . -type d -name'
 alias ff='find . -type f -name'
 alias largest_packages="pacman -Qi | awk '/Nazwa/ { name=\$3 } /Rozmiar po instalacji/ { printf \"%.3fMB\t%s\n\", \$4/1024, name }' | sort -rh | head -n 20"
-alias muo="/home/swistak35/Projekty/opensource/muon/bin/muon2"
+alias muo="/home/swistak35/projs/oss/muon/bin/muon2"
 alias fsum="paste -sd+ | bc"
 alias lst="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'"
 alias be='bundle exec'
@@ -58,6 +58,7 @@ alias jsonify='ruby -rjson -e "puts JSON.pretty_generate(JSON.parse(STDIN.read))
 alias fix_sudo_display='xhost + > /dev/null'
 alias idris="/opt/idris/.cabal-sandbox/bin/idris"
 alias rm='rm -I'
+alias gen-uuid='ruby -rsecurerandom -e "print SecureRandom.uuid"'
 
 # Todo
 alias todo="/home/swistak35/Dropbox/Private/todo/todo.sh"
