@@ -3,6 +3,8 @@
 # Vim plugin
 .smartgf_tags
 .smartgf_tags_date
+.vimrc
+.nvimrc
 
 # rbenv
 .ruby-version
