@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+name = ARGV[0]
+names = name.split(".")
+
+if names.last == 'ogv'
+	new_name = names[0..-2].join(".") + ".mp4"
+else
+	new_name = name + ".mp4"
+end
+
+# system "ffmpeg --enable-libmp3lame -i '#{name}' -c:v libx264 -preset veryslow -crf 22 -c:v libmp3lame -qscale:a 2 -ac 2 -ar 44100 '#{new_name}'"
+system "ffmpeg -y -i '#{name}' -acodec libmp3lame '#{new_name}'"

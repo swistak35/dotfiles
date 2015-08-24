@@ -3,7 +3,7 @@ call plug#begin('~/.nvim/plugged')
 
 " There's plugin for that
 " Plug 'gmarik/Vundle.vim'
-Plug 'scrooloose/syntastic'
+" Plug 'scrooloose/syntastic'
 " Plug 'tpope/vim-markdown'
 " Plug 'FredKSchott/CoVim'
 " Plug 'szw/vim-tags'
@@ -36,12 +36,16 @@ Plug 'hail2u/vim-css3-syntax'
 Plug 'elixir-lang/vim-elixir'
 Plug 'idris-hackers/idris-vim'
 Plug 'cypok/vim-sml'
+Plug 'mxw/vim-jsx'
+Plug 'LnL7/vim-nix'
 
 """ Color schemes
 " Solarized
 Plug 'altercation/vim-colors-solarized'
 " PaperColor
 Plug 'NLKNguyen/papercolor-theme'
+" Penvil
+Plug 'reedes/vim-colors-pencil'
 
 " Highlight colors in CSS files
 Plug 'ap/vim-css-color'
@@ -69,6 +73,16 @@ Plug 'taglist.vim'
 Plug 'tpope/vim-dispatch'
 " Changing theme between day & night
 Plug 'swistak35/bgshift.vim'
+" Dependencies for vim-snipmate
+" Plug 'marcweber/vim-addon-mw-utils'
+" Plug 'tomtom/tlib_vim'
+" snippets plugin
+Plug 'SirVer/ultisnips'
+" snippets
+Plug 'my-snippets.vim'
+" show "At match #N out out M matches" during search
+Plug 'henrik/vim-indexed-search'
+
 
 " For task management
 Plug 'farseer90718/vim-taskwarrior'
@@ -106,6 +120,7 @@ Plug 'junegunn/limelight.vim'
 
 " Running Ruby specs
 Plug 'gabebw/vim-spec-runner'
+Plug 'janko-m/vim-test'
 
 " Run cmds in tmux
 Plug 'christoomey/vim-tmux-runner'
@@ -140,8 +155,8 @@ Plug 'AndrewRadev/switch.vim'
 Plug 'KabbAmine/zeavim.vim'
 Plug 't9md/vim-chef'
 Plug 'maxbrunsfeld/vim-yankstack'
-" Plug 'benekastah/neomake'
-Plug 'floobits/floobits-neovim'
+Plug 'benekastah/neomake'
+" Plug 'floobits/floobits-neovim'
 
 " VimOS fun
 Plug 'vim-hackernews'
@@ -354,18 +369,21 @@ nnoremap <leader>gtb :Gblame<CR>
 " let g:vim_tags_use_vim_dispatch = 1
 
 """ Syntastic
-let g:syntastic_ruby_checkers = ['rubocop']
+" let g:syntastic_ruby_checkers = ['rubocop']
 " Alternative: 'mri'
-let g:syntastic_auto_jump = 3
+" let g:syntastic_auto_jump = 3
 
 """ Neomake
-" autocmd! BufWritePost * Neomake
-" let g:neomake_coffeescript_enabled_markers = ['coffeelint']
-" let g:neomake_ruby_enabled_markers = ['rubocop']
-" let g:neomake_sh_enabled_markers = ['shellcheck']
-" let g:neomake_zsh_enabled_markers = ['shellcheck']
-" let g:neomake_c_enabled_markers = ['clang']
-" let g:neomake_cpp_enabled_markers = ['clang++']
+autocmd! BufWritePost * Neomake
+let g:neomake_c_enabled_markers = ['clang']
+let g:neomake_cpp_enabled_markers = ['clang++']
+let g:neomake_coffeescript_enabled_markers = ['coffeelint']
+let g:neomake_ruby_enabled_markers = ['rubocop']
+let g:neomake_sh_enabled_markers = ['shellcheck']
+let g:neomake_zsh_enabled_markers = ['shellcheck']
+let g:neomake_jsx_enabled_markers = ['jsxlint']
+let g:neomake_json_enabled_markers = ['jsonlint']
+let g:neomake_javascript_enabled_markers = ['eslint']
 
 """ CamelCase
 map <S-W> <Plug>CamelCaseMotion_w
@@ -458,7 +476,7 @@ vmap gu <Plug>(smartgf-search)
 nmap gU <Plug>(smartgf-search-unfiltered)
 vmap gU <Plug>(smartgf-search-unfiltered)
 map <F4> :SmargfRefreshTags<CR>
-autocmd! BufWritePost * SmargfRefreshTags
+" autocmd! BufWritePost * SmargfRefreshTags
 
 """ vim-symbols-strings
 " let g:symbolise_strings_map_keys = 0
@@ -475,10 +493,10 @@ let g:VtrClearEmptyLines = 1
 let g:VtrInitialCommand = "ls"
 
 """ vim-spec-runner
-let g:spec_runner_dispatcher = 'call VtrSendCommand("be {command}")'
-map <localleader>sc <Plug>RunCurrentSpecFile
-map <localleader>sf <Plug>RunFocusedSpec
-map <localleader>sr <Plug>RunMostRecentSpec
+" let g:spec_runner_dispatcher = 'call VtrSendCommand("be {command}")'
+" map <localleader>sc <Plug>RunCurrentSpecFile
+" map <localleader>sf <Plug>RunFocusedSpec
+" map <localleader>sr <Plug>RunMostRecentSpec
 
 """ limelight
 " let g:limelight_default_coefficient = 0.5
@@ -498,102 +516,26 @@ autocmd User GoyoLeave Limelight!
 " execute "nnoremap <buffer> <silent> ".g:ctrlp_bdelete_map." :call <sid>DeleteMarkedBuffers()<cr>"
 " call ctrlp_bdelete#init()
 
-""" Neocomplete
-" let g:neocomplete#sources#omni#input_patterns = {
-"   \   "ruby" : '[^. *\t]\.\w*\|\h\w*::',
-"   \}
+""" vim-test
+let test#strategy = "vtr"
+nmap <silent> <localleader>tn :TestNearest<CR>
+nmap <silent> <localleader>tf :TestFile<CR>
+nmap <silent> <localleader>ts :TestSuite<CR>
+nmap <silent> <localleader>tl :TestLast<CR>
+nmap <silent> <localleader>tv :TestVisit<CR>
 
-" " Set async completion.
-" let g:monster#completion#rcodetools#backend = "async_rct_complete"
+""" vim-snipmate
+" imap <C-J> <ESC>a<Plug>snipMateNextOrTrigger
+" smap <C-J> <ESC>a<Plug>snipMateNextOrTrigger
 
-" " Use neocomplete.vim
-" let g:neocomplete#force_omni_input_patterns = {
-"   \   'ruby' : '[^. *\t]\.\|\h\w*::',
-"   \}
+""" ultisnips
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
-" "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
-" " Disable AutoComplPop.
-" let g:acp_enableAtStartup = 0
-" " Use neocomplete.
-" let g:neocomplete#enable_at_startup = 1
-" " Use smartcase.
-" let g:neocomplete#enable_smart_case = 1
-" " Set minimum syntax keyword length.
-" let g:neocomplete#sources#syntax#min_keyword_length = 3
-" let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+""" rails.vim
+nmap <localleader>rm :Rmigration<CR>
 
-" " Define dictionary.
-" let g:neocomplete#sources#dictionary#dictionaries = {
-"     \ 'default' : '',
-"     \ 'vimshell' : $HOME.'/.vimshell_hist',
-"     \ 'scheme' : $HOME.'/.gosh_completions'
-"         \ }
-
-" " Define keyword.
-" if !exists('g:neocomplete#keyword_patterns')
-"     let g:neocomplete#keyword_patterns = {}
-" endif
-" let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-
-" " Plugin key-mappings.
-" inoremap <expr><C-g>     neocomplete#undo_completion()
-" inoremap <expr><C-l>     neocomplete#complete_common_string()
-
-" " Recommended key-mappings.
-" " <CR>: close popup and save indent.
-" inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-" function! s:my_cr_function()
-"   return neocomplete#close_popup() . "\<CR>"
-"   " For no inserting <CR> key.
-"   "return pumvisible() ? neocomplete#close_popup() : "\<CR>"
-" endfunction
-" " <TAB>: completion.
-" inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" " <C-h>, <BS>: close popup and delete backword char.
-" inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-" inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-" inoremap <expr><C-y>  neocomplete#close_popup()
-" inoremap <expr><C-e>  neocomplete#cancel_popup()
-" " Close popup by <Space>.
-" "inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
-
-" " For cursor moving in insert mode(Not recommended)
-" "inoremap <expr><Left>  neocomplete#close_popup() . "\<Left>"
-" "inoremap <expr><Right> neocomplete#close_popup() . "\<Right>"
-" "inoremap <expr><Up>    neocomplete#close_popup() . "\<Up>"
-" "inoremap <expr><Down>  neocomplete#close_popup() . "\<Down>"
-" " Or set this.
-" "let g:neocomplete#enable_cursor_hold_i = 1
-" " Or set this.
-" "let g:neocomplete#enable_insert_char_pre = 1
-
-" " AutoComplPop like behavior.
-" "let g:neocomplete#enable_auto_select = 1
-
-" " Shell like behavior(not recommended).
-" "set completeopt+=longest
-" "let g:neocomplete#enable_auto_select = 1
-" "let g:neocomplete#disable_auto_complete = 1
-" "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
-
-" " Enable omni completion.
-" autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-" autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-" autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-" autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-" autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-" " Enable heavy omni completion.
-" if !exists('g:neocomplete#sources#omni#input_patterns')
-"   let g:neocomplete#sources#omni#input_patterns = {}
-" endif
-" "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-" "let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-" "let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-
-" " For perlomni.vim setting.
-" " https://github.com/c9s/perlomni.vim
-" let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
 """"""""""""""""
 """""""" Other functions
