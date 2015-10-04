@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 #   */10 *  * * * /bin/zsh -lc '/home/swistak35/.bin/cron/send_pocket_count'¬
+# influxdb gem version 0.1.9 needed!
 
 require 'net/http'
 require 'net/https'

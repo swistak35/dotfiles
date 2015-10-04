@@ -5,7 +5,6 @@ call plug#begin('~/.nvim/plugged')
 " Plug 'gmarik/Vundle.vim'
 " Plug 'scrooloose/syntastic'
 " Plug 'tpope/vim-markdown'
-" Plug 'FredKSchott/CoVim'
 " Plug 'szw/vim-tags'
 " Plug 'rorymckinley/vim-symbols-strings'
 
@@ -82,7 +81,8 @@ Plug 'SirVer/ultisnips'
 Plug 'my-snippets.vim'
 " show "At match #N out out M matches" during search
 Plug 'henrik/vim-indexed-search'
-
+" Move with same shortcuts between panes and vim splits
+Plug 'christoomey/vim-tmux-navigator'
 
 " For task management
 Plug 'farseer90718/vim-taskwarrior'
@@ -295,6 +295,12 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 
+let g:tmux_navigator_no_mappings = 1
+nnoremap <silent> <C-w>h :TmuxNavigateLeft<cr>
+nnoremap <silent> <C-w>j :TmuxNavigateDown<cr>
+nnoremap <silent> <C-w>k :TmuxNavigateUp<cr>
+nnoremap <silent> <C-w>l :TmuxNavigateRight<cr>
+
 nnoremap gJ J
 nnoremap j gj
 nnoremap k gk
@@ -437,9 +443,6 @@ nmap <leader>pr :ClearCtrlPCache<CR>
 """ Github Comment
 let g:github_user='swistak35'
 let g:github_open_browser=1
-
-""" CoVIM
-" python import sys; sys.path.append("/usr/lib/python3.4/site-packages")
 
 """ Zeal
 let g:zv_zeal_directory = "/usr/bin/zeal"
