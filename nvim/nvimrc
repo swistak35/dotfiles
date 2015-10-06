@@ -5,7 +5,6 @@ call plug#begin('~/.nvim/plugged')
 " Plug 'gmarik/Vundle.vim'
 " Plug 'scrooloose/syntastic'
 " Plug 'tpope/vim-markdown'
-" Plug 'FredKSchott/CoVim'
 " Plug 'szw/vim-tags'
 " Plug 'rorymckinley/vim-symbols-strings'
 
@@ -82,10 +81,10 @@ Plug 'SirVer/ultisnips'
 Plug 'swistak35/my-snippets.vim'
 " show "At match #N out out M matches" during search
 Plug 'henrik/vim-indexed-search'
-
-
-" For task management
-Plug 'farseer90718/vim-taskwarrior'
+" Move with same shortcuts between panes and vim splits
+Plug 'christoomey/vim-tmux-navigator'
+" For ability to press v, vv, vvv, ...
+Plug 'terryma/vim-expand-region'
 
 Plug 'bruno-/vim-man'
 
@@ -104,6 +103,7 @@ Plug 'LargeFile'
 
 " Shortcut for changing do..end blocks to {..}
 " Plug 'jgdavey/vim-blockle'
+" not needed now, splitjoin.vim is faster
 
 " Extensions (very experimental!) to show commit msgs in fugitive
 Plug 'tommcdo/vim-fugitive-blame-ext'
@@ -135,6 +135,9 @@ Plug 'christoomey/vim-tmux-runner'
 
 " Close all invisible buffers
 Plug 'artnez/vim-wipeout'
+
+" Add .gitignore to wildignore
+Plug 'vim-scripts/gitignore'
 
 Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-abolish'
@@ -295,6 +298,12 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 
+let g:tmux_navigator_no_mappings = 1
+nnoremap <silent> <C-w>h :TmuxNavigateLeft<cr>
+nnoremap <silent> <C-w>j :TmuxNavigateDown<cr>
+nnoremap <silent> <C-w>k :TmuxNavigateUp<cr>
+nnoremap <silent> <C-w>l :TmuxNavigateRight<cr>
+
 nnoremap gJ J
 nnoremap j gj
 nnoremap k gk
@@ -420,7 +429,9 @@ if executable('ag')
 endif
 let g:ack_autofold_results = 0
 let g:ackpreview = 0
-let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case"
+" let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case"
+let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case --ignore-dir=log --ignore-dir=vendor --ignore-dir=tmp --ignore-dir=locale"
+" let g:ack_use_dispatch = 1
 
 " CtrlP
 " let g:ctrlp_extensions = ['funky']
@@ -435,9 +446,6 @@ nmap <leader>pr :ClearCtrlPCache<CR>
 """ Github Comment
 let g:github_user='swistak35'
 let g:github_open_browser=1
-
-""" CoVIM
-" python import sys; sys.path.append("/usr/lib/python3.4/site-packages")
 
 """ Zeal
 let g:zv_zeal_directory = "/usr/bin/zeal"
@@ -533,6 +541,9 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 """ rails.vim
 nmap <localleader>rm :Rmigration<CR>
+
+""" vim-blockle
+let g:blockle_mapping = '<Leader>bl'
 
 
 """"""""""""""""

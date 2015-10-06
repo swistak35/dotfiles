@@ -63,6 +63,12 @@ alias gen-uuid='ruby -rsecurerandom -e "print SecureRandom.uuid"'
 # Todo
 alias todo="/home/swistak35/Dropbox/Private/todo/todo.sh"
 alias td='todo'
+alias tdw='td ls "+productivity\|+pierdoly"'
+alias tda='td ls +arkency'
+alias tdo='td ls +long'
+alias tdl='td ls +learning +idefix'
+alias tdr='td ls -arkency -daily -long -learning -idefix -productivity -pierdoly'
+alias tdd='td ls +daily'
 
 # Tmux
 alias tmk="tmux kill-session -t"
