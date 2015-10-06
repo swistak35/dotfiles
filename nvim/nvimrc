@@ -79,7 +79,7 @@ Plug 'swistak35/bgshift.vim'
 " snippets plugin
 Plug 'SirVer/ultisnips'
 " snippets
-Plug 'my-snippets.vim'
+Plug 'swistak35/my-snippets.vim'
 " show "At match #N out out M matches" during search
 Plug 'henrik/vim-indexed-search'
 
