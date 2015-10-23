@@ -204,6 +204,8 @@ set ignorecase          " Make command autocompletion case insensitive
 set relativenumber
 set gdefault            " Let's make global changing default
 set autowriteall
+set lazyredraw          " redraw only when we need to.
+set showmatch           " highlight matching [{()}]
 
 """"""""""""""""
 """" A few different things
