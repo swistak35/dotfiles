@@ -4,6 +4,7 @@ install-vim:
 	rm -rf ~/.vim ~/.vimrc
 	ln -s `pwd`/vim ~/.vim
 	ln -s ~/.vim/vimrc ~/.vimrc
+	ln -s ~/.vim/vimrc_plugins ~/.vimrc_plugins
 	vim +PlugInstall +qall
 	# [ -d ~/.eclim ] && ln -s ~/.eclim ~/.vim/eclim
 
