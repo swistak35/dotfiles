@@ -186,17 +186,11 @@ nnoremap <leader>w :wa<CR>
 """"""""""""""""
 """"""" Plugin settings
 """"""""""""""""
-""" NerdTree
-nnoremap <F2> :NERDTreeToggle<CR>
 
-""" Taglist
-nnoremap <F3> :TlistToggle<CR>
+exec 'source ' . $HOME . '/.vimrc_pluginrc'
 
 """ Pastemode
 nnoremap <F7> :set paste!<CR>
-
-""" Switch.vim
-nnoremap gs :Switch<CR>
 
 """ Closetag.vim
 let g:closetag_filenames = "*.html,*.xml,*.html.erb"
