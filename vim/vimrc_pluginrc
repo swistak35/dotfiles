@@ -1,36 +1,36 @@
-""" NerdTree
-nnoremap <F2> :NERDTreeToggle<CR>
+""" KabbAmine/zeavim.vim
+let g:zv_zeal_directory = "/usr/bin/zeal"
+let g:zv_added_files_type = {
+            \ 'rb': 'Ruby'
+            \ }
 
-""" Taglist
+""" scrooloose/nerdtree
+nnoremap <F2> :NERDTreeToggle<CR>
+" Run Nerdtree on startup
+" autocmd vimenter * if !argc() | NERDTree | endif
+" If the only window left when quitting is NERDTree, then quit whole vim
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+""" taglist.vim
 nnoremap <F3> :TlistToggle<CR>
 
-""" Switch.vim
+""" AndrewRadev/switch.vim
 nnoremap gs :Switch<CR>
 
-""" Closetag.vim
+""" docunext/closetag.vim
 let g:closetag_filenames = "*.html,*.xml,*.html.erb"
 
-""" Pipe2Eval
+""" pipe2eval
 let g:pipe2eval_map_key = '<Leader>el'
 
-""" Fugitive
+""" tpope/vim-fugitive
 nnoremap <leader>gtc :Gcommit<CR>
 nnoremap <leader>gtp :Gpush<CR>
 nnoremap <leader>gtu :Gpull<CR>
 nnoremap <leader>gtd :Gdiff<CR>
 nnoremap <leader>gtb :Gblame<CR>
 
-""" Vim-tags
-" mostly obsolete now, smartgf is cooler than simple CTags
-" let g:vim_tags_auto_generate = 1
-" let g:vim_tags_use_vim_dispatch = 1
-
-""" Syntastic
-" let g:syntastic_ruby_checkers = ['rubocop']
-" Alternative: 'mri'
-" let g:syntastic_auto_jump = 3
-
-""" Neomake
+""" benekastah/neomake
 autocmd! BufWritePost * Neomake
 let g:neomake_c_enabled_markers = ['clang']
 let g:neomake_cpp_enabled_markers = ['clang++']
@@ -42,36 +42,30 @@ let g:neomake_jsx_enabled_markers = ['jsxlint']
 let g:neomake_json_enabled_markers = ['jsonlint']
 let g:neomake_javascript_enabled_markers = ['eslint']
 
-""" CamelCase
+""" bkad/CamelCaseMotion
 map <S-W> <Plug>CamelCaseMotion_w
 map <S-B> <Plug>CamelCaseMotion_b
 map <S-E> <Plug>CamelCaseMotion_e
 
-""" NerdTree
-" Run Nerdtree on startup
-" autocmd vimenter * if !argc() | NERDTree | endif
-" If the only window left when quitting is NERDTree, then quit whole vim
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
-
-""" Gist plugin settings
+""" mattn/gist-vim
 let g:gist_detect_filetype = 1
 let g:gist_open_browser_after_post = 1
 let g:gist_post_private = 1
 let g:gist_browser_command = 'firefox %URL%'
 
-""" Signify plugin settings
+""" mhinz/vim-signify
 let g:signify_vcs_list = [ 'git', 'hg' ]
 " let g:signify_line_highlight = 1
 
-""" Easy Align
+""" junegunn/vim-easy-align
 vnoremap <leader>a= :EasyAlign =<CR>
 vnoremap <leader>asp :EasyAlign *\ <CR>
 vnoremap <leader>as1 :EasyAlign\ <CR>
 
-""" indentLine
+""" indentLine.vim
 let g:indentLine_noConcealCursor=""
 
-""" Ack
+""" mileszs/ack.vim
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
@@ -81,30 +75,19 @@ let g:ackpreview = 0
 let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case --ignore-dir=log --ignore-dir=vendor --ignore-dir=tmp --ignore-dir=locale"
 " let g:ack_use_dispatch = 1
 
-" CtrlP
+""" ctrlpvim/ctrlp.vim
 " let g:ctrlp_extensions = ['funky']
-" let g:ctrlp_funky_syntax_highlight = 1
 nmap <Leader>pp :CtrlP<CR>
 nmap <Leader>pb :CtrlPBuffer<CR>
-" nmap <Leader>pf :CtrlPFunky<CR>
 nmap <Leader>pc :CtrlPCmdPalette<CR>
 nmap <Leader>pm :CtrlPMRUFiles<CR>
 nmap <leader>pr :ClearCtrlPCache<CR>
 
-""" Github Comment
+""" mmozuras/vim-github-comment
 let g:github_user='swistak35'
 let g:github_open_browser=1
 
-""" Zeal
-let g:zv_zeal_directory = "/usr/bin/zeal"
-let g:zv_added_files_type = {
-            \ 'rb': 'Ruby'
-            \ }
-
-""""""""" vim-man
-" map <leader>
-
-""" Incsearch.vim
+""" haya14busa/incsearch.vim
 set hlsearch
 let g:incsearch#magic = '\v'
 let g:incsearch#auto_nohlsearch = 1
@@ -118,7 +101,7 @@ map #  <Plug>(incsearch-nohl-#)
 map g* <Plug>(incsearch-nohl-g*)
 map g# <Plug>(incsearch-nohl-g#)
 
-""" Smartgf
+""" gorkunov/smartgf.vim
 let g:smartgf_create_default_mappings = 0
 let g:smartgf_auto_refresh_ctags = 0
 let g:smartgf_enable_gems_search = 1
@@ -129,43 +112,23 @@ vmap gU <Plug>(smartgf-search-unfiltered)
 map <F4> :SmargfRefreshTags<CR>
 " autocmd! BufWritePost * SmargfRefreshTags
 
-""" vim-symbols-strings
-" let g:symbolise_strings_map_keys = 0
-" nnoremap <silent> <Leader>sy :set opfunc=symbolsstrings#SymboliseStrings<CR>g@
-" nnoremap <silent> <Leader>st :set opfunc=symbolsstrings#StringifySymbols<CR>g@p
-
-""" Yankstack
+""" maxbrunsfeld/vim-yankstack
 nmap [w <Plug>yankstack_substitute_older_paste
 nmap ]w <Plug>yankstack_substitute_newer_paste
 
-""" Vim-Tmux-Runner
+""" christoomey/vim-tmux-runner
 let g:VtrPercentage = 15
 let g:VtrClearEmptyLines = 1
 let g:VtrInitialCommand = "ls"
 
-""" vim-spec-runner
-" let g:spec_runner_dispatcher = 'call VtrSendCommand("be {command}")'
-" map <localleader>sc <Plug>RunCurrentSpecFile
-" map <localleader>sf <Plug>RunFocusedSpec
-" map <localleader>sr <Plug>RunMostRecentSpec
+""" junegunn/limelight.vim
+let g:limelight_default_coefficient = 0.5
+let g:limelight_paragraph_span = 1
 
-""" limelight
-" let g:limelight_default_coefficient = 0.5
-" let g:limelight_paragraph_span = 0
+""" junegunn/goyo.vim
 autocmd User GoyoEnter Limelight
 autocmd User GoyoLeave Limelight!
-
-""" vim-pencil
-" augroup pencil
-"   autocmd!
-"   autocmd FileType markdown,mkd call pencil#init()
-"   autocmd FileType text         call pencil#init()
-" augroup END
-
-""" ctrlp_delete
-" let g:ctrlp_bdelete_map = '<c-_>'
-" execute "nnoremap <buffer> <silent> ".g:ctrlp_bdelete_map." :call <sid>DeleteMarkedBuffers()<cr>"
-" call ctrlp_bdelete#init()
+nnoremap <localleader>gy :Goyo<CR>
 
 """ vim-test
 let test#strategy = "vtr"
@@ -175,17 +138,67 @@ nmap <silent> <localleader>ts :TestSuite<CR>
 nmap <silent> <localleader>tl :TestLast<CR>
 nmap <silent> <localleader>tv :TestVisit<CR>
 
-""" vim-snipmate
-" imap <C-J> <ESC>a<Plug>snipMateNextOrTrigger
-" smap <C-J> <ESC>a<Plug>snipMateNextOrTrigger
-
-""" ultisnips
+""" SirVer/ultisnips
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
-""" rails.vim
+""" tpope/vim-rails
 nmap <localleader>rm :Rmigration<CR>
 
-""" vim-blockle
-let g:blockle_mapping = '<Leader>bl'
+""" christoomey/vim-tmux-navigator
+let g:tmux_navigator_no_mappings = 1
+nnoremap <silent> <C-w>h :TmuxNavigateLeft<cr>
+nnoremap <silent> <C-w>j :TmuxNavigateDown<cr>
+nnoremap <silent> <C-w>k :TmuxNavigateUp<cr>
+nnoremap <silent> <C-w>l :TmuxNavigateRight<cr>
+
+
+
+
+
+""""""""" DISABLED PLUGINS
+
+""" szw/vim-tags
+" mostly obsolete now, smartgf is cooler than simple CTags
+" let g:vim_tags_auto_generate = 1
+" let g:vim_tags_use_vim_dispatch = 1
+
+""" scrooloose/syntastic
+" let g:syntastic_ruby_checkers = ['rubocop']
+" Alternative: 'mri'
+" let g:syntastic_auto_jump = 3
+
+""" rorymckinley/vim-symbols-strings
+" let g:symbolise_strings_map_keys = 0
+" nnoremap <silent> <Leader>sy :set opfunc=symbolsstrings#SymboliseStrings<CR>g@
+" nnoremap <silent> <Leader>st :set opfunc=symbolsstrings#StringifySymbols<CR>g@p
+
+""" gabebw/vim-spec-runner
+" let g:spec_runner_dispatcher = 'call VtrSendCommand("be {command}")'
+" map <localleader>sc <Plug>RunCurrentSpecFile
+" map <localleader>sf <Plug>RunFocusedSpec
+" map <localleader>sr <Plug>RunMostRecentSpec
+
+""" reedes/vim-pencil
+" augroup pencil
+"   autocmd!
+"   autocmd FileType markdown,mkd call pencil#init()
+"   autocmd FileType text         call pencil#init()
+" augroup END
+
+""" tacahiroy/ctrlp-funky
+" nmap <Leader>pf :CtrlPFunky<CR>
+" let g:ctrlp_funky_syntax_highlight = 1
+
+""" d11wtq/ctrlp_bdelete.vim
+" let g:ctrlp_bdelete_map = '<c-_>'
+" execute "nnoremap <buffer> <silent> ".g:ctrlp_bdelete_map." :call <sid>DeleteMarkedBuffers()<cr>"
+" call ctrlp_bdelete#init()
+
+""" garbas/vim-snipmate
+" imap <C-J> <ESC>a<Plug>snipMateNextOrTrigger
+" smap <C-J> <ESC>a<Plug>snipMateNextOrTrigger
+
+""" jgdavey/vim-blockle
+" let g:blockle_mapping = '<Leader>bl'
