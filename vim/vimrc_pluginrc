@@ -1,0 +1,9 @@
+""" NerdTree
+nnoremap <F2> :NERDTreeToggle<CR>
+
+""" Taglist
+nnoremap <F3> :TlistToggle<CR>
+
+""" Switch.vim
+nnoremap gs :Switch<CR>
+
