@@ -1,6 +1,6 @@
-urlencode() { python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])" $1 }
+urlencode() { python2.7 -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])" $1 }
 
-urldecode() { python -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])" $1 }
+urldecode() { python2.7 -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])" $1 }
 
 rot13() { echo $1 | tr "A-Za-z" "N-ZA-Mn-za-m" }
 
