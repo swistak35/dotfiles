@@ -41,6 +41,7 @@ set ignorecase          " Make command autocompletion case insensitive
 set relativenumber
 set gdefault            " Let's make global changing default
 set autowriteall
+set t_Co=256
 
 """"""""""""""""
 """" A few different things

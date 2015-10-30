@@ -43,6 +43,9 @@ set ignorecase          " Make command autocompletion case insensitive
 set relativenumber
 set gdefault            " Let's make global changing default
 set autowriteall
+set t_Co=256            " 256 colors support. Required by airline
+set t_AB=^[[48;5;%dm
+set t_AF=^[[38;5;%dm
 
 """"""""""""""""
 """" A few different things

@@ -30,6 +30,9 @@ nnoremap <leader>gtu :Gpull<CR>
 nnoremap <leader>gtd :Gdiff<CR>
 nnoremap <leader>gtb :Gblame<CR>
 
+""" bling/vim-airline
+let g:airline_powerline_fonts = 1
+
 """ benekastah/neomake
 autocmd! BufWritePost * Neomake
 let g:neomake_c_enabled_markers = ['clang']
