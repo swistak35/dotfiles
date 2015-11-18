@@ -6,48 +6,6 @@ exec 'source ' . $HOME . '/.vimrc_plugins'
 call plug#end()
 
 """"""""""""""""
-"""" My options
-""""""""""""""""
-set nocompatible
-set background=dark
-set backspace=indent,eol,start
-set backup
-set noswapfile
-set undofile
-set history=50		" keep 50 lines of command line history
-set showcmd		" display incomplete commands
-set incsearch		" do incremental searching
-set ruler		" show the cursor position all the time
-set wildmenu
-set wildmode=list:longest,full
-set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.pyc,*.class,.svn,*.gem
-set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
-set wildignore+=*.jpg,*.png,*.gif,*.avi,*.wmv,*.ogg,*.mp3,*.mov
-set wildignore+=*/vendor/cache/*,*/.sass-cache/*,*/node_modules/*,*/bower_components/*
-set wildignore+=*.swp,*~,._*
-set number
-set shiftround
-set shiftwidth=2
-set laststatus=2        " needed by Airline
-set noshowmode          " as above
-set smartcase
-set scrolloff=5
-set backupdir=~/.vim/tmp,.
-set directory=~/.vim/swp,.
-set undodir=~/.vim/undo,.
-set expandtab         " Expand tabs to spaces
-set tabstop=4
-set exrc                " Per directory vimrc
-set secure
-set ignorecase          " Make command autocompletion case insensitive
-set relativenumber
-set gdefault            " Let's make global changing default
-set autowriteall
-set t_Co=256            " 256 colors support. Required by airline
-" set t_AB=^[[48;5;%dm
-" set t_AF=^[[38;5;%dm
-
-""""""""""""""""
 """" A few different things
 """"""""""""""""
 
@@ -95,7 +53,7 @@ if has("autocmd")
   augroup END
 else
   set autoindent		" always set autoindenting on
-endif " has("autocmd")
+endif
 
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
@@ -107,90 +65,13 @@ endif
 
 syntax enable
 set background=dark
-" Colorscheme
-" if has('gui_running')
-  colorscheme solarized
-" endif
-
-
-" let g:solarized_termcolors=16
-" let g:solarized_termtrans=1
-
-""""""""""""""""
-"""""""" Maps
-""""""""""""""""
-nnoremap ; :
-vnoremap ; :
-let mapleader=","
-let maplocalleader="\\"
-
-" Save even if you don't have permissions
-cmap w!! %!sudo tee > /dev/null %
-
-" Display hidden characters
-" nmap <leader>s :set nolist!<CR>
-
-" Arrows? No. Just No. Not now.
-nnoremap <Left> <C-w>h
-nnoremap <Right> <C-w>l
-nnoremap <Up> <C-w>k
-nnoremap <Down> <C-w>j
-inoremap <up> <nop>
-inoremap <down> <nop>
-inoremap <left> <nop>
-inoremap <right> <nop>
-
-nnoremap gJ J
-nnoremap j gj
-nnoremap k gk
-nnoremap gj j
-nnoremap gk k
-nnoremap J <C-D>
-nnoremap K <C-U>
-inoremap jj <ESC>
-nnoremap <leader>v <C-w>v<C-w>l
-nnoremap <leader>h <C-w>s<C-w>j
-
-" Reloading config
-nnoremap <leader>R :source ~/.nvimrc<CR>
-
-nnoremap gn ;
-nnoremap gN ,
-
-" Redrawing the screen also removes the hightlight from search
-noremap <silent> <C-l> :nohls<CR><C-l>
-
-noremap [z :tabp<CR>
-noremap ]z :tabn<CR>
-
-" Look of invisible characters
-set list
-set listchars=tab:▸\ ,eol:¬
-
-" Insert just one character
-nnoremap s i_<ESC>r
-nnoremap S a_<ESC>r
-
-nnoremap Q @q
-
-nnoremap <leader>bls :ls<CR>:b<Space>
-nnoremap <leader>cy "*y
-
-command! JoinLines execute "g/^$/,/./-j"
-
-nnoremap <leader>w :wa<CR>
+colorscheme solarized
 
 """"""""""""""""
 """"""" Plugin settings
 """"""""""""""""
 
 exec 'source ' . $HOME . '/.vimrc_pluginrc'
-
-""" Pastemode
-nnoremap <F7> :set paste!<CR>
-
-""" Other
-cabbrev help tab help
 
 """"""""""""""""
 """""""" Other functions
@@ -203,27 +84,6 @@ function! ChangePaste(type, ...)
     silent exe "normal! p"
 endfunction
 
-" Create absent directories on edit
-function! s:MkNonExDir(file, buf)
-  if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
-    let dir=fnamemodify(a:file, ':h')
-    if !isdirectory(dir)
-      call mkdir(dir, 'p')
-    endif
-  endif
-endfunction
-augroup BWCCreateDir
-  autocmd!
-  autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
-augroup END
-
-" Remove trailing spaces after save
-au BufWritePre *.json,*.rb,*.py,*.c,*.h,*.feature,*.conf,*rc,README,CHANGELOG,README.* :%s/\s\+$//e
-
-" Because self is not python keyword stuff
-syn keyword Keyword self
-
-au BufNewFile,BufRead *.pl set filetype=prolog
 
 if has('nvim')
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1

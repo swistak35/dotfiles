@@ -1,3 +1,150 @@
+"""""""""""""""""""""""""""""""""""""
+""""""""""    My options
+"""""""""""""""""""""""""""""""""""""
+
+set autowriteall
+set background=dark
+set backspace=indent,eol,start
+set backup
+set backupdir=~/.vim/tmp,.
+set nocompatible
+set directory=~/.vim/swp,.
+set expandtab                   "expand tabs to spaces
+set exrc                        "per directory vimrc
+set gdefault                    "let's make global changing default
+set history=50                  "keep 50 lines of command line history
+set ignorecase                  "make command autocompletion case insensitive
+set incsearch                   "do incremental searching
+set laststatus=2                "needed by Airline
+set list                        "look of invisible characters
+set listchars=tab:▸\ ,eol:¬
+set number
+set relativenumber
+set ruler                       "show the cursor position all the time
+set scrolloff=5
+set secure
+set shiftround
+set shiftwidth=2
+set showcmd                     "display incomplete commands
+set noshowmode
+set smartcase
+set noswapfile
+set tabstop=4
+set t_Co=256                    "256colors support. Required by airline
+" set t_AB=^[[48;5;%dm
+" set t_AF=^[[38;5;%dm
+set undodir=~/.vim/undo,.
+set undofile
+set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.pyc,*.class,.svn,*.gem
+set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
+set wildignore+=*.jpg,*.png,*.gif,*.avi,*.wmv,*.ogg,*.mp3,*.mov
+set wildignore+=*/vendor/cache/*,*/.sass-cache/*,*/node_modules/*,*/bower_components/*
+set wildignore+=*.swp,*~,._*
+set wildmenu
+set wildmode=list:longest,full
+
+"""""""""""""""""""""""""""""""""""""
+""""""""""    Functions
+"""""""""""""""""""""""""""""""""""""
+
+function! s:MkNonExDir(file, buf)
+  if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+    let dir=fnamemodify(a:file, ':h')
+    if !isdirectory(dir)
+      call mkdir(dir, 'p')
+    endif
+  endif
+endfunction
+
+"""""""""""""""""""""""""""""""""""""
+""""""""""    Mappings
+"""""""""""""""""""""""""""""""""""""
+
+let mapleader=","
+let maplocalleader="\\"
+
+nnoremap ; :
+vnoremap ; :
+
+" Save even if you don't have permissions
+cmap w!! %!sudo tee > /dev/null %
+
+" Display hidden characters
+" nmap <leader>s :set nolist!<CR>
+
+" Arrows? No. Just No. Not now.
+nnoremap <Left> <C-w>h
+nnoremap <Right> <C-w>l
+nnoremap <Up> <C-w>k
+nnoremap <Down> <C-w>j
+inoremap <up> <nop>
+inoremap <down> <nop>
+inoremap <left> <nop>
+inoremap <right> <nop>
+
+" Move by editor lines, not file lines
+nnoremap j gj
+nnoremap k gk
+nnoremap gj j
+nnoremap gk k
+
+" Join lines
+nnoremap gJ J
+
+" Move by pages
+nnoremap J <C-D>
+nnoremap K <C-U>
+
+" Escapes
+inoremap jj <ESC>
+
+" Splits
+nnoremap <leader>v <C-w>v<C-w>l
+nnoremap <leader>h <C-w>s<C-w>j
+
+" Change tabs
+noremap [z :tabp<CR>
+noremap ]z :tabn<CR>
+
+" Play q macro
+nnoremap Q @q
+
+" Save all
+nnoremap <leader>w :wa<CR>
+
+" Insert just one character
+nnoremap s i_<ESC>r
+nnoremap S a_<ESC>r
+
+" Reloading config
+nnoremap <leader>R :source ~/.nvimrc<CR>
+
+" Jumping to next occurs of the searched letter
+nnoremap gn ;
+nnoremap gN ,
+
+" Redrawing the screen also removes the hightlight from search
+noremap <silent> <C-l> :nohls<CR><C-l>
+
+" List buffers
+nnoremap <leader>bls :ls<CR>:b<Space>
+
+" Copy to clipboard
+nnoremap <leader>cy "*y
+
+" Pastemode
+nnoremap <F7> :set paste!<CR>
+
+"""""""""""""""""""""""""""""""""""""
+""""""""""    Commands
+"""""""""""""""""""""""""""""""""""""
+
+command! JoinLines execute "g/^$/,/./-j"
+
+"""""""""""""""""""""""""""""""""""""
+""""""""""    Plugins
+"""""""""""""""""""""""""""""""""""""
+
 """ KabbAmine/zeavim.vim
 let g:zv_zeal_directory = "/usr/bin/zeal"
 let g:zv_added_files_type = {
@@ -156,9 +303,26 @@ nnoremap <silent> <C-w>j :TmuxNavigateDown<cr>
 nnoremap <silent> <C-w>k :TmuxNavigateUp<cr>
 nnoremap <silent> <C-w>l :TmuxNavigateRight<cr>
 
+"""""""""""""""""""""""""""""""""""""
+""""""""""    Other things
+"""""""""""""""""""""""""""""""""""""
 
+" Because self is not python keyword stuff
+syn keyword Keyword self
 
+""" Other
+cabbrev help tab help
 
+" Create absent directories on edit
+augroup BWCCreateDir
+  autocmd!
+  autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+augroup END
+
+" Remove trailing spaces after save
+au BufWritePre *.json,*.rb,*.py,*.c,*.h,*.feature,*.conf,*rc,README,CHANGELOG,README.* :%s/\s\+$//e
+
+au BufNewFile,BufRead *.pl set filetype=prolog
 
 """"""""" DISABLED PLUGINS
 
