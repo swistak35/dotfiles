@@ -63,10 +63,6 @@ if !exists(":DiffOrig")
 			  \ | wincmd p | diffthis
 endif
 
-syntax enable
-set background=dark
-colorscheme solarized
-
 """"""""""""""""
 """"""" Plugin settings
 """"""""""""""""
