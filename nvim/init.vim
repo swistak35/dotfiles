@@ -44,8 +44,8 @@ set relativenumber
 set gdefault            " Let's make global changing default
 set autowriteall
 set t_Co=256            " 256 colors support. Required by airline
-set t_AB=^[[48;5;%dm
-set t_AF=^[[38;5;%dm
+" set t_AB=^[[48;5;%dm
+" set t_AF=^[[38;5;%dm
 
 """"""""""""""""
 """" A few different things
@@ -225,3 +225,9 @@ syn keyword Keyword self
 
 au BufNewFile,BufRead *.pl set filetype=prolog
 
+if has('nvim')
+  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+  let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+
+  let g:solarized_italic=0
+endif

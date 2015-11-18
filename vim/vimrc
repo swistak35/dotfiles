@@ -168,6 +168,8 @@ map <leader>cy "*y
 
 command JoinLines execute "g/^$/,/./-j"
 
+let g:airline_powerline_fonts = 1
+
 """"""""""""""""
 """"""" Plugin settings
 """"""""""""""""
@@ -289,4 +291,3 @@ augroup END
 au BufWritePre *.json,*.rb,*.py,*.c,*.h,*.feature,*.conf,*rc,README,CHANGELOG,README.* :%s/\s\+$//e
 
 syn keyword Keyword self
-

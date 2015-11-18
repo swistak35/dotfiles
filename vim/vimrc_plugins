@@ -34,8 +34,10 @@ Plug 'LnL7/vim-nix'
 Plug 'altercation/vim-colors-solarized'
 " PaperColor
 Plug 'NLKNguyen/papercolor-theme'
-" Penvil
+" Pencil
 Plug 'reedes/vim-colors-pencil'
+" Inkpot
+Plug 'ciaranm/inkpot'
 
 " Highlight colors in CSS files
 Plug 'ap/vim-css-color'
