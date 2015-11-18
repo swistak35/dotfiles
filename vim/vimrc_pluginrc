@@ -19,6 +19,9 @@ set laststatus=2                "needed by Airline
 set list                        "look of invisible characters
 set listchars=tab:▸\ ,eol:¬
 set number
+if has('mouse')                 " in many terminal emulators
+  set mouse=a                   "   the mouse works just fine,
+endif                           "   thus enable it.
 set relativenumber
 set ruler                       "show the cursor position all the time
 set scrolloff=5
@@ -117,14 +120,14 @@ nnoremap s i_<ESC>r
 nnoremap S a_<ESC>r
 
 " Reloading config
-nnoremap <leader>R :source ~/.nvimrc<CR>
+nnoremap <leader>R :source ~/.config/nvim/init.vim<CR>
 
 " Jumping to next occurs of the searched letter
 nnoremap gn ;
 nnoremap gN ,
 
 " Redrawing the screen also removes the hightlight from search
-noremap <silent> <C-l> :nohls<CR><C-l>
+" noremap <silent> <C-l> :nohls<CR><C-l>
 
 " List buffers
 nnoremap <leader>bls :ls<CR>:b<Space>
@@ -140,6 +143,8 @@ nnoremap <F7> :set paste!<CR>
 """""""""""""""""""""""""""""""""""""
 
 command! JoinLines execute "g/^$/,/./-j"
+
+command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
 """""""""""""""""""""""""""""""""""""
 """"""""""    Plugins
@@ -324,6 +329,13 @@ augroup END
 au BufWritePre *.json,*.rb,*.py,*.c,*.h,*.feature,*.conf,*rc,README,CHANGELOG,README.* :%s/\s\+$//e
 
 au BufNewFile,BufRead *.pl set filetype=prolog
+
+" This allows for change paste motion cp{motion}
+nmap <silent> cp :set opfunc=ChangePaste<CR>g@
+function! ChangePaste(type, ...)
+    silent exe "normal! `[v`]\"_c"
+    silent exe "normal! p"
+endfunction
 
 """"""""" DISABLED PLUGINS
 
