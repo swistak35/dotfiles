@@ -43,9 +43,8 @@ install-xfce:
 	ln -s `pwd`/thunar/renamerrc ~/.config/Thunar/renamerrc
 
 install-nvim:
-	rm -rf ~/.nvimrc ~/.nvim
-	ln -s `pwd`/nvim ~/.nvim
-	ln -s ~/.nvim/nvimrc ~/.nvimrc
+	rm -rf ~/.nvimrc ~/.nvim ~/.config/nvim
+	ln -s `pwd`/nvim ~/.config/nvim
 	nvim +PlugInstall +qall
 
 install-vifm:

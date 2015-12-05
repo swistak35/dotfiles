@@ -5,55 +5,11 @@ exec 'source ' . $HOME . '/.vimrc_plugins'
 call plug#end()
 
 """"""""""""""""
-"""" My options
-""""""""""""""""
-set nocompatible
-set backspace=indent,eol,start
-set backup
-set noswapfile
-set undofile
-set history=50		" keep 50 lines of command line history
-set showcmd		" display incomplete commands
-set incsearch		" do incremental searching
-set ruler		" show the cursor position all the time
-set wildmenu
-set wildmode=list:longest,full
-set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.pyc,*.class,.svn,*.gem
-set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
-set wildignore+=*.jpg,*.png,*.gif,*.avi,*.wmv,*.ogg,*.mp3,*.mov
-set wildignore+=*/vendor/cache/*,*/.sass-cache/*,*/node_modules/*,*/bower_components/*
-set wildignore+=*.swp,*~,._*
-set number
-set shiftround
-set shiftwidth=2
-set laststatus=2        " needed by Airline
-set noshowmode          " as above
-set smartcase
-set scrolloff=5
-set backupdir=~/.vim/tmp,.
-set directory=~/.vim/swp,.
-set undodir=~/.vim/undo,.
-set expandtab         " Expand tabs to spaces
-set tabstop=4
-set exrc                " Per directory vimrc
-set secure
-set ignorecase          " Make command autocompletion case insensitive
-set relativenumber
-set gdefault            " Let's make global changing default
-set autowriteall
-set t_Co=256
-
-""""""""""""""""
 """" A few different things
 """"""""""""""""
 
 " Don't use Ex mode, use Q for formatting
 map Q g
-
-" In many terminal emulators the mouse works just fine, thus enable it.
-if has('mouse')
-  set mouse=a
-endif
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
@@ -93,14 +49,6 @@ else
   set autoindent		" always set autoindenting on
 endif " has("autocmd")
 
-" Convenient command to see the difference between the current buffer and the
-" file it was loaded from, thus the changes you made.
-" Only define it when not defined already.
-if !exists(":DiffOrig")
-  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
-			  \ | wincmd p | diffthis
-endif
-
 " Colorscheme
 if has('gui_running')
   syntax enable
@@ -108,185 +56,6 @@ if has('gui_running')
   colorscheme solarized
 endif
 
-""""""""""""""""
-"""""""" Maps
-""""""""""""""""
-nmap ; :
-vnoremap ; :
-let mapleader=","
-
-map <F2> :NERDTreeToggle<CR>
-map <F3> :TlistToggle<CR>
-
-" Save even if you don't have permissions
-cmap w!! %!sudo tee > /dev/null %
-
-" Display hidden characters
-nmap <leader>s :set nolist!<CR>
-
-" Arrows? No. Just No. Not now.
-map <Left> <C-w>h
-map <Right> <C-w>l
-map <Up> <C-w>k
-map <Down> <C-w>j
-inoremap <up> <nop>
-inoremap <down> <nop>
-inoremap <left> <nop>
-inoremap <right> <nop>
-
-nnoremap gj J
-nnoremap J <C-D>
-nnoremap K <C-U>
-inoremap jj <ESC>
-nnoremap <leader>w <C-w>v<C-w>l
-
-" Redrawing the screen also removes the hightlight from search
-noremap <silent> <C-l> :nohls<CR><C-l>
-
-noremap [z :tabp<CR>
-noremap ]z :tabn<CR>
-
-nmap [w <Plug>yankstack_substitute_older_paste
-nmap ]w <Plug>yankstack_substitute_newer_paste
-
-map gs :Switch<CR>
-
-" Look of invisible characters
-set list
-set listchars=tab:▸\ ,eol:¬
-
-" Insert just one character
-nmap s i_<ESC>r
-nmap S a_<ESC>r
-
-let g:incsearch#magic = '\v'
-
-nnoremap Q @q
-
-map <leader>bls :ls<CR>:b<Space>
-map <leader>cy "*y
-
-command JoinLines execute "g/^$/,/./-j"
-
-""""""""""""""""
-""""""" Plugin settings
-""""""""""""""""
-""" Pipe2Eval
-let g:pipe2eval_map_key = '<Leader>el'
-
-""" Fugitive
-map <leader>gtc :Gcommit<CR>
-map <leader>gtp :Gpush<CR>
-map <leader>gtu :Gpull<CR>
-map <leader>gtd :Gdiff<CR>
-map <leader>gtb :Gblame<CR>
-
-""" Vim-tags
-let g:vim_tags_auto_generate = 1
-
 """ Syntastic
 let g:syntastic_ruby_checkers = ['mri']
 let g:syntastic_auto_jump = 1
-
-""" CamelCase
-map <S-W> <Plug>CamelCaseMotion_w
-map <S-B> <Plug>CamelCaseMotion_b
-map <S-E> <Plug>CamelCaseMotion_e
-
-""" NerdTree
-" Run Nerdtree on startup
-" autocmd vimenter * if !argc() | NERDTree | endif
-" If the only window left when quitting is NERDTree, then quit whole vim
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
-
-""" Gist plugin settings
-let g:gist_detect_filetype = 1
-let g:gist_open_browser_after_post = 1
-let g:gist_post_private = 1
-let g:gist_browser_command = 'firefox %URL%'
-
-""" Signify plugin settings
-let g:signify_vcs_list = [ 'git', 'hg' ]
-" let g:signify_line_highlight = 1
-
-""" Easy Align
-vnoremap <leader>a= :EasyAlign =<CR>
-vnoremap <leader>asp :EasyAlign *\ <CR>
-vnoremap <leader>as1 :EasyAlign\ <CR>
-
-""" Ack
-let g:ack_autofold_results = 1
-let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case"
-
-" CtrlP
-let g:ctrlp_extensions = ['funky']
-let g:ctrlp_funky_syntax_highlight = 1
-nmap <Leader>pp :CtrlP<CR>
-nmap <Leader>pb :CtrlPBuffer<CR>
-nmap <Leader>pf :CtrlPFunky<CR>
-nmap <Leader>pc :CtrlPCmdPalette<CR>
-nmap <Leader>pm :CtrlPMRUFiles<CR>
-nmap <leader>pr :ClearCtrlPCache<CR>
-
-""" Github Comment
-let g:github_user='swistak35'
-let g:github_open_browser=1
-
-""" CoVIM
-python import sys; sys.path.append("/usr/lib/python3.4/site-packages")
-
-""" Zeal
-let g:zv_zeal_directory = "/opt/zeal/zeal/zeal"
-let g:zv_added_files_type = {
-            \ 'rb': 'Ruby'
-            \ }
-
-""" Other
-cabbrev help tab help
-
-""" Incsearch.vim
-map / <Plug>(incsearch-forward)
-map ? <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
-
-""" Smartgf
-let g:smartgf_key = 'gu'
-let g:smartgf_no_filter_key = 'gU'
-let g:smartgf_auto_refresh_ctags = 0
-map <F4> :SmargfRefreshTags<CR>
-
-""" vim-symbols-strings
-let g:symbolise_strings_map_keys = 0
-nnoremap <silent> <Leader>sy :set opfunc=symbolsstrings#SymboliseStrings<CR>g@
-nnoremap <silent> <Leader>st :set opfunc=symbolsstrings#StringifySymbols<CR>g@p
-
-""""""""""""""""
-"""""""" Other functions
-""""""""""""""""
-
-" This allows for change paste motion cp{motion}
-nmap <silent> cp :set opfunc=ChangePaste<CR>g@
-function! ChangePaste(type, ...)
-    silent exe "normal! `[v`]\"_c"
-    silent exe "normal! p"
-endfunction
-
-" Create absent directories on edit
-function s:MkNonExDir(file, buf)
-  if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
-    let dir=fnamemodify(a:file, ':h')
-    if !isdirectory(dir)
-      call mkdir(dir, 'p')
-    endif
-  endif
-endfunction
-augroup BWCCreateDir
-  autocmd!
-  autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
-augroup END
-
-" Remove trailing spaces after save
-au BufWritePre *.json,*.rb,*.py,*.c,*.h,*.feature,*.conf,*rc,README,CHANGELOG,README.* :%s/\s\+$//e
-
-syn keyword Keyword self
-
