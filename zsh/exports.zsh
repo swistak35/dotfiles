@@ -7,6 +7,7 @@ export PATH=$HOME/.rbenv/bin:$PATH
 export PATH=/opt/android-sdk/tools:$PATH
 export PATH=/usr/local/bin:$PATH
 export PATH=/home/swistak35/Pobrane/activator:$PATH
+export PATH=/home/swistak35/.gem/ruby/2.2.0/bin:$PATH
 # export PATH=/opt/anaconda/bin:$PATH
 export LESS='-FRSX -i-P%f (%i/%m) Line %lt/%L'
 export EDITOR="vim"

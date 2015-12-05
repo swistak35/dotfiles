@@ -38,6 +38,8 @@ Plug 'NLKNguyen/papercolor-theme'
 Plug 'reedes/vim-colors-pencil'
 " Inkpot
 Plug 'ciaranm/inkpot'
+" Flattened (solarized simplified)
+Plug 'romainl/flattened'
 
 " Highlight colors in CSS files
 Plug 'ap/vim-css-color'
@@ -132,6 +134,8 @@ Plug 'KabbAmine/zeavim.vim'
 Plug 't9md/vim-chef'
 Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'benekastah/neomake'
+
+Plug 'the-lambda-church/merlin'
 
 " VimOS fun
 Plug 'vim-hackernews'

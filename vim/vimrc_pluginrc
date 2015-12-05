@@ -309,6 +309,9 @@ nnoremap <silent> <C-w>j :TmuxNavigateDown<cr>
 nnoremap <silent> <C-w>k :TmuxNavigateUp<cr>
 nnoremap <silent> <C-w>l :TmuxNavigateRight<cr>
 
+""" the-lambda-church/merlin
+set rtp+=/usr/local/share/ocamlmerlin/vim
+
 """""""""""""""""""""""""""""""""""""
 """"""""""    Other things
 """""""""""""""""""""""""""""""""""""
