@@ -48,6 +48,9 @@ set showmatch           " highlight matching [{()}]
 set foldenable          " enable folding
 set foldlevelstart=99   " Open all nesting by default
 set foldmethod=syntax   " How to fold code
+set t_Co=256            " 256 colors support. Required by airline
+set t_AB=^[[48;5;%dm
+set t_AF=^[[38;5;%dm
 
 """"""""""""""""
 """" A few different things
@@ -147,12 +150,6 @@ inoremap <up> <nop>
 inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
-
-let g:tmux_navigator_no_mappings = 1
-nnoremap <silent> <C-w>h :TmuxNavigateLeft<cr>
-nnoremap <silent> <C-w>j :TmuxNavigateDown<cr>
-nnoremap <silent> <C-w>k :TmuxNavigateUp<cr>
-nnoremap <silent> <C-w>l :TmuxNavigateRight<cr>
 
 nnoremap gJ J
 nnoremap j gj

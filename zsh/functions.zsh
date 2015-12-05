@@ -27,6 +27,14 @@ repeatit() {
   done
 }
 
+repeatit05() {
+  while true
+  do
+    sleep 0.5
+    $@
+  done
+}
+
 switch-term-color() {
   arg="${1:-colors=Solarized}"
   if [[ -z "$TMUX" ]]

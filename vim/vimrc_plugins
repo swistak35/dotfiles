@@ -99,7 +99,6 @@ Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 
 " Running Ruby specs
-Plug 'gabebw/vim-spec-runner'
 Plug 'janko-m/vim-test'
 
 " Run cmds in tmux
@@ -146,6 +145,7 @@ Plug 'vim-hackernews'
 " Plug 'szw/vim-tags'
 " Plug 'rorymckinley/vim-symbols-strings'
 " Plug 'tacahiroy/ctrlp-funky'
+" Plug 'garbas/vim-snipmate'
 
 " Dependencies for vim-snipmate
 " Plug 'marcweber/vim-addon-mw-utils'
@@ -167,3 +167,5 @@ Plug 'vim-hackernews'
 " For writing (i.e. blogposts)
 " Plug 'reedes/vim-pencil'
 " Very nice soft wrapping, but it slows down vim a lot, no idea why
+
+" Plug 'gabebw/vim-spec-runner'
