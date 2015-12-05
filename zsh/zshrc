@@ -56,6 +56,12 @@ source ~/.zsh/history.zsh
 source ~/.zsh/completion.zsh
 source ~/.zsh/directories.zsh
 
+# This one is not committed to dotfiles repository.
+# There I keep secret env variables.
+if [[ -a ~/.zsh/secrets.zsh ]]; then
+	source ~/.zsh/secrets.zsh
+fi
+
 # source ~/.zsh/completions/tmuxinator.zsh
 # source ~/.zsh/completions/zeus.zsh
 

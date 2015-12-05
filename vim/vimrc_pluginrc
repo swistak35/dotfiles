@@ -84,6 +84,9 @@ let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case --
 " CtrlP
 " let g:ctrlp_extensions = ['funky']
 " let g:ctrlp_funky_syntax_highlight = 1
+" Always open in new buffers
+let g:ctrlp_switch_buffer = 0
+let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 nmap <Leader>pp :CtrlP<CR>
 nmap <Leader>pb :CtrlPBuffer<CR>
 " nmap <Leader>pf :CtrlPFunky<CR>

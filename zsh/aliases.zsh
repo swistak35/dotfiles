@@ -91,6 +91,9 @@ alias -g UQ='| uniq'
 alias -g UT="| cut"
 alias -g E="| tee"
 alias -g R="| ruby -p -e"
+alias -g Fst='| awk "{ print \$1 }"'
+alias -g Snd='| awk "{ print \$2 }"'
+alias -g Last='| awk "{ print \$NF }"'
 
 # git
 alias g='git'

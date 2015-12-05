@@ -45,10 +45,19 @@ set gdefault            " Let's make global changing default
 set autowriteall
 set lazyredraw          " redraw only when we need to.
 set showmatch           " highlight matching [{()}]
+set foldenable          " enable folding
+set foldlevelstart=99   " Open all nesting by default
+set foldmethod=syntax   " How to fold code
 
 """"""""""""""""
 """" A few different things
 """"""""""""""""
+
+" fold fdsafdsafds fdafds
+nnoremap <space> za
+
+" highlight last inserted text
+nnoremap gV `[v`]
 
 " Don't use Ex mode, use Q for formatting
 map Q g
@@ -163,7 +172,7 @@ nnoremap gn ;
 nnoremap gN ,
 
 " Redrawing the screen also removes the hightlight from search
-noremap <silent> <C-l> :nohls<CR><C-l>
+noremap <leader>hl :nohls<CR><C-l>
 
 noremap [z :tabp<CR>
 noremap ]z :tabn<CR>
