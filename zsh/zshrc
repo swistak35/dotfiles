@@ -56,6 +56,12 @@ source ~/.zsh/history.zsh
 source ~/.zsh/completion.zsh
 source ~/.zsh/directories.zsh
 
+# This one is not committed to dotfiles repository.
+# There I keep secret env variables.
+if [[ -a ~/.zsh/secrets.zsh ]]; then
+	source ~/.zsh/secrets.zsh
+fi
+
 # source ~/.zsh/completions/tmuxinator.zsh
 # source ~/.zsh/completions/zeus.zsh
 
@@ -102,7 +108,10 @@ fi
 eval "$(rbenv init -)"
 
 # nix
-# export LOCALE_ARCHIVE=/home/swistak35/locale-archive
-export LOCALE_ARCHIVE=/nix/store/4yhkx5xr14q3phjdqds3rhckrw4107xx-glibc-locales-2.21/lib/locale/locale-archive
-. /home/swistak35/.nix-profile/etc/profile.d/nix.sh
+if [[ -a /home/swistak35/.nix-profile/etc/profile.d/nix.sh ]]
+then
+	# export LOCALE_ARCHIVE=/home/swistak35/locale-archive
+	export LOCALE_ARCHIVE=/nix/store/4yhkx5xr14q3phjdqds3rhckrw4107xx-glibc-locales-2.21/lib/locale/locale-archive
+	. /home/swistak35/.nix-profile/etc/profile.d/nix.sh
+fi
 

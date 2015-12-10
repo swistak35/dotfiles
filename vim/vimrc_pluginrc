@@ -33,6 +33,7 @@ set noshowmode
 set smartcase
 set noswapfile
 set tabstop=4
+set colorcolumn=80
 set t_Co=256                    "256colors support. Required by airline
 " set t_AB=^[[48;5;%dm
 " set t_AF=^[[38;5;%dm
@@ -232,6 +233,10 @@ let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case --
 
 """ ctrlpvim/ctrlp.vim
 " let g:ctrlp_extensions = ['funky']
+" let g:ctrlp_funky_syntax_highlight = 1
+" Always open in new buffers
+let g:ctrlp_switch_buffer = 0
+let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 nmap <Leader>pp :CtrlP<CR>
 nmap <Leader>pb :CtrlPBuffer<CR>
 nmap <Leader>pc :CtrlPCmdPalette<CR>

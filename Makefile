@@ -35,6 +35,8 @@ install-other:
 	ln -s `pwd`/other/gemrc ~/.gemrc
 	rm -f ~/.Xmodmap
 	ln -s `pwd`/other/Xmodmap ~/.Xmodmap
+	rm -f ~/.taskrc
+	ln -s `pwd`/other/taskrc ~/.taskrc
 
 install-xfce:
 	rm ~/.config/Thunar/uca.xml

@@ -16,8 +16,20 @@
 	token = 722270c515ab648a3e4d995b0c0f2fc9199ddbcf
 [url "git@github.com:"]
 	insteadOf = gh:
+	pushInsteadOf = "https://github.com/"
+	pushInsteadOf = "http://github.com/"
+	pushInsteadOf = "gh:"
 [url "git@bitbucket.org:"]
 	insteadOf = bb:
+	pushInsteadOf = "https://bitbucket.org/"
+	pushInsteadOf = "bb:"
+[url "git@gist.github.com:"]
+	insteadOf     = "gist:"
+	pushInsteadOf = "https://gist.github.com/"
+	pushInsteadOf = "http://gist.github.com/"
+	pushInsteadOf = "gist:"
+[url "git@heroku.com:"]
+	insteadOf = "heroku:"
 [core]
 	excludesfile = /home/swistak35/.global_gitignore
 	editor = vim
