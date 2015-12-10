@@ -108,7 +108,10 @@ fi
 eval "$(rbenv init -)"
 
 # nix
-# export LOCALE_ARCHIVE=/home/swistak35/locale-archive
-export LOCALE_ARCHIVE=/nix/store/4yhkx5xr14q3phjdqds3rhckrw4107xx-glibc-locales-2.21/lib/locale/locale-archive
-. /home/swistak35/.nix-profile/etc/profile.d/nix.sh
+if [[ -a /home/swistak35/.nix-profile/etc/profile.d/nix.sh ]]
+then
+	# export LOCALE_ARCHIVE=/home/swistak35/locale-archive
+	export LOCALE_ARCHIVE=/nix/store/4yhkx5xr14q3phjdqds3rhckrw4107xx-glibc-locales-2.21/lib/locale/locale-archive
+	. /home/swistak35/.nix-profile/etc/profile.d/nix.sh
+fi
 

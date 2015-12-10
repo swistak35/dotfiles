@@ -33,6 +33,7 @@ set noshowmode
 set smartcase
 set noswapfile
 set tabstop=4
+set colorcolumn=80
 set t_Co=256                    "256colors support. Required by airline
 " set t_AB=^[[48;5;%dm
 " set t_AF=^[[38;5;%dm
