@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+name = ARGV[0]
+names = name.split(".")
+
+if names.last == 'mp4'
+	new_name = names[0..-2].join(".") + ".gif"
+else
+	new_name = name + ".gif"
+end
+
+system "ffmpeg -ss 00:00:00 -i '#{name}' -pix_fmt rgb24 -r 10 -f gif - | gifsicle --optimize=3 --delay=8 > '#{new_name}'"
