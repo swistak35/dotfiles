@@ -59,3 +59,5 @@ endif
 """ Syntastic
 let g:syntastic_ruby_checkers = ['mri']
 let g:syntastic_auto_jump = 1
+
+exec 'source ' . $HOME . '/.vimrc_pluginrc'
