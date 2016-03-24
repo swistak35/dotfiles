@@ -57,3 +57,7 @@ install-vimperator:
 	rm -rf ~/.vimperator ~/.vimperatorrc
 	ln -s `pwd`/vimperator ~/.vimperator
 	ln -s ~/.vimperator/vimperatorrc ~/.vimperatorrc
+
+install-awesome:
+	rm -rf ~/.config/awesome
+	ln -s `pwd`/awesome ~/.config/awesome
