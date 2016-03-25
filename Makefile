@@ -61,3 +61,10 @@ install-vimperator:
 install-awesome:
 	rm -rf ~/.config/awesome
 	ln -s `pwd`/awesome ~/.config/awesome
+
+install-weechat:
+	rm -rf ~/.weechat
+	[ -d "$$HOME/.weechat-logs" ] || mkdir ~/.weechat-logs
+	ln -s `pwd`/weechat ~/.weechat
+	[ -e "$$HOME/.weechat/logs" ] || ln -s ~/.weechat-logs ~/.weechat/logs
+	[ -f "$$HOME/.weechat/sec.conf" ] || cp ~/.weechat/sec.conf.example ~/.weechat/sec.conf
