@@ -90,17 +90,17 @@ alias -g SN='| sort -n'
 alias -g UQ='| uniq'
 alias -g UT="| cut"
 alias -g E="| tee"
-alias -g R="| ruby -p -e"
+alias -g Rb="| ruby -p -e"
 alias -g Fst='| awk "{ print \$1 }"'
 alias -g Snd='| awk "{ print \$2 }"'
 alias -g Last='| awk "{ print \$NF }"'
 
 # git
 alias g='git'
-alias gc='git commit -v'
-alias gcm='git commit -vm'
-alias gca='git commit --amend --reuse-message=HEAD'
-alias gcup='git commit -am"up"'
+alias gc='git commit -S -v'
+alias gcm='git commit -S -vm'
+alias gca='git commit -S --amend --reuse-message=HEAD'
+alias gcup='git commit -S -am"up"'
 alias gch='git cherry-pick'
 alias gchn='git cherry-pick -n'
 alias ga='git add'
