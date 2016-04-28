@@ -75,7 +75,7 @@ alias tmk="tmux kill-session -t"
 alias tms="mux start"
 alias tmn="tmux -2 new-session -s"
 alias tml="tmux list-sessions"
-alias tma="tmux attach-session -t"
+alias tma="tmux -2 attach-session -t"
 
 
 # Suffix aliases
