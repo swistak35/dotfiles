@@ -317,6 +317,9 @@ nnoremap <silent> <C-w>l :TmuxNavigateRight<cr>
 """ the-lambda-church/merlin
 set rtp+=/usr/local/share/ocamlmerlin/vim
 
+""" ElmCast/elm-vim
+let g:elm_setup_keybindings = 0
+
 """""""""""""""""""""""""""""""""""""
 """"""""""    Other things
 """""""""""""""""""""""""""""""""""""

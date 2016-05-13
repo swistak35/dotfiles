@@ -28,6 +28,7 @@ Plug 'idris-hackers/idris-vim'
 Plug 'cypok/vim-sml'
 Plug 'mxw/vim-jsx'
 Plug 'LnL7/vim-nix'
+Plug 'ElmCast/elm-vim'
 
 """ Color schemes
 " Solarized
