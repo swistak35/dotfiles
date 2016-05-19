@@ -2,9 +2,8 @@ call plug#begin('~/.nvim/plugged')
 " There's plugin for that
 
 " Obvious
-Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'elzr/vim-json'
 Plug 'mattn/webapi-vim'
 Plug 'mattn/gist-vim'
 Plug 'bling/vim-airline'
@@ -115,6 +114,9 @@ Plug 'artnez/vim-wipeout'
 
 " Add .gitignore to wildignore
 Plug 'vim-scripts/gitignore'
+
+" Support for nice use for JSON files (don't display quotes, etc.)
+Plug 'elzr/vim-json'
 
 Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-abolish'
@@ -348,6 +350,15 @@ nnoremap <F2> :NERDTreeToggle<CR>
 " autocmd vimenter * if !argc() | NERDTree | endif
 " If the only window left when quitting is NERDTree, then quit whole vim
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+" DOESNT WORK - Single click for opening in trees
+" let NERDTreeMouseMode = 3
+" Show Bookmarks after startup
+let NERDTreeShowBookmarks = 1
+" Don't display additional messages in nerdtree
+let NERDTreeMinimalUI = 1
+" Don't display confirmation step after removing/renaming a file
+" let NERDTreeAutoDeleteBuffer=1
+
 
 """ taglist.vim
 nnoremap <F3> :TlistToggle<CR>
