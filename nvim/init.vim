@@ -593,5 +593,3 @@ if has('nvim')
 
   let g:solarized_italic=0
 endif
-
-au VimEnter * colorscheme solarized
