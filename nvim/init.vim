@@ -1,11 +1,580 @@
 call plug#begin('~/.nvim/plugged')
-exec 'source ' . $HOME . '/.vimrc_plugins'
+" There's plugin for that
+
+" Obvious
+Plug 'scrooloose/nerdtree'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'elzr/vim-json'
+Plug 'mattn/webapi-vim'
+Plug 'mattn/gist-vim'
+Plug 'bling/vim-airline'
+Plug 'tpope/vim-rails'
+Plug 'Valloric/YouCompleteMe', { 'do': './install.sh' }
+Plug 'netrw.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'fisadev/vim-ctrlp-cmdpalette'
+Plug 'mileszs/ack.vim'
+Plug 'gorkunov/smartgf.vim'
+
+" Languages
+Plug 'vim-ruby/vim-ruby'
+Plug 'pangloss/vim-javascript'
+Plug 'groenewege/vim-less'
+Plug 'kchmck/vim-coffee-script'
+Plug 'tpope/vim-haml'
+Plug 'tpope/vim-cucumber'
+Plug 'hail2u/vim-css3-syntax'
+Plug 'elixir-lang/vim-elixir'
+Plug 'idris-hackers/idris-vim'
+Plug 'cypok/vim-sml'
+Plug 'mxw/vim-jsx'
+Plug 'LnL7/vim-nix'
+Plug 'ElmCast/elm-vim'
+
+""" Color schemes
+" Solarized
+Plug 'altercation/vim-colors-solarized'
+" PaperColor
+Plug 'NLKNguyen/papercolor-theme'
+" Pencil
+Plug 'reedes/vim-colors-pencil'
+" Inkpot
+Plug 'ciaranm/inkpot'
+" Flattened (solarized simplified)
+Plug 'romainl/flattened'
+
+" Highlight colors in CSS files
+Plug 'ap/vim-css-color'
+" Nice incremental searching
+Plug 'haya14busa/incsearch.vim'
+" Autoclose xml tags
+Plug 'docunext/closetag.vim'
+" Underscoring words which are the same as current
+Plug 'vim-cursorword'
+" Let vim know about end keyword
+Plug 'tpope/vim-endwise'
+" Hunks about modified lines
+Plug 'mhinz/vim-signify'
+" Autocompletion for quotes, braces etc.
+Plug 'Raimondi/delimitMate'
+" Sublime-like multiple cursors
+Plug 'terryma/vim-multiple-cursors'
+" auto good tabswidth
+Plug 'tpope/vim-sleuth'
+" cool ][ mappings
+Plug 'tpope/vim-unimpaired'
+" taglist bound to F3
+Plug 'taglist.vim'
+" Some plugins need it, and then they can run tasks in background
+Plug 'tpope/vim-dispatch'
+" Changing theme between day & night
+Plug 'swistak35/bgshift.vim'
+" snippets plugin
+Plug 'SirVer/ultisnips'
+" snippets
+Plug 'swistak35/my-snippets.vim'
+" show "At match #N out out M matches" during search
+Plug 'henrik/vim-indexed-search'
+" Move with same shortcuts between panes and vim splits
+Plug 'christoomey/vim-tmux-navigator'
+" For ability to press v, vv, vvv, ...
+Plug 'terryma/vim-expand-region'
+
+Plug 'bruno-/vim-man'
+
+" Text objects
+Plug 'bkad/CamelCaseMotion'
+Plug 'argtextobj.vim'
+Plug 'kana/vim-textobj-user'
+Plug 'nelstrom/vim-textobj-rubyblock'
+Plug 'whatyouhide/vim-textobj-xmlattr'
+Plug 'lucapette/vim-textobj-underscore'
+Plug 'mattn/vim-textobj-url'
+Plug 'whatyouhide/vim-textobj-erb'
+
+" Disables some features when opening very large files ( > 100 MB )
+Plug 'LargeFile'
+
+" Extensions (very experimental!) to show commit msgs in fugitive
+Plug 'tommcdo/vim-fugitive-blame-ext'
+
+" Distraction free mode
+Plug 'junegunn/goyo.vim'
+
+" Focus only on paragraph
+Plug 'junegunn/limelight.vim'
+
+" Running Ruby specs
+Plug 'janko-m/vim-test'
+
+" Run cmds in tmux
+Plug 'christoomey/vim-tmux-runner'
+
+" Close all invisible buffers
+Plug 'artnez/vim-wipeout'
+
+" Add .gitignore to wildignore
+Plug 'vim-scripts/gitignore'
+
+Plug 'mattn/emmet-vim'
+Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'junegunn/vim-easy-align'
+Plug 'Rename2'
+Plug 'mmozuras/vim-github-comment'
+Plug 'indentLine.vim'
+Plug 'matchit.zip'
+Plug 'ecomba/vim-ruby-refactoring'
+Plug 'tpope/vim-commentary'
+Plug 'pipe2eval'
+Plug 'textobj-indent'
+Plug 'dbext.vim'
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'AndrewRadev/switch.vim'
+Plug 'KabbAmine/zeavim.vim'
+Plug 't9md/vim-chef'
+Plug 'maxbrunsfeld/vim-yankstack'
+Plug 'benekastah/neomake'
+
+Plug 'the-lambda-church/merlin'
+
+" VimOS fun
+Plug 'vim-hackernews'
+
+""" DISABLED PLUGINS
+" Plug 'tpope/vim-markdown'
+" Plug 'jimmyhchan/dustjs.vim'
+" Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+" Plug 'Shougo/neocomplete.vim'
+" Plug 'osyo-manga/vim-monster'
+" Plug 'scrooloose/syntastic'
+" Plug 'tpope/vim-markdown'
+" Plug 'szw/vim-tags'
+" Plug 'rorymckinley/vim-symbols-strings'
+" Plug 'tacahiroy/ctrlp-funky'
+" Plug 'garbas/vim-snipmate'
+
+" Dependencies for vim-snipmate
+" Plug 'marcweber/vim-addon-mw-utils'
+" Plug 'tomtom/tlib_vim'
+" Not using snipmate
+
+" Plug 'FredKSchott/CoVim'
+" Plug 'floobits/floobits-neovim'
+" Because tmate ftw
+
+" Deleting buffers in CtrlP
+" Plug 'd11wtq/ctrlp_bdelete.vim'
+" Doesn't really work
+
+" Shortcut for changing do..end blocks to {..}
+" Plug 'jgdavey/vim-blockle'
+" not needed now, splitjoin.vim is faster
+
+" For writing (i.e. blogposts)
+" Plug 'reedes/vim-pencil'
+" Very nice soft wrapping, but it slows down vim a lot, no idea why
+
+" Plug 'gabebw/vim-spec-runner'
+
 call plug#end()
 
 " Don't use Ex mode, use Q for formatting
 " map Q g
 
-exec 'source ' . $HOME . '/.vimrc_pluginrc'
+"""""""""""""""""""""""""""""""""""""
+""""""""""    My options
+"""""""""""""""""""""""""""""""""""""
+
+set autowriteall
+set background=dark
+set backspace=indent,eol,start
+set backup
+set backupdir=~/.vim/tmp,.
+set nocompatible
+set directory=~/.vim/swp,.
+set expandtab                   "expand tabs to spaces
+set exrc                        "per directory vimrc
+set gdefault                    "let's make global changing default
+set history=50                  "keep 50 lines of command line history
+set ignorecase                  "make command autocompletion case insensitive
+set incsearch                   "do incremental searching
+set laststatus=2                "needed by Airline
+set list                        "look of invisible characters
+set listchars=tab:▸\ ,eol:¬
+set number
+if has('mouse')                 " in many terminal emulators
+  set mouse=a                   "   the mouse works just fine,
+endif                           "   thus enable it.
+set relativenumber
+set ruler                       "show the cursor position all the time
+set scrolloff=5
+set secure
+set shiftround
+set shiftwidth=2
+set showcmd                     "display incomplete commands
+set noshowmode
+set smartcase
+set noswapfile
+set tabstop=4
+set colorcolumn=80
+set t_Co=256                    "256colors support. Required by airline
+" set t_AB=^[[48;5;%dm
+" set t_AF=^[[38;5;%dm
+set undodir=~/.vim/undo,.
+set undofile
+set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.pyc,*.class,.svn,*.gem
+set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
+set wildignore+=*.jpg,*.png,*.gif,*.avi,*.wmv,*.ogg,*.mp3,*.mov
+set wildignore+=*/vendor/cache/*,*/.sass-cache/*,*/node_modules/*,*/bower_components/*
+set wildignore+=*.swp,*~,._*
+set wildmenu
+set wildmode=list:longest,full
+
+"""""""""""""""""""""""""""""""""""""
+""""""""""    Functions
+"""""""""""""""""""""""""""""""""""""
+
+function! s:MkNonExDir(file, buf)
+  if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+    let dir=fnamemodify(a:file, ':h')
+    if !isdirectory(dir)
+      call mkdir(dir, 'p')
+    endif
+  endif
+endfunction
+
+"""""""""""""""""""""""""""""""""""""
+""""""""""    Mappings
+"""""""""""""""""""""""""""""""""""""
+
+let mapleader=","
+let maplocalleader="\\"
+
+nnoremap ; :
+vnoremap ; :
+
+" Save even if you don't have permissions
+cmap w!! %!sudo tee > /dev/null %
+
+" Display hidden characters
+" nmap <leader>s :set nolist!<CR>
+
+" Arrows? No. Just No. Not now.
+nnoremap <Left> <C-w>h
+nnoremap <Right> <C-w>l
+nnoremap <Up> <C-w>k
+nnoremap <Down> <C-w>j
+inoremap <up> <nop>
+inoremap <down> <nop>
+inoremap <left> <nop>
+inoremap <right> <nop>
+
+" Move by editor lines, not file lines
+nnoremap j gj
+nnoremap k gk
+nnoremap gj j
+nnoremap gk k
+
+" Join lines
+nnoremap gJ J
+
+" Move by pages
+nnoremap J <C-D>
+nnoremap K <C-U>
+
+" Escapes
+inoremap jj <ESC>
+
+" Splits
+nnoremap <leader>v <C-w>v<C-w>l
+nnoremap <leader>h <C-w>s<C-w>j
+
+" Change tabs
+noremap [z :tabp<CR>
+noremap ]z :tabn<CR>
+
+" Play q macro
+nnoremap Q @q
+
+" Save all
+nnoremap <leader>w :wa<CR>
+
+" Insert just one character
+nnoremap s i_<ESC>r
+nnoremap S a_<ESC>r
+
+" Reloading config
+nnoremap <leader>R :source ~/.config/nvim/init.vim<CR>
+
+" Jumping to next occurs of the searched letter
+nnoremap gn ;
+nnoremap gN ,
+
+" Redrawing the screen also removes the hightlight from search
+" noremap <silent> <C-l> :nohls<CR><C-l>
+
+" List buffers
+nnoremap <leader>bls :ls<CR>:b<Space>
+
+" Copy to clipboard
+nnoremap <leader>cy "*y
+
+" Pastemode
+nnoremap <F7> :set paste!<CR>
+
+"""""""""""""""""""""""""""""""""""""
+""""""""""    Commands
+"""""""""""""""""""""""""""""""""""""
+
+command! JoinLines execute "g/^$/,/./-j"
+
+command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
+
+"""""""""""""""""""""""""""""""""""""
+""""""""""    Plugins
+"""""""""""""""""""""""""""""""""""""
+
+""" KabbAmine/zeavim.vim
+let g:zv_zeal_directory = "/usr/bin/zeal"
+let g:zv_added_files_type = {
+            \ 'rb': 'Ruby'
+            \ }
+
+""" scrooloose/nerdtree
+nnoremap <F2> :NERDTreeToggle<CR>
+" Run Nerdtree on startup
+" autocmd vimenter * if !argc() | NERDTree | endif
+" If the only window left when quitting is NERDTree, then quit whole vim
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+""" taglist.vim
+nnoremap <F3> :TlistToggle<CR>
+
+""" AndrewRadev/switch.vim
+nnoremap gs :Switch<CR>
+
+""" docunext/closetag.vim
+let g:closetag_filenames = "*.html,*.xml,*.html.erb"
+
+""" pipe2eval
+let g:pipe2eval_map_key = '<Leader>el'
+
+""" tpope/vim-fugitive
+nnoremap <leader>gtc :Gcommit<CR>
+nnoremap <leader>gtp :Gpush<CR>
+nnoremap <leader>gtu :Gpull<CR>
+nnoremap <leader>gtd :Gdiff<CR>
+nnoremap <leader>gtb :Gblame<CR>
+
+""" bling/vim-airline
+let g:airline_powerline_fonts = 1
+
+""" benekastah/neomake
+autocmd! BufWritePost * Neomake
+let g:neomake_c_enabled_markers = ['clang']
+let g:neomake_cpp_enabled_markers = ['clang++']
+let g:neomake_coffeescript_enabled_markers = ['coffeelint']
+let g:neomake_ruby_enabled_markers = ['rubocop']
+let g:neomake_sh_enabled_markers = ['shellcheck']
+let g:neomake_zsh_enabled_markers = ['shellcheck']
+let g:neomake_jsx_enabled_markers = ['jsxlint']
+let g:neomake_json_enabled_markers = ['jsonlint']
+let g:neomake_javascript_enabled_markers = ['eslint']
+
+""" bkad/CamelCaseMotion
+map <S-W> <Plug>CamelCaseMotion_w
+map <S-B> <Plug>CamelCaseMotion_b
+map <S-E> <Plug>CamelCaseMotion_e
+
+""" mattn/gist-vim
+let g:gist_detect_filetype = 1
+let g:gist_open_browser_after_post = 1
+let g:gist_post_private = 1
+let g:gist_browser_command = 'firefox %URL%'
+
+""" mhinz/vim-signify
+let g:signify_vcs_list = [ 'git', 'hg' ]
+" let g:signify_line_highlight = 1
+
+""" junegunn/vim-easy-align
+vnoremap <leader>a= :EasyAlign =<CR>
+vnoremap <leader>asp :EasyAlign *\ <CR>
+vnoremap <leader>as1 :EasyAlign\ <CR>
+
+""" indentLine.vim
+let g:indentLine_noConcealCursor=""
+
+""" mileszs/ack.vim
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
+let g:ack_autofold_results = 0
+let g:ackpreview = 0
+" let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case"
+let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case --ignore-dir=log --ignore-dir=vendor --ignore-dir=tmp --ignore-dir=locale"
+" let g:ack_use_dispatch = 1
+
+""" ctrlpvim/ctrlp.vim
+" let g:ctrlp_extensions = ['funky']
+" let g:ctrlp_funky_syntax_highlight = 1
+" Always open in new buffers
+let g:ctrlp_switch_buffer = 0
+let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+nmap <Leader>pp :CtrlP<CR>
+nmap <Leader>pb :CtrlPBuffer<CR>
+nmap <Leader>pc :CtrlPCmdPalette<CR>
+nmap <Leader>pm :CtrlPMRUFiles<CR>
+nmap <leader>pr :ClearCtrlPCache<CR>
+
+""" mmozuras/vim-github-comment
+let g:github_user='swistak35'
+let g:github_open_browser=1
+
+""" haya14busa/incsearch.vim
+set hlsearch
+let g:incsearch#magic = '\v'
+let g:incsearch#auto_nohlsearch = 1
+map / <Plug>(incsearch-forward)
+map ? <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+map *  <Plug>(incsearch-nohl-*)
+map #  <Plug>(incsearch-nohl-#)
+map g* <Plug>(incsearch-nohl-g*)
+map g# <Plug>(incsearch-nohl-g#)
+
+""" gorkunov/smartgf.vim
+let g:smartgf_create_default_mappings = 0
+let g:smartgf_auto_refresh_ctags = 0
+let g:smartgf_enable_gems_search = 1
+nmap gu <Plug>(smartgf-search)
+vmap gu <Plug>(smartgf-search)
+nmap gU <Plug>(smartgf-search-unfiltered)
+vmap gU <Plug>(smartgf-search-unfiltered)
+map <F4> :SmargfRefreshTags<CR>
+" autocmd! BufWritePost * SmargfRefreshTags
+
+""" maxbrunsfeld/vim-yankstack
+nmap [w <Plug>yankstack_substitute_older_paste
+nmap ]w <Plug>yankstack_substitute_newer_paste
+
+""" christoomey/vim-tmux-runner
+let g:VtrPercentage = 15
+let g:VtrClearEmptyLines = 1
+let g:VtrInitialCommand = "ls"
+
+""" junegunn/limelight.vim
+let g:limelight_default_coefficient = 0.5
+let g:limelight_paragraph_span = 1
+
+""" junegunn/goyo.vim
+autocmd User GoyoEnter Limelight
+autocmd User GoyoLeave Limelight!
+nnoremap <localleader>gy :Goyo<CR>
+
+""" vim-test
+let test#strategy = "vtr"
+nmap <silent> <localleader>tn :TestNearest<CR>
+nmap <silent> <localleader>tf :TestFile<CR>
+nmap <silent> <localleader>ts :TestSuite<CR>
+nmap <silent> <localleader>tl :TestLast<CR>
+nmap <silent> <localleader>tv :TestVisit<CR>
+
+""" SirVer/ultisnips
+let g:UltiSnipsExpandTrigger="<c-e>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+""" tpope/vim-rails
+nmap <localleader>rm :Rmigration<CR>
+
+""" christoomey/vim-tmux-navigator
+let g:tmux_navigator_no_mappings = 1
+
+nnoremap <silent> <C-w>h :TmuxNavigateLeft<cr>
+nnoremap <silent> <C-w>j :TmuxNavigateDown<cr>
+nnoremap <silent> <C-w>k :TmuxNavigateUp<cr>
+nnoremap <silent> <C-w>l :TmuxNavigateRight<cr>
+
+""" the-lambda-church/merlin
+set rtp+=/usr/local/share/ocamlmerlin/vim
+
+"""""""""""""""""""""""""""""""""""""
+""""""""""    Other things
+"""""""""""""""""""""""""""""""""""""
+
+" Because self is not python keyword stuff
+syn keyword Keyword self
+
+""" Other
+cabbrev help tab help
+
+" Create absent directories on edit
+augroup BWCCreateDir
+  autocmd!
+  autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+augroup END
+
+" Remove trailing spaces after save
+au BufWritePre *.json,*.rb,*.py,*.c,*.h,*.feature,*.conf,*rc,README,CHANGELOG,README.* :%s/\s\+$//e
+
+au BufNewFile,BufRead *.pl set filetype=prolog
+
+" This allows for change paste motion cp{motion}
+nmap <silent> cp :set opfunc=ChangePaste<CR>g@
+function! ChangePaste(type, ...)
+    silent exe "normal! `[v`]\"_c"
+    silent exe "normal! p"
+endfunction
+
+""""""""" DISABLED PLUGINS
+
+""" szw/vim-tags
+" mostly obsolete now, smartgf is cooler than simple CTags
+" let g:vim_tags_auto_generate = 1
+" let g:vim_tags_use_vim_dispatch = 1
+
+""" scrooloose/syntastic
+" let g:syntastic_ruby_checkers = ['rubocop']
+" Alternative: 'mri'
+" let g:syntastic_auto_jump = 3
+
+""" rorymckinley/vim-symbols-strings
+" let g:symbolise_strings_map_keys = 0
+" nnoremap <silent> <Leader>sy :set opfunc=symbolsstrings#SymboliseStrings<CR>g@
+" nnoremap <silent> <Leader>st :set opfunc=symbolsstrings#StringifySymbols<CR>g@p
+
+""" gabebw/vim-spec-runner
+" let g:spec_runner_dispatcher = 'call VtrSendCommand("be {command}")'
+" map <localleader>sc <Plug>RunCurrentSpecFile
+" map <localleader>sf <Plug>RunFocusedSpec
+" map <localleader>sr <Plug>RunMostRecentSpec
+
+""" reedes/vim-pencil
+" augroup pencil
+"   autocmd!
+"   autocmd FileType markdown,mkd call pencil#init()
+"   autocmd FileType text         call pencil#init()
+" augroup END
+
+""" tacahiroy/ctrlp-funky
+" nmap <Leader>pf :CtrlPFunky<CR>
+" let g:ctrlp_funky_syntax_highlight = 1
+
+""" d11wtq/ctrlp_bdelete.vim
+" let g:ctrlp_bdelete_map = '<c-_>'
+" execute "nnoremap <buffer> <silent> ".g:ctrlp_bdelete_map." :call <sid>DeleteMarkedBuffers()<cr>"
+" call ctrlp_bdelete#init()
+
+""" garbas/vim-snipmate
+" imap <C-J> <ESC>a<Plug>snipMateNextOrTrigger
+" smap <C-J> <ESC>a<Plug>snipMateNextOrTrigger
+
+""" jgdavey/vim-blockle
+" let g:blockle_mapping = '<Leader>bl'
 
 if has('nvim')
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1
