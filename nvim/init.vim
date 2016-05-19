@@ -1,9 +1,17 @@
-call plug#begin('~/.nvim/plugged')
+function! Cond(cond, ...)
+  let opts = get(a:000, 0, {})
+  return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
+endfunction
+
+if has('nvim')
+  call plug#begin('~/.nvim/plugged')
+else
+  call plug#begin('~/.vim/plugged')
+endif 
 " There's plugin for that
 
 " Obvious
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mattn/webapi-vim'
 Plug 'mattn/gist-vim'
@@ -79,6 +87,8 @@ Plug 'henrik/vim-indexed-search'
 Plug 'christoomey/vim-tmux-navigator'
 " For ability to press v, vv, vvv, ...
 Plug 'terryma/vim-expand-region'
+" Display git information in NERDTree
+Plug 'Xuyuanp/nerdtree-git-plugin'
 
 Plug 'bruno-/vim-man'
 
@@ -138,7 +148,7 @@ Plug 'AndrewRadev/switch.vim'
 Plug 'KabbAmine/zeavim.vim'
 Plug 't9md/vim-chef'
 Plug 'maxbrunsfeld/vim-yankstack'
-Plug 'benekastah/neomake'
+Plug 'benekastah/neomake', Cond(has('nvim'))
 
 Plug 'the-lambda-church/merlin'
 
@@ -384,16 +394,18 @@ nnoremap <leader>gtb :Gblame<CR>
 let g:airline_powerline_fonts = 1
 
 """ benekastah/neomake
-autocmd! BufWritePost * Neomake
-let g:neomake_c_enabled_markers = ['clang']
-let g:neomake_cpp_enabled_markers = ['clang++']
-let g:neomake_coffeescript_enabled_markers = ['coffeelint']
-let g:neomake_ruby_enabled_markers = ['rubocop']
-let g:neomake_sh_enabled_markers = ['shellcheck']
-let g:neomake_zsh_enabled_markers = ['shellcheck']
-let g:neomake_jsx_enabled_markers = ['jsxlint']
-let g:neomake_json_enabled_markers = ['jsonlint']
-let g:neomake_javascript_enabled_markers = ['eslint']
+if has('nvim')
+  autocmd! BufWritePost * Neomake
+  let g:neomake_c_enabled_markers = ['clang']
+  let g:neomake_cpp_enabled_markers = ['clang++']
+  let g:neomake_coffeescript_enabled_markers = ['coffeelint']
+  let g:neomake_ruby_enabled_markers = ['rubocop']
+  let g:neomake_sh_enabled_markers = ['shellcheck']
+  let g:neomake_zsh_enabled_markers = ['shellcheck']
+  let g:neomake_jsx_enabled_markers = ['jsxlint']
+  let g:neomake_json_enabled_markers = ['jsonlint']
+  let g:neomake_javascript_enabled_markers = ['eslint']
+endif
 
 """ bkad/CamelCaseMotion
 map <S-W> <Plug>CamelCaseMotion_w
