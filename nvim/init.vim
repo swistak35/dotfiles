@@ -3,6 +3,7 @@ call plug#begin('~/.nvim/plugged')
 
 " Obvious
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mattn/webapi-vim'
 Plug 'mattn/gist-vim'
