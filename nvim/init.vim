@@ -18,7 +18,6 @@ Plug 'mattn/gist-vim'
 Plug 'bling/vim-airline'
 Plug 'tpope/vim-rails'
 Plug 'Valloric/YouCompleteMe', { 'do': './install.sh' }
-Plug 'netrw.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'fisadev/vim-ctrlp-cmdpalette'
 Plug 'mileszs/ack.vim'
@@ -167,6 +166,7 @@ Plug 'vim-hackernews'
 " Plug 'rorymckinley/vim-symbols-strings'
 " Plug 'tacahiroy/ctrlp-funky'
 " Plug 'garbas/vim-snipmate'
+" Plug 'netrw.vim'
 
 " Dependencies for vim-snipmate
 " Plug 'marcweber/vim-addon-mw-utils'
