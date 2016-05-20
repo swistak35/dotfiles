@@ -438,7 +438,7 @@ let g:ack_autofold_results = 0
 let g:ackpreview = 0
 " let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case"
 let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case --ignore-dir=log --ignore-dir=vendor --ignore-dir=tmp --ignore-dir=locale"
-" let g:ack_use_dispatch = 1
+let g:ack_use_dispatch = 1
 
 """ ctrlpvim/ctrlp.vim
 " let g:ctrlp_extensions = ['funky']
