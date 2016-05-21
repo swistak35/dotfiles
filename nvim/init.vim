@@ -8,7 +8,6 @@ if has('nvim')
 else
   call plug#begin('~/.vim/plugged')
 endif 
-" There's plugin for that
 
 " Obvious
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -88,6 +87,10 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'terryma/vim-expand-region'
 " Display git information in NERDTree
 Plug 'Xuyuanp/nerdtree-git-plugin'
+" Buffer explorer. Bar at the top
+Plug 'weynhamz/vim-plugin-minibufexpl'
+" Undotree
+Plug 'mbbill/undotree'
 
 Plug 'bruno-/vim-man'
 
@@ -349,6 +352,21 @@ command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincm
 """""""""""""""""""""""""""""""""""""
 """"""""""    Plugins
 """""""""""""""""""""""""""""""""""""
+
+""" weynhamz/vim-plugin-minibufexpl
+nnoremap <leader>bd :MBEbd<CR>
+nnoremap <leader>bn :MBEbn<CR>
+nnoremap <leader>bp :MBEbp<CR>
+nnoremap <C-i> :MBEbn<CR>
+nnoremap <C-u> :MBEbp<CR>
+
+""" mbbill/undotree
+nnoremap <F5> :UndotreeToggle<cr>
+let g:undotree_WindowLayout = 2
+function! g:Undotree_CustomMap()
+  nmap <buffer> K <plug>UndotreeGoNextState
+  nmap <buffer> J <plug>UndotreeGoPreviousState
+endfunc
 
 """ KabbAmine/zeavim.vim
 let g:zv_zeal_directory = "/usr/bin/zeal"
