@@ -407,7 +407,7 @@ nnoremap <leader>gtc :Gcommit<CR>
 nnoremap <leader>gtp :Gpush<CR>
 nnoremap <leader>gtu :Gpull<CR>
 nnoremap <leader>gtd :Gdiff<CR>
-nnoremap <leader>gtb :Gblame<CR>
+nnoremap <leader>gtb :Gblame -w -M<CR>
 
 """ bling/vim-airline
 let g:airline_powerline_fonts = 1
