@@ -156,7 +156,6 @@ Plug 'benekastah/neomake', Cond(has('nvim'))
 Plug 'the-lambda-church/merlin'
 
 " VimOS fun
-Plug 'vim-hackernews'
 
 """ DISABLED PLUGINS
 " Plug 'tpope/vim-markdown'
@@ -171,6 +170,7 @@ Plug 'vim-hackernews'
 " Plug 'tacahiroy/ctrlp-funky'
 " Plug 'garbas/vim-snipmate'
 " Plug 'netrw.vim'
+" Plug 'vim-hackernews'
 
 " Dependencies for vim-snipmate
 " Plug 'marcweber/vim-addon-mw-utils'
