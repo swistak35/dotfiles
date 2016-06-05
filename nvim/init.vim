@@ -209,7 +209,7 @@ set background=dark
 set backspace=indent,eol,start
 set backup
 set backupdir=~/.vim/tmp,.
-set clipboard=unnamed           "save to system clipboard by default
+set clipboard=unnamed,unnamedplus           "save to system clipboard by default
 set nocompatible
 set directory=~/.vim/swp,.
 set expandtab                   "expand tabs to spaces
