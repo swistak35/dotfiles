@@ -143,7 +143,7 @@ Plug 'indentLine.vim'
 Plug 'matchit.zip'
 Plug 'ecomba/vim-ruby-refactoring'
 Plug 'tpope/vim-commentary'
-Plug 'pipe2eval'
+Plug 'pipe2eval', { 'do': 'chmod +x plugin/pipe2eval.sh' }
 Plug 'textobj-indent'
 Plug 'dbext.vim'
 Plug 'AndrewRadev/splitjoin.vim'
