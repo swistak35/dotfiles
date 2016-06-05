@@ -92,7 +92,7 @@ Plug 'weynhamz/vim-plugin-minibufexpl'
 " Undotree
 Plug 'mbbill/undotree'
 
-Plug 'bruno-/vim-man'
+Plug 'vim-utils/vim-man'
 
 " Text objects
 Plug 'bkad/CamelCaseMotion'
