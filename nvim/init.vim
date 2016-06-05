@@ -448,7 +448,7 @@ vnoremap <leader>asp :EasyAlign *\ <CR>
 vnoremap <leader>as1 :EasyAlign\ <CR>
 
 """ indentLine.vim
-let g:indentLine_noConcealCursor=""
+" let g:indentLine_noConcealCursor=""
 
 """ mileszs/ack.vim
 if executable('ag')
