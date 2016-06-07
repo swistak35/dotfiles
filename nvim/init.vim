@@ -91,6 +91,8 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'weynhamz/vim-plugin-minibufexpl'
 " Undotree
 Plug 'mbbill/undotree'
+" Better matcher for CtrlP - requires python
+Plug 'FelikZ/ctrlp-py-matcher'
 
 Plug 'vim-utils/vim-man'
 
@@ -465,12 +467,26 @@ let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case --
 " let g:ctrlp_funky_syntax_highlight = 1
 " Always open in new buffers
 let g:ctrlp_switch_buffer = 0
-let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+" let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+if executable("ag")
+  set grepprg=ag\ --nogroup\ --nocolor
+  let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --ignore ''.git'' --ignore ''.DS_Store'' --ignore ''node_modules'' --hidden -g ""'
+endif
+" Set no file limit, we are building a big project
+let g:ctrlp_max_files = 0
 nmap <Leader>pp :CtrlP<CR>
 nmap <Leader>pb :CtrlPBuffer<CR>
 nmap <Leader>pc :CtrlPCmdPalette<CR>
 nmap <Leader>pm :CtrlPMRUFiles<CR>
 nmap <leader>pr :ClearCtrlPCache<CR>
+
+""" FelikZ/ctrlp-py-matcher
+" PyMatcher for CtrlP
+" if !has('python')
+"   echo 'In order to use pymatcher plugin, you need +python compiled vim'
+" else
+"   let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+" endif
 
 """ mmozuras/vim-github-comment
 let g:github_user='swistak35'
