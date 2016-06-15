@@ -299,7 +299,7 @@ nmap <silent> <localleader>tl :TestLast<CR>
 nmap <silent> <localleader>tv :TestVisit<CR>
 
 """ SirVer/ultisnips
-let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsExpandTrigger="<c-e>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 

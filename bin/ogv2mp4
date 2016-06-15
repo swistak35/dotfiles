@@ -9,4 +9,4 @@ else
 end
 
 # system "ffmpeg --enable-libmp3lame -i '#{name}' -c:v libx264 -preset veryslow -crf 22 -c:v libmp3lame -qscale:a 2 -ac 2 -ar 44100 '#{new_name}'"
-system "ffmpeg -y -i '#{name}' -acodec libmp2lame '#{new_name}'"
+system "ffmpeg -y -i '#{name}' -acodec libmp3lame '#{new_name}'"
