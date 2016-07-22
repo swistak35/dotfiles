@@ -52,3 +52,9 @@ switch-theme-night() {
 switch-theme-day() {
   switch-term-color "colors=SolarizedLight"
 }
+
+be_rspec_with_notification() {
+  bundle exec rspec $*
+  tput bel
+  notify-send "Tests are done." "Back to Coding!"
+}
