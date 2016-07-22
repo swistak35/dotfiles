@@ -33,17 +33,18 @@
 	insteadOf = "heroku:"
 [core]
 	excludesfile = /home/swistak35/.global_gitignore
-	editor = vim
+	editor = nvim
+	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
 	; autocrlf = input
 	; autocrlf = true
 [merge]
 	tool = vimdiff
-[color "diff"]
-	meta = yellow bold
-	frag = magenta bold
-	old = red bold
-	new = green bold
-	whitespace = red reverse
+; [color "diff"]
+; 	meta = yellow bold
+; 	frag = magenta bold
+; 	old = red bold
+; 	new = green bold
+; 	whitespace = red reverse
 [color "status"]
 	added = yellow
 	changed = green
@@ -54,3 +55,5 @@
 	autosetuprebase = always
 [diff]
 	algorithm = patience
+[color]
+	ui = true
