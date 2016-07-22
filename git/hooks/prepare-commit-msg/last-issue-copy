@@ -1,0 +1,14 @@
+#!/bin/sh
+ORIG_MSG_FILE="$1"
+
+TEMP=`mktemp /tmp/git-XXXXX`
+
+LAST_ISSUE=$(git log --max-count=100 | grep "Issue: " | sed -e "s/    //" | head -n 1)
+
+echo >> "$TEMP"
+echo >> "$TEMP"
+
+echo $LAST_ISSUE >> "$TEMP"
+
+cat "$ORIG_MSG_FILE" >> "$TEMP"
+cat "$TEMP" > "$ORIG_MSG_FILE"
