@@ -6,8 +6,9 @@
 .vimrc
 .nvimrc
 
-# rbenv
+# ruby
 .ruby-version
+.byebug_history
 
 # zeus
 zeus.json
@@ -15,3 +16,4 @@ custom_plan.rb
 
 # KDE file manager
 .directory
+
