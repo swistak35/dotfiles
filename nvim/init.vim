@@ -229,7 +229,7 @@ set number
 if has('mouse')                 " in many terminal emulators
   set mouse=a                   "   the mouse works just fine,
 endif                           "   thus enable it.
-set relativenumber
+" set relativenumber " https://github.com/vim-ruby/vim-ruby/issues/243
 set ruler                       "show the cursor position all the time
 set scrolloff=5
 set secure
@@ -253,6 +253,7 @@ set wildignore+=*/vendor/cache/*,*/.sass-cache/*,*/node_modules/*,*/bower_compon
 set wildignore+=*.swp,*~,._*
 set wildmenu
 set wildmode=list:longest,full
+" set lazyredraw " https://github.com/vim-ruby/vim-ruby/issues/243
 
 """""""""""""""""""""""""""""""""""""
 """"""""""    Functions
