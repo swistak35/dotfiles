@@ -93,6 +93,8 @@ Plug 'weynhamz/vim-plugin-minibufexpl'
 Plug 'mbbill/undotree'
 " Better matcher for CtrlP - requires python
 Plug 'FelikZ/ctrlp-py-matcher'
+" Make focus events work with vim inside a tmux
+Plug 'tmux-plugins/vim-tmux-focus-events'
 
 Plug 'vim-utils/vim-man'
 
