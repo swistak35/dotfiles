@@ -37,6 +37,9 @@ install-other:
 	ln -s `pwd`/other/Xmodmap ~/.Xmodmap
 	rm -f ~/.taskrc
 	ln -s `pwd`/other/taskrc ~/.taskrc
+	rm -f ~/.irbrc
+	ln -s `pwd`/other/irbrc ~/.irbrc
+
 
 install-xfce:
 	rm ~/.config/Thunar/uca.xml
@@ -68,3 +71,11 @@ install-weechat:
 	ln -s `pwd`/weechat ~/.weechat
 	[ -e "$$HOME/.weechat/logs" ] || ln -s ~/.weechat-logs ~/.weechat/logs
 	[ -f "$$HOME/.weechat/sec.conf" ] || cp ~/.weechat/sec.conf.example ~/.weechat/sec.conf
+
+install-dropbox:
+	ln -s /media/magazyn/Dropbox/Dokumenty ~/Dokumenty
+	ln -s /media/magazyn/Dropbox/Obrazy ~/Obrazy
+
+install-qnapi:
+	mkdir -p ~/.kde/share/apps/dolphin/servicemenus/
+	ln -s /usr/share/doc/qnapi/qnapi-download.desktop ~/.kde/share/apps/dolphin/servicemenus/qnapi-download.desktop

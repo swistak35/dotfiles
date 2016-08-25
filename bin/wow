@@ -1,4 +1,4 @@
-#!/bin/ruby
+#!/usr/bin/ruby
 
 $WOW = ARGV[0] || "tbc"
 
