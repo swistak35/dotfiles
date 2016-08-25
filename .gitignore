@@ -9,5 +9,6 @@ nvim/swp/*
 nvim/tmp/*
 nvim/undo/*
 nvim/plugged/*
+nvim/shada/*
 
 zsh/cache

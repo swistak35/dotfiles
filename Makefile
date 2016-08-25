@@ -1,11 +1,9 @@
 install: install-vim install-zsh install-git install-bin install-other install-nvim install-xfce
 
 install-vim:
-	rm -rf ~/.vim ~/.vimrc ~/.vimrc_plugins ~/.vimrc_pluginrc
+	rm -rf ~/.vim ~/.vimrc
 	ln -s `pwd`/vim ~/.vim
-	ln -s ~/.vim/vimrc ~/.vimrc
-	ln -s ~/.vim/vimrc_plugins ~/.vimrc_plugins
-	ln -s ~/.vim/vimrc_pluginrc ~/.vimrc_pluginrc
+	ln -s ~/.config/nvim/init.vim ~/.vimrc
 	vim +PlugInstall +qall
 	# [ -d ~/.eclim ] && ln -s ~/.eclim ~/.vim/eclim
 
