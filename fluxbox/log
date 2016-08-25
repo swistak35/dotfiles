@@ -1,0 +1,46 @@
+------------------------------------------
+Plik dziennika: /home/swistak35/.fluxbox/log
+Fluxbox wersja: 1.3.7
+GIT Revision: unknown
+Skompilowano: Feb  9 2015 14:44:42
+Kompilator: GCC
+Wersja kompilatora: 4.9.2 20150204 (prerelease)
+
+Wartości domyślne: 
+menu: /usr/share/fluxbox/menu
+ windowmenu: /usr/share/fluxbox/windowmenu
+Styl: /usr/share/fluxbox/styles/bloe
+keys: /usr/share/fluxbox/keys
+init: /usr/share/fluxbox/init
+         nls: /usr/share/fluxbox/nls
+
+Skompilowano z opcjami (- => wyłączone): 
+BIDI
+-DEBUG
+EWMH
+IMLIB2
+NLS
+REMEMBER
+RENDER
+SHAPE
+SLIT
+SYSTEMTRAY
+TOOLBAR
+RANDR
+XFT
+XINERAMA
+XMB
+XPM
+
+------------------------------------------
+Failed to read: session.menuSearch
+Setting default value
+Błąd odczytu: session.menuSearch
+Ustawiam wartość domyślną
+Keys: Niewłaściwy klawisz/modyfikator w linii 87): Mod4 F4 :ToggleCmd {Exec[~/.fluxbox/scripts/off.sh]} {Exec[~/.fluxbox/scripts/resolution.sh]}
+Failed to read: session.screen0.focusSameHead
+Setting default value
+Błąd odczytu: session.menuSearch
+Ustawiam wartość domyślną
+Błąd odczytu: session.screen0.focusSameHead
+Ustawiam wartość domyślną
