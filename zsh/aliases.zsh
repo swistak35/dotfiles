@@ -60,6 +60,8 @@ alias idris="/opt/idris/.cabal-sandbox/bin/idris"
 alias rm='rm -I'
 alias gen-uuid='ruby -rsecurerandom -e "print SecureRandom.uuid"'
 
+alias bern=be_rspec_with_notification
+
 # Todo
 alias todo="/home/swistak35/Dropbox/Private/todo/todo.sh"
 alias td='todo'
@@ -110,7 +112,7 @@ alias gu='git pull'
 alias gs='git status'
 alias gco='git checkout'
 alias gcob='git checkout -b'
-alias gd='git diff -w'
+alias gd='git diff -w --patience --word-diff=color'
 alias gb='git branch'
 alias gbd='git branch -d'
 alias gf='git fetch'
@@ -122,6 +124,6 @@ alias gldr='git log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue
 alias glds='git log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short'
 alias gss='git stash save'
 alias gsp='git stash pop'
-alias gds='git diff --staged'
+alias gds='gd --staged'
 alias go='git show'
 alias goh='git show HEAD'
