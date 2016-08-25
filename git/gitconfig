@@ -55,5 +55,7 @@
 	autosetuprebase = always
 [diff]
 	algorithm = patience
+[rebase]
+	autostash = true
 [color]
 	ui = true

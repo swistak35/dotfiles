@@ -1,11 +1,9 @@
 install: install-vim install-zsh install-git install-bin install-other install-nvim install-xfce
 
 install-vim:
-	rm -rf ~/.vim ~/.vimrc ~/.vimrc_plugins ~/.vimrc_pluginrc
+	rm -rf ~/.vim ~/.vimrc
 	ln -s `pwd`/vim ~/.vim
-	ln -s ~/.vim/vimrc ~/.vimrc
-	ln -s ~/.vim/vimrc_plugins ~/.vimrc_plugins
-	ln -s ~/.vim/vimrc_pluginrc ~/.vimrc_pluginrc
+	ln -s ~/.config/nvim/init.vim ~/.vimrc
 	vim +PlugInstall +qall
 	# [ -d ~/.eclim ] && ln -s ~/.eclim ~/.vim/eclim
 
@@ -37,6 +35,9 @@ install-other:
 	ln -s `pwd`/other/Xmodmap ~/.Xmodmap
 	rm -f ~/.taskrc
 	ln -s `pwd`/other/taskrc ~/.taskrc
+	rm -f ~/.irbrc
+	ln -s `pwd`/other/irbrc ~/.irbrc
+
 
 install-xfce:
 	rm ~/.config/Thunar/uca.xml
@@ -68,3 +69,11 @@ install-weechat:
 	ln -s `pwd`/weechat ~/.weechat
 	[ -e "$$HOME/.weechat/logs" ] || ln -s ~/.weechat-logs ~/.weechat/logs
 	[ -f "$$HOME/.weechat/sec.conf" ] || cp ~/.weechat/sec.conf.example ~/.weechat/sec.conf
+
+install-dropbox:
+	ln -s /media/magazyn/Dropbox/Dokumenty ~/Dokumenty
+	ln -s /media/magazyn/Dropbox/Obrazy ~/Obrazy
+
+install-qnapi:
+	mkdir -p ~/.kde/share/apps/dolphin/servicemenus/
+	ln -s /usr/share/doc/qnapi/qnapi-download.desktop ~/.kde/share/apps/dolphin/servicemenus/qnapi-download.desktop
