@@ -345,7 +345,7 @@ nnoremap gn ;
 nnoremap gN ,
 
 " Redrawing the screen also removes the hightlight from search
-" noremap <silent> <C-l> :nohls<CR><C-l>
+noremap <silent> <C-l> :nohls<CR><C-l>
 
 " List buffers
 nnoremap <leader>bls :ls<CR>:b<Space>
