@@ -36,6 +36,7 @@ Plug 'cypok/vim-sml'
 Plug 'mxw/vim-jsx'
 Plug 'LnL7/vim-nix'
 Plug 'ElmCast/elm-vim'
+Plug 'rust-lang/rust.vim'
 
 """ Color schemes
 " Solarized
@@ -95,6 +96,8 @@ Plug 'mbbill/undotree'
 Plug 'FelikZ/ctrlp-py-matcher'
 " Make focus events work with vim inside a tmux
 Plug 'tmux-plugins/vim-tmux-focus-events'
+" Display full YAML path of a key in a YAML file
+Plug 'Einenlum/yaml-revealer'
 
 Plug 'vim-utils/vim-man'
 
@@ -269,6 +272,11 @@ function! s:MkNonExDir(file, buf)
   endif
 endfunction
 
+function! GetYaml()
+  let s:yaml_path = system('ruby /home/swistak35/projs/priv/give-me-full-key.rb ' . expand('%') . ' ' . line('.'))
+  echo s:yaml_path
+endfunction
+
 """""""""""""""""""""""""""""""""""""
 """"""""""    Mappings
 """""""""""""""""""""""""""""""""""""
@@ -347,6 +355,10 @@ nnoremap <leader>cy "*y
 
 " Pastemode
 nnoremap <F7> :set paste!<CR>
+
+
+" Nice ruby mappings
+nmap <localleader>f $varzf
 
 """""""""""""""""""""""""""""""""""""
 """"""""""    Commands
