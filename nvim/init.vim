@@ -144,8 +144,8 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'junegunn/vim-easy-align'
 Plug 'Rename2'
-" Plug 'mmozuras/vim-github-comment'
-Plug 'swistak35/vim-github-comment'
+Plug 'mmozuras/vim-github-comment'
+" Plug 'swistak35/vim-github-comment'
 Plug 'indentLine.vim'
 Plug 'matchit.zip'
 Plug 'ecomba/vim-ruby-refactoring'
@@ -498,11 +498,11 @@ nmap <leader>pr :ClearCtrlPCache<CR>
 
 """ FelikZ/ctrlp-py-matcher
 " PyMatcher for CtrlP
-" if !has('python')
-"   echo 'In order to use pymatcher plugin, you need +python compiled vim'
-" else
-"   let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
-" endif
+if !has('python')
+  echo 'In order to use pymatcher plugin, you need +python compiled vim'
+else
+  let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+endif
 
 """ mmozuras/vim-github-comment
 let g:github_user='swistak35'
