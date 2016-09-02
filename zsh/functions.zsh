@@ -53,6 +53,10 @@ switch-theme-day() {
   switch-term-color "colors=SolarizedLight"
 }
 
+switch-theme-off() {
+  export SWITCH_COLORS=nope
+}
+
 be_rspec_with_notification() {
   bundle exec rspec $*
   tput bel
