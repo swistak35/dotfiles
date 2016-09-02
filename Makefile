@@ -76,4 +76,11 @@ install-dropbox:
 
 install-qnapi:
 	mkdir -p ~/.kde/share/apps/dolphin/servicemenus/
+	rm -f ~/.kde/share/apps/dolphin/servicemenus/qnapi-download.desktop
 	ln -s /usr/share/doc/qnapi/qnapi-download.desktop ~/.kde/share/apps/dolphin/servicemenus/qnapi-download.desktop
+	mkdir -p ~/.kde/share/apps/d3lphin/servicemenus/
+	rm -f ~/.kde/share/apps/d3lphin/servicemenus/qnapi-download.desktop
+	ln -s /usr/share/doc/qnapi/qnapi-download.desktop ~/.kde/share/apps/d3lphin/servicemenus/qnapi-download.desktop
+	mkdir -p ~/.kde/share/apps/konqueror/servicemenus/
+	rm -f ~/.kde/share/apps/konqueror/servicemenus/qnapi-download.desktop
+	ln -s /usr/share/doc/qnapi/qnapi-download.desktop ~/.kde/share/apps/konqueror/servicemenus/qnapi-download.desktop
