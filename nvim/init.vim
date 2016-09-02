@@ -259,6 +259,8 @@ set wildmode=list:longest,full
 " set lazyredraw " https://github.com/vim-ruby/vim-ruby/issues/243
 set autoread " Automatically reload files if they've changed on the disk
 
+colorscheme solarized
+
 """""""""""""""""""""""""""""""""""""
 """"""""""    Functions
 """""""""""""""""""""""""""""""""""""
