@@ -1,0 +1,72 @@
+#
+# created by endel (endel@tlen.pl)
+# modified by me
+#
+
+background yes
+
+use_xft yes
+
+# font
+# font -artwiz-snap-*-*-*-*-*-*-*-*-*-*-*-*
+
+# xft font when Xft is enabled
+xftfont You're Gone:italic:size=11
+
+# Text alpha when using Xft
+xftalpha 1
+
+update_interval 1
+use_xft yes
+maximum_width 300
+minimum_size 200 5
+draw_shades yes
+draw_outline no
+draw_borders no
+stippled_borders 8
+border_margin 4
+border_width 1
+default_color white
+default_shade_color black
+default_outline_color black
+#alignment top_left
+alignment top_right
+#alignment bottom_left
+#alignment bottom_right
+gap_x 50
+gap_y 50
+no_buffers yes
+uppercase no
+double_buffer yes
+
+own_window yes
+own_window_type override
+own_window_transparent yes
+mail_spool $HOME/Maildir/
+
+TEXT
+${font You're Gone:bold:size=10}${alignr}$color$nodename ${font You're Gone:italic:size=6}$color with $kernel
+
+${font You're Gone:italic:size=22}${alignc}${time %H:%M }${font You're Gone:italic:size=11}${time %S}
+
+${font You're Gone:italic:size=10}${alignc 75}${color #C9E2B9} CPU ${color #A4BBDF} ${cpubar 6}
+${font You're Gone:italic:size=10}${alignc 75}${color #C9E2B9} RAM ${color #A4BBDF} ${membar 6}
+
+${font You're Gone:italic:size=10}${color #C9E2B9} Data  ${font You're Gone:italic:size=11}${color #A4BBDF}${time %a, }${time %e %m %G}
+${font You're Gone:italic:size=10}${color #C9E2B9} Uptime  ${font You're Gone:italic:size=11}${color #A4BBDF}$uptime_short
+
+${color lightgrey}${hr}
+${font You're Gone:italic:size=10}${alignc 75}${color #C9E2B9} CPU      MEM      Proces
+${font You're Gone:italic:size=9}${color}${top_mem cpu 1}    ${top_mem mem 1} ${color #A4BBDF}   ${top name 1}
+${font You're Gone:italic:size=9}${color}${top_mem cpu 2}    ${top_mem mem 2} ${color #A4BBDF}   ${top name 2}
+${font You're Gone:italic:size=9}${color}${top_mem cpu 3}    ${top_mem mem 3} ${color #A4BBDF}   ${top name 3}
+${font You're Gone:italic:size=9}${color}${top_mem cpu 4}    ${top_mem mem 4} ${color #A4BBDF}   ${top name 4}
+
+${color lightgrey}${hr}
+${font You're Gone:italic:size=9}${color #C9E2B9}Transfer:$alignr${color1}${downspeed wlp0s20u7} / ${upspeed wlp0s20u7}
+${font You're Gone:italic:size=9}${color #C9E2B9}Sila sygnalu:$alignr${color1}${wireless_link_qual_perc wlp0s20u7}%
+
+${color lightgrey}${hr}
+${font You're Gone:italic:size=10}${alignc 75}${color #C9E2B9} HDD Info
+${font You're Gone:italic:size=9}$color ROOT $color${fs_free /}  ${color #A4BBDF}${fs_bar 4 /}
+${font You're Gone:italic:size=9}$color MGZN $color${fs_free /media/magazyn}  ${color #A4BBDF}${fs_bar 4 /media/magazyn}

@@ -1,0 +1,97 @@
+######################
+# - Conky settings - #
+######################
+update_interval 1
+total_run_times 0
+net_avg_samples 1
+cpu_avg_samples 1
+if_up_strictness link
+
+imlib_cache_size 0
+double_buffer yes
+no_buffers yes
+
+format_human_readable
+
+#####################
+# - Text settings - #
+#####################
+use_xft yes
+xftfont Ubuntu:size=12
+override_utf8_locale yes
+text_buffer_size 2048
+
+#############################
+# - Window specifications - #
+#############################
+own_window_class Conky
+own_window yes
+own_window_type desktop
+own_window_transparent yes
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+
+alignment top_right
+gap_x 25
+gap_y 40
+minimum_size 300 600
+maximum_width 300
+
+default_bar_size 60 8
+
+#########################
+# - Graphics settings - #
+#########################
+draw_shades no
+
+default_color cccccc
+
+color0 white
+color1 CE5C00 
+color2 white
+color3 CE5C00
+
+TEXT
+${font Ubuntu:style=Bold:size=11}HARDWARE $stippled_hr${font}
+##############
+# - SYSTEM - #
+##############
+# |--CPU
+${offset 2}${color0}${font Poky:size=14}P${font}${color}${goto 32}CPU1: ${font Ubuntu:style=Bold}${color1}${cpu cpu1}%${font} ${alignr}${font Ubuntu:style=Bold}${color1}${execi 30 sensors | grep 'Core 0' | awk '{print $3}' | sed 's/+//' | sed 's/\.0//g'}${color}${font}
+${color2}${cpugraph cpu1 50,300 E07A1F CE5C00}${color}
+${offset 2}${color0}${font Poky:size=14}P${font}${color}${goto 32}CPU2: ${font Ubuntu:style=Bold}${color1}${cpu cpu2}%${font} ${alignr}${font Ubuntu:style=Bold}${color1}${execi 30 sensors | grep 'Core 1' | awk '{print $3}' | sed 's/+//' | sed 's/\.0//g'}${color}${font}
+${color2}${cpugraph cpu2 50,300 E07A1F CE5C00}${color}
+${offset 2}${color0}${font Poky:size=14}P${font}${color}${goto 32}CPU3: ${font Ubuntu:style=Bold}${color1}${cpu cpu3}%${font} ${alignr}${font Ubuntu:style=Bold}${color1}${execi 30 sensors | grep 'Core 2' | awk '{print $3}' | sed 's/+//' | sed 's/\.0//g'}${color}${font}
+${color2}${cpugraph cpu3 50,300 E07A1F CE5C00}${color}
+${offset 2}${color0}${font Poky:size=14}P${font}${color}${goto 32}CPU4: ${font Ubuntu:style=Bold}${color1}${cpu cpu4}%${font} ${alignr}${font Ubuntu:style=Bold}${color1}${execi 30 sensors | grep 'Core 3' | awk '{print $3}' | sed 's/+//' | sed 's/\.0//g'}${color}${font}
+${color2}${cpugraph cpu4 50,300 E07A1F CE5C00}${color}
+# |--MEM
+${voffset 0}${offset 1}${color0}${font Poky:size=14}M${font}${color}${voffset -4}${goto 32}RAM: ${font Ubuntu:style=Bold}${color1}$memperc%${color}${font}${goto 128}F: ${font Ubuntu:style=Bold}${color2}${memeasyfree}${color}${font} ${goto 224}U: ${font Ubuntu:style=Bold}${color2}${mem}${color}${font}
+# |--SWAP
+${voffset 10}${offset 1}${color0}${font Poky:size=14}s${font}${color}${voffset -4}${goto 32}SWAP: ${font Ubuntu:style=Bold}${color1}${swapperc}%${color}${font}${goto 128}F: ${font Ubuntu:style=Bold}${color2}$swapmax${color}${font} ${goto 224}U: ${font Ubuntu:style=Bold}${color2}$swap${color}${font}
+
+##############
+# - NVIDIA - #
+##############
+${voffset 4}${font Ubuntu:style=Bold:size=11}NVIDIA $stippled_hr${font}
+${color0}${voffset -4}${font Poky:size=17}N${font}${color}
+${voffset -40}
+${goto 32}GPU Temp:${alignr}${font Ubuntu:style=Bold}${color1} ${exec nvidia-settings -q GPUCoreTemp | grep Attribute | cut -d ' ' -f 6 | cut -c 1-2 | head -n1}${font}${color}°C
+${goto 32}GPU Clock:${alignr}${font Ubuntu:style=Bold}${color1} ${exec nvidia-settings -q GPUCurrentClockFreqs | grep Attribute | cut -d ' ' -f6 | cut -d ',' -f1 | head -n1}${font}${color} MHz
+${goto 32}Video RAM:${alignr}${font Ubuntu:style=Bold}${color1} ${exec nvidia-settings -q VideoRam -t | head -n1}${font}${color} KiB
+${goto 32}Driver Version:${alignr}${font Ubuntu:style=Bold}${color1} ${exec nvidia-settings -q NvidiaDriverVersion -t | head -n1}${font}${color}
+##########
+# - HD - #
+##########
+${voffset 4}${font Ubuntu:style=Bold:size=11}DYSKI $stippled_hr${font}
+${voffset 4}${color0}${font Poky:size=15}y${font}${color}
+${voffset -40}
+${goto 32}Temperatura: ${font Ubuntu:style=Bold}${color1}${hddtemp /dev/sda}°C${color}${font}${alignr}${color2}/dev/sda${color}
+${if_mounted /media/magazyn}${goto 32}Temperatura: ${font Ubuntu:style=Bold}${color1}${hddtemp /dev/sdb}°C${color}${font}${alignr}${color2}/dev/sdb${color}${endif}
+
+${color0}${font ConkyColors:size=15}i${font}${color}${offset 6}
+${voffset -45}
+${goto 32}root: ${goto 90}${font Ubuntu:style=Bold}${color1}${fs_free_perc /}%${color}${font}${goto 128}F: ${font Ubuntu:style=Bold}${color2}${fs_free /}${color}${font}${goto 224}U: ${font Ubuntu:style=Bold}${color2}${fs_used /}${color}${font}
+${if_mounted /media/magazyn}${goto 32}mgzn: ${goto 90}${font Ubuntu:style=Bold}${color1}${fs_free_perc /media/magazyn}%${color}${font}${goto 128}F: ${font Ubuntu:style=Bold}${color2}${fs_free /media/magazyn}${color}${font}${goto 224}U: ${font Ubuntu:style=Bold}${color2}${fs_used /media/magazyn}${color}${font}${endif}
+${if_mounted /media/pacman_cache}${goto 32}cache: ${goto 90}${font Ubuntu:style=Bold}${color1}${fs_free_perc /media/pacman_cache}%${color}${font}${goto 128}F: ${font Ubuntu:style=Bold}${color2}${fs_free /media/pacman_cache}${color}${font}${goto 224}U: ${font Ubuntu:style=Bold}${color2}${fs_used /media/pacman_cache}${color}${font}${endif}
+${if_mounted /media/zewnetrzny}${goto 32}zewn: ${goto 90}${font Ubuntu:style=Bold}${color1}${fs_free_perc /media/zewnetrzny}%${color}${font}${goto 128}F: ${font Ubuntu:style=Bold}${color2}${fs_free /media/zewnetrzny}${color}${font}${goto 224}U: ${font Ubuntu:style=Bold}${color2}${fs_used /media/zewnetrzny}${color}${font}${endif}
+

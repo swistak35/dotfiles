@@ -1,0 +1,90 @@
+#avoid flicker
+
+double_buffer yes
+
+
+
+#own window to run simultanious 2 or more conkys
+
+own_window  yes
+
+own_window_transparent no
+
+own_window_type normal
+
+own_window_hints undecorate,sticky,skip_taskbar,skip_pager 
+
+
+
+#borders
+
+draw_borders no
+
+border_margin 1
+
+
+
+#shades
+
+draw_shades no
+
+
+
+#position
+
+gap_x 0
+
+gap_y 23
+
+alignment top_left
+
+
+
+#behaviour
+
+update_interval 1
+
+
+
+#colour
+
+default_color 707070
+
+
+
+#default_shade_color 000000
+
+own_window_colour 303030
+
+
+
+#font
+
+use_xft yes
+
+#xftfont bauhaus:pixelsize=10
+xftfont AvantGarde LT medium:pixelsize=10
+xftalpha 0.8
+
+
+#to prevent window from moving
+
+use_spacer no
+
+minimum_size 1280 0
+maximum_width 1280
+
+
+
+#mpd
+
+mpd_host localhost
+
+mpd_port 6600
+
+
+
+TEXT
+
+${alignc} ${time %d %B} ${color ecedee}${time  %H:%M}  |  ${color} Up: ${color ecedee}${uptime_short}   |  ${color}Cpu: ${color ecedee}${cpu}%   ${color}${cpugraph 10,80 303030 ecedee} ${color ecedee}    |   ${color }Mem: ${color ecedee}$mem/$memmax - $memperc% ${color} ${membar 6,80}${color ecedee}    |   ${color }Net: ${color ecedee}${font}${downspeed wlan0} Kb/s ${color}  ${downspeedgraph wlan0 10,80 ecedee 303030}  ${color ecedee} ${totaldown wlan0} down
+${alignc} ${color }Kernel: ${color ecedee}$kernel  |  ${alignc} ${color }Root: ${color ecedee}${font}${fs_free /}  / ${fs_size /} - ${fs_free_perc /}%  |  ${color} Home: ${color ecedee}${fs_free /home}  / ${fs_size /home}  - ${fs_free_perc /home}%  |  ${color}APT: ${color D7D3C5}${execi 28800 ~/.conky/debupdates.sh} updates available
