@@ -16,7 +16,8 @@ Plug 'mattn/webapi-vim'
 Plug 'mattn/gist-vim'
 Plug 'bling/vim-airline'
 Plug 'tpope/vim-rails'
-Plug 'Valloric/YouCompleteMe', { 'do': './install.sh' }
+Plug 'tpope/vim-projectionist'
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
 Plug 'tpope/vim-fugitive'
 Plug 'fisadev/vim-ctrlp-cmdpalette'
 Plug 'mileszs/ack.vim'
@@ -56,8 +57,11 @@ Plug 'ap/vim-css-color'
 Plug 'haya14busa/incsearch.vim'
 " Autoclose xml tags
 Plug 'docunext/closetag.vim'
+
 " Underscoring words which are the same as current
-Plug 'vim-cursorword'
+" Crashing in newest version
+" Plug 'vim-cursorword'
+
 " Let vim know about end keyword
 Plug 'tpope/vim-endwise'
 " Hunks about modified lines
@@ -99,7 +103,7 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 " Display full YAML path of a key in a YAML file
 Plug 'Einenlum/yaml-revealer'
 
-Plug 'vim-utils/vim-man'
+" Plug 'vim-utils/vim-man'
 
 " Text objects
 Plug 'bkad/CamelCaseMotion'
@@ -136,7 +140,10 @@ Plug 'artnez/vim-wipeout'
 Plug 'vim-scripts/gitignore'
 
 " Support for nice use for JSON files (don't display quotes, etc.)
-Plug 'elzr/vim-json'
+" Plug 'elzr/vim-json'
+
+" Improvements for clipboard
+Plug 'svermeulen/vim-easyclip'
 
 Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-abolish'
@@ -159,8 +166,11 @@ Plug 'KabbAmine/zeavim.vim'
 Plug 't9md/vim-chef'
 Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'benekastah/neomake', Cond(has('nvim'))
+Plug 'szw/vim-tags'
 
 Plug 'the-lambda-church/merlin'
+
+Plug '~/projs/my-prototype-plugin'
 
 " VimOS fun
 
@@ -172,7 +182,6 @@ Plug 'the-lambda-church/merlin'
 " Plug 'osyo-manga/vim-monster'
 " Plug 'scrooloose/syntastic'
 " Plug 'tpope/vim-markdown'
-" Plug 'szw/vim-tags'
 " Plug 'rorymckinley/vim-symbols-strings'
 " Plug 'tacahiroy/ctrlp-funky'
 " Plug 'garbas/vim-snipmate'
@@ -232,7 +241,12 @@ set number
 if has('mouse')                 " in many terminal emulators
   set mouse=a                   "   the mouse works just fine,
 endif                           "   thus enable it.
+
+" Potentially can lag ruby files
 " set relativenumber " https://github.com/vim-ruby/vim-ruby/issues/243
+" set lazyredraw " https://github.com/vim-ruby/vim-ruby/issues/243
+
+" set cursorline
 set ruler                       "show the cursor position all the time
 set scrolloff=5
 set secure
@@ -256,8 +270,12 @@ set wildignore+=*/vendor/cache/*,*/.sass-cache/*,*/node_modules/*,*/bower_compon
 set wildignore+=*.swp,*~,._*
 set wildmenu
 set wildmode=list:longest,full
-" set lazyredraw " https://github.com/vim-ruby/vim-ruby/issues/243
 set autoread " Automatically reload files if they've changed on the disk
+
+" Folding
+set foldmethod=syntax
+set foldlevel=2
+set foldnestmax=4
 
 colorscheme solarized
 
@@ -336,8 +354,8 @@ nnoremap Q @q
 nnoremap <leader>w :wa<CR>
 
 " Insert just one character
-nnoremap s i_<ESC>r
-nnoremap S a_<ESC>r
+" nnoremap s i_<ESC>r
+" nnoremap S a_<ESC>r
 
 " Reloading config
 nnoremap <leader>R :source ~/.config/nvim/init.vim<CR>
@@ -358,9 +376,17 @@ nnoremap <leader>cy "*y
 " Pastemode
 nnoremap <F7> :set paste!<CR>
 
+" turn off search highlight
+nnoremap <leader><space> :nohlsearch<CR>
 
 " Nice ruby mappings
 nmap <localleader>f $varzf
+
+" open/closes folds
+" nnoremap <space> za
+" nnoremap <S-space> zA
+nnoremap <expr> <space> foldclosed('.') != -1 ? 'zO' : 'zc'
+nnoremap zX :set foldlevel=2<CR>zX
 
 """""""""""""""""""""""""""""""""""""
 """"""""""    Commands
@@ -378,6 +404,8 @@ command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincm
 nnoremap <leader>bd :MBEbd<CR>
 nnoremap <leader>bn :MBEbn<CR>
 nnoremap <leader>bp :MBEbp<CR>
+nnoremap <leader>bf :MBEbf<CR>
+nnoremap <leader>bb :MBEbb<CR>
 nnoremap <C-i> :MBEbn<CR>
 nnoremap <C-u> :MBEbp<CR>
 
@@ -409,6 +437,7 @@ let NERDTreeShowBookmarks = 1
 let NERDTreeMinimalUI = 1
 " Don't display confirmation step after removing/renaming a file
 " let NERDTreeAutoDeleteBuffer=1
+let NERDTreeIgnore = ['\.pyc$']
 
 
 """ taglist.vim
@@ -483,8 +512,11 @@ let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case --
 """ ctrlpvim/ctrlp.vim
 " let g:ctrlp_extensions = ['funky']
 " let g:ctrlp_funky_syntax_highlight = 1
+let g:ctrlp_custom_tag_files = ['.git/tags']
 " Always open in new buffers
 let g:ctrlp_switch_buffer = 0
+" Fixes the bug with files opening in nerdtree
+let g:ctrlp_dont_split = 'NERD'
 " let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 if executable("ag")
   set grepprg=ag\ --nogroup\ --nocolor
@@ -497,6 +529,7 @@ nmap <Leader>pb :CtrlPBuffer<CR>
 nmap <Leader>pc :CtrlPCmdPalette<CR>
 nmap <Leader>pm :CtrlPMRUFiles<CR>
 nmap <leader>pr :ClearCtrlPCache<CR>
+nmap <leader>pt :CtrlPTag<CR>
 
 """ FelikZ/ctrlp-py-matcher
 " PyMatcher for CtrlP
@@ -586,6 +619,14 @@ nnoremap <silent> <C-w>l :TmuxNavigateRight<cr>
 """ the-lambda-church/merlin
 set rtp+=/usr/local/share/ocamlmerlin/vim
 
+""" szw/vim-tags
+" mostly obsolete now, smartgf is cooler than simple CTags
+let g:vim_tags_auto_generate = 1
+let g:vim_tags_use_vim_dispatch = 1
+nnoremap <leader>tt g<C-]>
+nnoremap <leader>tr <C-t>
+nnoremap <leader>ty :tag<CR>
+
 """""""""""""""""""""""""""""""""""""
 """"""""""    Other things
 """""""""""""""""""""""""""""""""""""
@@ -615,11 +656,6 @@ function! ChangePaste(type, ...)
 endfunction
 
 """"""""" DISABLED PLUGINS
-
-""" szw/vim-tags
-" mostly obsolete now, smartgf is cooler than simple CTags
-" let g:vim_tags_auto_generate = 1
-" let g:vim_tags_use_vim_dispatch = 1
 
 """ scrooloose/syntastic
 " let g:syntastic_ruby_checkers = ['rubocop']
