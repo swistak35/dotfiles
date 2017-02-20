@@ -23,7 +23,6 @@ export LANG=pl_PL.UTF-8
 export LC_ALL=pl_PL.UTF-8
 export WORDCHARS='|*?[]~=&;!#$%^(){}<>'
 export DISABLE_AUTO_TITLE=true
-export JAVA_HOME=/usr/lib/jvm/java-8-jdk
 
 # temporarily for nixos
 # https://github.com/NixOS/nix/issues/599

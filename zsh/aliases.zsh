@@ -54,12 +54,17 @@ alias muo="/home/swistak35/projs/oss/muon/bin/muon2"
 alias fsum="paste -sd+ | bc"
 alias lst="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'"
 alias be='bundle exec'
+alias bes='bundle exec spring'
 alias jsonify='ruby -rjson -e "puts JSON.pretty_generate(JSON.parse(STDIN.read))"'
 alias fix_sudo_display='xhost + > /dev/null'
 alias idris="/opt/idris/.cabal-sandbox/bin/idris"
 alias rm='rm -I'
 alias gen-uuid='ruby -rsecurerandom -e "print SecureRandom.uuid"'
+alias load-anaconda="export PATH=/home/swistak35/projs/uwr-computer-vision/anaconda3/bin:$PATH"
 
+# Ruby
+alias rake="noglob rake" # allows square brackts for rake task invocation
+alias brake='noglob bundle exec rake' # execute the bundled rake gem
 alias bern=be_rspec_with_notification
 
 # Todo

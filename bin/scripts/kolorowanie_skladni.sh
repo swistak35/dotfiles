@@ -1,4 +1,5 @@
-# set -x
+#!/bin/zsh
+set -x
 
 if [[ -n $1 ]]
 then
