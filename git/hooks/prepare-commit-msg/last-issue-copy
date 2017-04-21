@@ -1,6 +1,16 @@
 #!/bin/sh
 ORIG_MSG_FILE="$1"
 
+ORIG_MSG=`cat $1 | sed -n '/------------------------ >8 ------------------------/q;p' | sed '/^#/d'`
+
+echo "Original msg was: $ORIG_MSG"
+
+if [ ! -z "$ORIG_MSG" ]
+then
+  echo "Original msg not empty, aborting!"
+  exit
+fi
+
 TEMP=`mktemp /tmp/git-XXXXX`
 
 LAST_ISSUE=$(git log --max-count=100 | grep "Issue: " | sed -e "s/    //" | head -n 1)
