@@ -7,7 +7,7 @@ echo "Original msg was: $ORIG_MSG"
 
 if [ ! -z "$ORIG_MSG" ]
 then
-  echo "Original msg not empty, aborting!"
+  echo "Original msg not empty, adding previous issue cancelled!"
   exit
 fi
 

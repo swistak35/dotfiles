@@ -33,6 +33,7 @@
 	insteadOf = "heroku:"
 [core]
 	excludesfile = /home/swistak35/.global_gitignore
+	attributesfile = /home/swistak35/.global_gitattributes
 	editor = nvim
 	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
 	; autocrlf = input
@@ -45,10 +46,10 @@
 ; 	old = red bold
 ; 	new = green bold
 ; 	whitespace = red reverse
-[color "status"]
-	added = yellow
-	changed = green
-	untracked = cyan
+; [color "status"]
+	; added = yellow
+	; changed = green
+	; untracked = cyan
 [web]
 	browser = firefox
 [branch]
@@ -62,3 +63,7 @@
 	ui = true
 [gpg]
 	program = gpg2
+[stash]
+	showPatch = true
+[diff "exif"]
+	textconv = exiftool

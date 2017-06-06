@@ -16,6 +16,7 @@ install-zsh:
 install-git:
 	rm -f ~/.global_gitignore ~/.gitconfig
 	ln -s `pwd`/git/global_gitignore ~/.global_gitignore
+	ln -s `pwd`/git/global_gitattributes ~/.global_gitattributes
 	ln -s `pwd`/git/gitconfig ~/.gitconfig
 
 install-bin:

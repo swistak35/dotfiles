@@ -5,6 +5,7 @@
 .smartgf_tags_date
 .vimrc
 .nvimrc
+config/projections.json
 
 # ruby
 .ruby-version
