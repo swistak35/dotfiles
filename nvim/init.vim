@@ -39,9 +39,13 @@ Plug 'LnL7/vim-nix'
 Plug 'ElmCast/elm-vim'
 Plug 'rust-lang/rust.vim'
 
+" Langserver support
+Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
+Plug 'tjdevries/nvim-langserver-shim'
+
 """ Color schemes
 " Solarized
-Plug 'altercation/vim-colors-solarized'
+" Plug 'altercation/vim-colors-solarized'
 " PaperColor
 Plug 'NLKNguyen/papercolor-theme'
 " Pencil
@@ -56,7 +60,7 @@ Plug 'ap/vim-css-color'
 " Nice incremental searching
 Plug 'haya14busa/incsearch.vim'
 " Autoclose xml tags
-Plug 'docunext/closetag.vim'
+" Plug 'docunext/closetag.vim'
 
 " Underscoring words which are the same as current
 " Crashing in newest version
@@ -243,8 +247,8 @@ if has('mouse')                 " in many terminal emulators
 endif                           "   thus enable it.
 
 " Potentially can lag ruby files
-" set relativenumber " https://github.com/vim-ruby/vim-ruby/issues/243
-" set lazyredraw " https://github.com/vim-ruby/vim-ruby/issues/243
+set relativenumber " https://github.com/vim-ruby/vim-ruby/issues/243
+set lazyredraw " https://github.com/vim-ruby/vim-ruby/issues/243
 
 " set cursorline
 set ruler                       "show the cursor position all the time
@@ -277,7 +281,10 @@ set foldmethod=syntax
 set foldlevel=2
 set foldnestmax=4
 
-colorscheme solarized
+" New feature in Neovim: https://neovim.io/news/2016/11/
+set inccommand=split
+
+colorscheme PaperColor
 
 """""""""""""""""""""""""""""""""""""
 """"""""""    Functions
@@ -388,6 +395,9 @@ nmap <localleader>f $varzf
 nnoremap <expr> <space> foldclosed('.') != -1 ? 'zO' : 'zc'
 nnoremap zX :set foldlevel=2<CR>zX
 
+" Copy file path of current file to clipboard
+nnoremap <localleader>fpy :let @+ = expand("%")<CR>
+
 """""""""""""""""""""""""""""""""""""
 """"""""""    Commands
 """""""""""""""""""""""""""""""""""""
@@ -399,6 +409,15 @@ command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincm
 """""""""""""""""""""""""""""""""""""
 """"""""""    Plugins
 """""""""""""""""""""""""""""""""""""
+
+""" autozimu/LanguageClient-neovim
+set hidden
+
+let g:LanguageClient_serverCommands = {
+    \ 'ruby': ['orbaclerun', 'server'],
+    \ }
+
+""" \ 'ruby': ['/home/swistak35/.rbenv/versions/2.3.1/bin/orbaclerun', 'server'],
 
 """ weynhamz/vim-plugin-minibufexpl
 nnoremap <leader>bd :MBEbd<CR>
@@ -462,9 +481,12 @@ nnoremap <leader>gtb :Gblame -w -M<CR>
 """ bling/vim-airline
 let g:airline_powerline_fonts = 1
 
+""" elzr/vim-json ???
+let g:vim_json_syntax_conceal = 0
+
 """ benekastah/neomake
 if has('nvim')
-  autocmd! BufWritePost * Neomake
+  autocmd! BufWritePost,BufEnter * Neomake
   let g:neomake_c_enabled_markers = ['clang']
   let g:neomake_cpp_enabled_markers = ['clang++']
   let g:neomake_coffeescript_enabled_markers = ['coffeelint']
@@ -502,6 +524,9 @@ vnoremap <leader>as1 :EasyAlign\ <CR>
 """ mileszs/ack.vim
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'
+endif
+if executable('rg')
+  let g:ackprg = 'rg --no-heading --vimgrep'
 endif
 let g:ack_autofold_results = 0
 let g:ackpreview = 0
@@ -622,7 +647,7 @@ set rtp+=/usr/local/share/ocamlmerlin/vim
 """ szw/vim-tags
 " mostly obsolete now, smartgf is cooler than simple CTags
 let g:vim_tags_auto_generate = 1
-let g:vim_tags_use_vim_dispatch = 1
+let g:vim_tags_use_vim_dispatch = 0
 nnoremap <leader>tt g<C-]>
 nnoremap <leader>tr <C-t>
 nnoremap <leader>ty :tag<CR>
@@ -704,3 +729,20 @@ if has('nvim')
 
   let g:solarized_italic=0
 endif
+
+function! SetColorOnFocusLost()
+  " if &background == 'dark'
+  highlight Normal ctermbg=231
+  " else
+  " endif
+endfunction
+
+function! SetColorOnFocusGained()
+  " if &background == 'dark'
+  highlight Normal ctermbg=255
+  " else
+  " endif
+endfunction
+
+au FocusLost * call SetColorOnFocusLost()
+au FocusGained * call SetColorOnFocusGained()
