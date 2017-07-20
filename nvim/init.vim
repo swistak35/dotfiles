@@ -21,7 +21,7 @@ Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
 Plug 'tpope/vim-fugitive'
 Plug 'fisadev/vim-ctrlp-cmdpalette'
 Plug 'mileszs/ack.vim'
-Plug 'gorkunov/smartgf.vim'
+" Plug 'gorkunov/smartgf.vim'
 
 " Languages
 Plug 'vim-ruby/vim-ruby'
@@ -156,7 +156,6 @@ Plug 'tpope/vim-surround'
 Plug 'junegunn/vim-easy-align'
 Plug 'Rename2'
 Plug 'mmozuras/vim-github-comment'
-" Plug 'swistak35/vim-github-comment'
 Plug 'indentLine.vim'
 Plug 'matchit.zip'
 Plug 'ecomba/vim-ruby-refactoring'
@@ -522,12 +521,13 @@ vnoremap <leader>as1 :EasyAlign\ <CR>
 " let g:indentLine_noConcealCursor=""
 
 """ mileszs/ack.vim
+nnoremap <leader>a :Ack!<Space>
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
-if executable('rg')
-  let g:ackprg = 'rg --no-heading --vimgrep'
-endif
+" if executable('rg')
+"   let g:ackprg = 'rg --no-heading --vimgrep'
+" endif
 let g:ack_autofold_results = 0
 let g:ackpreview = 0
 " let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case"
@@ -583,14 +583,14 @@ map g* <Plug>(incsearch-nohl-g*)
 map g# <Plug>(incsearch-nohl-g#)
 
 """ gorkunov/smartgf.vim
-let g:smartgf_create_default_mappings = 0
-let g:smartgf_auto_refresh_ctags = 0
-let g:smartgf_enable_gems_search = 1
-nmap gu <Plug>(smartgf-search)
-vmap gu <Plug>(smartgf-search)
-nmap gU <Plug>(smartgf-search-unfiltered)
-vmap gU <Plug>(smartgf-search-unfiltered)
-map <F4> :SmargfRefreshTags<CR>
+" let g:smartgf_create_default_mappings = 0
+" let g:smartgf_auto_refresh_ctags = 0
+" let g:smartgf_enable_gems_search = 1
+" nmap gu <Plug>(smartgf-search)
+" vmap gu <Plug>(smartgf-search)
+" nmap gU <Plug>(smartgf-search-unfiltered)
+" vmap gU <Plug>(smartgf-search-unfiltered)
+" map <F4> :SmargfRefreshTags<CR>
 " autocmd! BufWritePost * SmargfRefreshTags
 
 """ maxbrunsfeld/vim-yankstack
@@ -646,7 +646,8 @@ set rtp+=/usr/local/share/ocamlmerlin/vim
 
 """ szw/vim-tags
 " mostly obsolete now, smartgf is cooler than simple CTags
-let g:vim_tags_auto_generate = 1
+let g:vim_tags_directories = [".git"]
+let g:vim_tags_auto_generate = 0
 let g:vim_tags_use_vim_dispatch = 0
 nnoremap <leader>tt g<C-]>
 nnoremap <leader>tr <C-t>
