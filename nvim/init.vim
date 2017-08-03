@@ -27,7 +27,7 @@ Plug 'mileszs/ack.vim'
 Plug 'vim-ruby/vim-ruby'
 Plug 'pangloss/vim-javascript'
 Plug 'groenewege/vim-less'
-Plug 'kchmck/vim-coffee-script'
+" Plug 'kchmck/vim-coffee-script'
 Plug 'tpope/vim-haml'
 Plug 'tpope/vim-cucumber'
 Plug 'hail2u/vim-css3-syntax'
@@ -55,10 +55,12 @@ Plug 'ciaranm/inkpot'
 " Flattened (solarized simplified)
 Plug 'romainl/flattened'
 
+" Support for github in fugitive.vim
+Plug 'tpope/vim-rhubarb'
 " Highlight colors in CSS files
 Plug 'ap/vim-css-color'
 " Nice incremental searching
-Plug 'haya14busa/incsearch.vim'
+Plug 'haya14busa/incsearch.vim', Cond(!has('nvim'))
 " Autoclose xml tags
 " Plug 'docunext/closetag.vim'
 
@@ -106,6 +108,9 @@ Plug 'FelikZ/ctrlp-py-matcher'
 Plug 'tmux-plugins/vim-tmux-focus-events'
 " Display full YAML path of a key in a YAML file
 Plug 'Einenlum/yaml-revealer'
+
+" Github support for fugitive
+Plug 'tpope/vim-rhubarb'
 
 " Plug 'vim-utils/vim-man'
 
@@ -179,7 +184,6 @@ Plug '~/projs/my-prototype-plugin'
 
 """ DISABLED PLUGINS
 " Plug 'tpope/vim-markdown'
-" Plug 'jimmyhchan/dustjs.vim'
 " Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 " Plug 'Shougo/neocomplete.vim'
 " Plug 'osyo-manga/vim-monster'
@@ -409,6 +413,10 @@ command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincm
 """"""""""    Plugins
 """""""""""""""""""""""""""""""""""""
 
+""" mxw/vim-jsx
+" Enable jsx syntax also in js files, it does not need to be JSX file
+let g:jsx_ext_required = 0
+
 """ autozimu/LanguageClient-neovim
 set hidden
 
@@ -468,7 +476,7 @@ nnoremap gs :Switch<CR>
 let g:closetag_filenames = "*.html,*.xml,*.html.erb"
 
 """ pipe2eval
-let g:pipe2eval_map_key = '<Leader>el'
+let g:pipe2eval_map_key = '<Leader>ev'
 
 """ tpope/vim-fugitive
 nnoremap <leader>gtc :Gcommit<CR>
@@ -569,18 +577,20 @@ let g:github_user='swistak35'
 let g:github_open_browser=1
 
 """ haya14busa/incsearch.vim
-set hlsearch
-let g:incsearch#magic = '\v'
-let g:incsearch#auto_nohlsearch = 1
-map / <Plug>(incsearch-forward)
-map ? <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
-map n  <Plug>(incsearch-nohl-n)
-map N  <Plug>(incsearch-nohl-N)
-map *  <Plug>(incsearch-nohl-*)
-map #  <Plug>(incsearch-nohl-#)
-map g* <Plug>(incsearch-nohl-g*)
-map g# <Plug>(incsearch-nohl-g#)
+if !has('nvim')
+  set hlsearch
+  let g:incsearch#magic = '\v'
+  let g:incsearch#auto_nohlsearch = 1
+  map / <Plug>(incsearch-forward)
+  map ? <Plug>(incsearch-backward)
+  map g/ <Plug>(incsearch-stay)
+  map n  <Plug>(incsearch-nohl-n)
+  map N  <Plug>(incsearch-nohl-N)
+  map *  <Plug>(incsearch-nohl-*)
+  map #  <Plug>(incsearch-nohl-#)
+  map g* <Plug>(incsearch-nohl-g*)
+  map g# <Plug>(incsearch-nohl-g#)
+endif
 
 """ gorkunov/smartgf.vim
 " let g:smartgf_create_default_mappings = 0
