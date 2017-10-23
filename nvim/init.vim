@@ -172,7 +172,7 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'AndrewRadev/switch.vim'
 Plug 'KabbAmine/zeavim.vim'
 Plug 't9md/vim-chef'
-Plug 'maxbrunsfeld/vim-yankstack'
+" Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'benekastah/neomake', Cond(has('nvim'))
 Plug 'szw/vim-tags'
 
@@ -413,6 +413,25 @@ command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincm
 """"""""""    Plugins
 """""""""""""""""""""""""""""""""""""
 
+""" svermeulen/vim-easyclip
+" Autoformat doesn't seem to work?
+let g:EasyClipAutoFormat = 1
+" Disable the feature that dd does not yank anymore
+let g:EasyClipEnableBlackHoleRedirect = 0
+" Disable keybindings which override marking
+let g:EasyClipUseCutDefaults = 0
+" Disable default keybindings
+let g:EasyClipUsePasteDefaults = 0
+nmap P <plug>EasyClipPasteBefore
+nmap p <plug>EasyClipPasteAfter
+xmap P <plug>EasyClipPasteBefore
+xmap p <plug>EasyClipPasteAfter
+nmap [w <plug>EasyClipSwapPasteForward
+nmap ]w <plug>EasyClipSwapPasteBackwards
+" Yank additional keybindings
+nmap [W <plug>EasyClipRotateYanksForward
+nmap ]W <plug>EasyClipRotateYanksBackward
+
 """ mxw/vim-jsx
 " Enable jsx syntax also in js files, it does not need to be JSX file
 let g:jsx_ext_required = 0
@@ -604,8 +623,8 @@ endif
 " autocmd! BufWritePost * SmargfRefreshTags
 
 """ maxbrunsfeld/vim-yankstack
-nmap [w <Plug>yankstack_substitute_older_paste
-nmap ]w <Plug>yankstack_substitute_newer_paste
+" nmap [w <Plug>yankstack_substitute_older_paste
+" nmap ]w <Plug>yankstack_substitute_newer_paste
 
 """ christoomey/vim-tmux-runner
 let g:VtrPercentage = 15
