@@ -172,7 +172,6 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'AndrewRadev/switch.vim'
 Plug 'KabbAmine/zeavim.vim'
 Plug 't9md/vim-chef'
-" Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'benekastah/neomake', Cond(has('nvim'))
 Plug 'szw/vim-tags'
 
@@ -187,9 +186,7 @@ Plug '~/projs/my-prototype-plugin'
 " Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 " Plug 'Shougo/neocomplete.vim'
 " Plug 'osyo-manga/vim-monster'
-" Plug 'scrooloose/syntastic'
 " Plug 'tpope/vim-markdown'
-" Plug 'rorymckinley/vim-symbols-strings'
 " Plug 'tacahiroy/ctrlp-funky'
 " Plug 'garbas/vim-snipmate'
 " Plug 'netrw.vim'
@@ -622,10 +619,6 @@ endif
 " map <F4> :SmargfRefreshTags<CR>
 " autocmd! BufWritePost * SmargfRefreshTags
 
-""" maxbrunsfeld/vim-yankstack
-" nmap [w <Plug>yankstack_substitute_older_paste
-" nmap ]w <Plug>yankstack_substitute_newer_paste
-
 """ christoomey/vim-tmux-runner
 let g:VtrPercentage = 15
 let g:VtrClearEmptyLines = 1
@@ -712,16 +705,27 @@ endfunction
 
 """"""""" DISABLED PLUGINS
 
+" Superseded by vim-easyclip, because of easyclip having more features (and
+" used anyway)
+" Plug 'maxbrunsfeld/vim-yankstack'
+""" maxbrunsfeld/vim-yankstack
+" nmap [w <Plug>yankstack_substitute_older_paste
+" nmap ]w <Plug>yankstack_substitute_newer_paste
+
+" Superseded by neomake
+" Plug 'scrooloose/syntastic'
 """ scrooloose/syntastic
 " let g:syntastic_ruby_checkers = ['rubocop']
 " Alternative: 'mri'
 " let g:syntastic_auto_jump = 3
 
+" Plug 'rorymckinley/vim-symbols-strings'
 """ rorymckinley/vim-symbols-strings
 " let g:symbolise_strings_map_keys = 0
 " nnoremap <silent> <Leader>sy :set opfunc=symbolsstrings#SymboliseStrings<CR>g@
 " nnoremap <silent> <Leader>st :set opfunc=symbolsstrings#StringifySymbols<CR>g@p
 
+" Vim-test has more features
 """ gabebw/vim-spec-runner
 " let g:spec_runner_dispatcher = 'call VtrSendCommand("be {command}")'
 " map <localleader>sc <Plug>RunCurrentSpecFile
@@ -735,10 +739,12 @@ endfunction
 "   autocmd FileType text         call pencil#init()
 " augroup END
 
+" Not working
 """ tacahiroy/ctrlp-funky
 " nmap <Leader>pf :CtrlPFunky<CR>
 " let g:ctrlp_funky_syntax_highlight = 1
 
+" Not working
 """ d11wtq/ctrlp_bdelete.vim
 " let g:ctrlp_bdelete_map = '<c-_>'
 " execute "nnoremap <buffer> <silent> ".g:ctrlp_bdelete_map." :call <sid>DeleteMarkedBuffers()<cr>"
