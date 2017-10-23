@@ -81,7 +81,7 @@ Plug 'tpope/vim-sleuth'
 " cool ][ mappings
 Plug 'tpope/vim-unimpaired'
 " taglist bound to F3
-Plug 'taglist.vim'
+Plug 'vim-scripts/taglist.vim'
 " Some plugins need it, and then they can run tasks in background
 Plug 'tpope/vim-dispatch'
 " Changing theme between day & night
@@ -116,7 +116,7 @@ Plug 'tpope/vim-rhubarb'
 
 " Text objects
 Plug 'bkad/CamelCaseMotion'
-Plug 'argtextobj.vim'
+Plug 'vim-scripts/argtextobj.vim'
 Plug 'kana/vim-textobj-user'
 Plug 'nelstrom/vim-textobj-rubyblock'
 Plug 'whatyouhide/vim-textobj-xmlattr'
@@ -125,7 +125,7 @@ Plug 'mattn/vim-textobj-url'
 Plug 'whatyouhide/vim-textobj-erb'
 
 " Disables some features when opening very large files ( > 100 MB )
-Plug 'LargeFile'
+Plug 'vim-scripts/LargeFile'
 
 " Extensions (very experimental!) to show commit msgs in fugitive
 Plug 'tommcdo/vim-fugitive-blame-ext'
@@ -159,15 +159,15 @@ Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'junegunn/vim-easy-align'
-Plug 'Rename2'
+Plug 'vim-scripts/Rename2'
 Plug 'mmozuras/vim-github-comment'
-Plug 'indentLine.vim'
-Plug 'matchit.zip'
+Plug 'vim-scripts/indentLine.vim'
+Plug 'vim-scripts/matchit.zip'
 Plug 'ecomba/vim-ruby-refactoring'
 Plug 'tpope/vim-commentary'
-Plug 'pipe2eval', { 'do': 'chmod +x plugin/pipe2eval.sh' }
-Plug 'textobj-indent'
-Plug 'dbext.vim'
+Plug 'vim-scripts/pipe2eval', { 'do': 'chmod +x plugin/pipe2eval.sh' }
+Plug 'vim-scripts/textobj-indent'
+Plug 'vim-scripts/dbext.vim'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'AndrewRadev/switch.vim'
 Plug 'KabbAmine/zeavim.vim'
