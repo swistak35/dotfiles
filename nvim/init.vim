@@ -41,7 +41,7 @@ Plug 'rust-lang/rust.vim'
 
 " Langserver support
 Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
-Plug 'tjdevries/nvim-langserver-shim'
+" Plug 'tjdevries/nvim-langserver-shim'
 
 """ Color schemes
 " Solarized
