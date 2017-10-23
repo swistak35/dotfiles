@@ -277,7 +277,8 @@ set wildmode=list:longest,full
 set autoread " Automatically reload files if they've changed on the disk
 
 " Folding
-set foldmethod=syntax
+" foldmethod=syntax works better, but on big ruby files it slows vim down very much
+set foldmethod=indent
 set foldlevel=2
 set foldnestmax=4
 
