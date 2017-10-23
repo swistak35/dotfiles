@@ -761,12 +761,12 @@ endfunction
 " let g:blockle_mapping = '<Leader>bl'
 
 if has('nvim')
-  if !($TMUX =~ ".*tmate.*")
-    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-    let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-  endif
+"   if !($TMUX =~ ".*tmate.*")
+"     let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+"     " let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+"   endif
 
-  let g:solarized_italic=0
+"   let g:solarized_italic=0
 endif
 
 function! SetColorOnFocusLost()
