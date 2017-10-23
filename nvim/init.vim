@@ -107,7 +107,7 @@ Plug 'FelikZ/ctrlp-py-matcher'
 " Make focus events work with vim inside a tmux
 Plug 'tmux-plugins/vim-tmux-focus-events'
 " Display full YAML path of a key in a YAML file
-Plug 'Einenlum/yaml-revealer'
+" Plug 'Einenlum/yaml-revealer'
 
 " Github support for fugitive
 Plug 'tpope/vim-rhubarb'
