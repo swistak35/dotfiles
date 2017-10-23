@@ -283,7 +283,9 @@ set foldlevel=2
 set foldnestmax=4
 
 " New feature in Neovim: https://neovim.io/news/2016/11/
-set inccommand=split
+if has('nvim')
+  set inccommand=split
+endif
 
 colorscheme PaperColor
 
@@ -438,10 +440,10 @@ let g:jsx_ext_required = 0
 set hidden
 
 let g:LanguageClient_serverCommands = {
-    \ 'ruby': ['orbaclerun', 'server'],
+    \ 'ruby': ['orbaclerun', 'file-server'],
     \ }
-
-""" \ 'ruby': ['/home/swistak35/.rbenv/versions/2.3.1/bin/orbaclerun', 'server'],
+nnoremap <localleader>lj :call LanguageClient_textDocument_definition()<CR>
+nnoremap <localleader>ls :LanguageClientStart<CR>
 
 """ weynhamz/vim-plugin-minibufexpl
 nnoremap <leader>bd :MBEbd<CR>
