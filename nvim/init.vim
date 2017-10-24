@@ -678,6 +678,10 @@ nnoremap <leader>tt g<C-]>
 nnoremap <leader>tr <C-t>
 nnoremap <leader>ty :tag<CR>
 
+""" vim-ruby/vim-ruby
+let g:ruby_indent_block_style = 'do'
+let g:ruby_indent_assignment_style = 'variable'
+
 """""""""""""""""""""""""""""""""""""
 """"""""""    Other things
 """""""""""""""""""""""""""""""""""""
