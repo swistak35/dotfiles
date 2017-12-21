@@ -29,3 +29,6 @@ export DISABLE_AUTO_TITLE=true
 # temporarily for nixos
 # https://github.com/NixOS/nix/issues/599
 export LOCALE_ARCHIVE=/home/swistak35/.locale-archive
+
+# fzf settings
+# export FZF_DEFAULT_COMMAND='ag -l' # to ignore files from .gitignore

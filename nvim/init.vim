@@ -11,7 +11,7 @@ endif
 
 " Obvious
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mattn/webapi-vim'
 Plug 'mattn/gist-vim'
 Plug 'bling/vim-airline'
@@ -19,9 +19,12 @@ Plug 'tpope/vim-rails'
 Plug 'tpope/vim-projectionist'
 Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
 Plug 'tpope/vim-fugitive'
-Plug 'fisadev/vim-ctrlp-cmdpalette'
+" Plug 'fisadev/vim-ctrlp-cmdpalette'
 Plug 'mileszs/ack.vim'
 " Plug 'gorkunov/smartgf.vim'
+
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 
 " Languages
 Plug 'vim-ruby/vim-ruby'
@@ -99,11 +102,12 @@ Plug 'terryma/vim-expand-region'
 " Display git information in NERDTree
 Plug 'Xuyuanp/nerdtree-git-plugin'
 " Buffer explorer. Bar at the top
-Plug 'weynhamz/vim-plugin-minibufexpl'
+" Removed because it didn't fit my flow
+" Plug 'weynhamz/vim-plugin-minibufexpl'
 " Undotree
 Plug 'mbbill/undotree'
 " Better matcher for CtrlP - requires python
-Plug 'FelikZ/ctrlp-py-matcher'
+" Plug 'FelikZ/ctrlp-py-matcher'
 " Make focus events work with vim inside a tmux
 Plug 'tmux-plugins/vim-tmux-focus-events'
 " Display full YAML path of a key in a YAML file
@@ -123,6 +127,9 @@ Plug 'whatyouhide/vim-textobj-xmlattr'
 Plug 'lucapette/vim-textobj-underscore'
 Plug 'mattn/vim-textobj-url'
 Plug 'whatyouhide/vim-textobj-erb'
+
+
+Plug 'joker1007/vim-ruby-heredoc-syntax'
 
 " Disables some features when opening very large files ( > 100 MB )
 Plug 'vim-scripts/LargeFile'
@@ -344,7 +351,9 @@ nnoremap gJ J
 
 " Move by pages
 nnoremap J <C-D>
+vnoremap J <C-D>
 nnoremap K <C-U>
+vnoremap K <C-U>
 
 " Escapes
 inoremap jj <ESC>
@@ -413,6 +422,24 @@ command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincm
 """"""""""    Plugins
 """""""""""""""""""""""""""""""""""""
 
+"""
+let g:ruby_heredoc_syntax_defaults = {}
+let g:ruby_heredoc_syntax_filetypes = {
+      \ "javascript" : {
+      \   "start" : "JS",
+      \},
+      \ "sql" : {
+      \   "start" : "SQL",
+      \},
+      \ "html" : {
+      \   "start" : "HTML",
+      \},
+\}
+
+""" ternsjs/tern_for_vim
+" let g:tern_show_argument_hints = "on_move"
+" let g:tern_show_signature_in_pum = 1
+
 """ svermeulen/vim-easyclip
 " Autoformat doesn't seem to work?
 let g:EasyClipAutoFormat = 1
@@ -441,18 +468,10 @@ set hidden
 
 let g:LanguageClient_serverCommands = {
     \ 'ruby': ['orbaclerun', 'file-server'],
+    \ 'python': ['pyls'],
     \ }
 nnoremap <localleader>lj :call LanguageClient_textDocument_definition()<CR>
 nnoremap <localleader>ls :LanguageClientStart<CR>
-
-""" weynhamz/vim-plugin-minibufexpl
-nnoremap <leader>bd :MBEbd<CR>
-nnoremap <leader>bn :MBEbn<CR>
-nnoremap <leader>bp :MBEbp<CR>
-nnoremap <leader>bf :MBEbf<CR>
-nnoremap <leader>bb :MBEbb<CR>
-nnoremap <C-i> :MBEbn<CR>
-nnoremap <C-u> :MBEbp<CR>
 
 """ mbbill/undotree
 nnoremap <F5> :UndotreeToggle<cr>
@@ -564,32 +583,35 @@ let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case --
 """ ctrlpvim/ctrlp.vim
 " let g:ctrlp_extensions = ['funky']
 " let g:ctrlp_funky_syntax_highlight = 1
-let g:ctrlp_custom_tag_files = ['.git/tags']
+" let g:ctrlp_custom_tag_files = ['.git/tags']
 " Always open in new buffers
-let g:ctrlp_switch_buffer = 0
+" let g:ctrlp_switch_buffer = 0
 " Fixes the bug with files opening in nerdtree
-let g:ctrlp_dont_split = 'NERD'
+" let g:ctrlp_dont_split = 'NERD'
 " let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-if executable("ag")
-  set grepprg=ag\ --nogroup\ --nocolor
-  let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --ignore ''.git'' --ignore ''.DS_Store'' --ignore ''node_modules'' --hidden -g ""'
-endif
+" if executable("ag")
+"   set grepprg=ag\ --nogroup\ --nocolor
+"   let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --ignore ''.git'' --ignore ''.DS_Store'' --ignore ''node_modules'' --hidden -g ""'
+" endif
 " Set no file limit, we are building a big project
-let g:ctrlp_max_files = 0
-nmap <Leader>pp :CtrlP<CR>
-nmap <Leader>pb :CtrlPBuffer<CR>
-nmap <Leader>pc :CtrlPCmdPalette<CR>
-nmap <Leader>pm :CtrlPMRUFiles<CR>
-nmap <leader>pr :ClearCtrlPCache<CR>
-nmap <leader>pt :CtrlPTag<CR>
+" let g:ctrlp_max_files = 0
+" nmap <Leader>pp :CtrlP<CR>
+" nmap <Leader>pb :CtrlPBuffer<CR>
+" nmap <Leader>pc :CtrlPCmdPalette<CR>
+" nmap <Leader>pm :CtrlPMRUFiles<CR>
+" nmap <leader>pr :ClearCtrlPCache<CR>
+" nmap <leader>pt :CtrlPTag<CR>
+nmap <leader>pb :Buffers<CR>
+nmap <leader>pp :GFiles --cached --others --exclude-standard<CR>
+nmap <leader>pl :BLines<CR>
 
 """ FelikZ/ctrlp-py-matcher
 " PyMatcher for CtrlP
-if !has('python')
-  echo 'In order to use pymatcher plugin, you need +python compiled vim'
-else
-  let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
-endif
+" if !has('python')
+"   echo 'In order to use pymatcher plugin, you need +python compiled vim'
+" else
+"   let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+" endif
 
 """ mmozuras/vim-github-comment
 let g:github_user='swistak35'
@@ -665,6 +687,10 @@ nnoremap <silent> <C-w>h :TmuxNavigateLeft<cr>
 nnoremap <silent> <C-w>j :TmuxNavigateDown<cr>
 nnoremap <silent> <C-w>k :TmuxNavigateUp<cr>
 nnoremap <silent> <C-w>l :TmuxNavigateRight<cr>
+tnoremap <C-w>h <C-\><C-N><C-w>h
+tnoremap <C-w>j <C-\><C-N><C-w>j
+tnoremap <C-w>k <C-\><C-N><C-w>k
+tnoremap <C-w>l <C-\><C-N><C-w>l
 
 """ the-lambda-church/merlin
 set rtp+=/usr/local/share/ocamlmerlin/vim
@@ -764,6 +790,15 @@ endfunction
 """ jgdavey/vim-blockle
 " let g:blockle_mapping = '<Leader>bl'
 
+""" weynhamz/vim-plugin-minibufexpl
+" nnoremap <leader>bd :MBEbd<CR>
+" nnoremap <leader>bn :MBEbn<CR>
+" nnoremap <leader>bp :MBEbp<CR>
+" nnoremap <leader>bf :MBEbf<CR>
+" nnoremap <leader>bb :MBEbb<CR>
+" nnoremap <C-i> :MBEbn<CR>
+" nnoremap <C-u> :MBEbp<CR>
+
 if has('nvim')
 "   if !($TMUX =~ ".*tmate.*")
 "     let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -789,3 +824,9 @@ endfunction
 
 au FocusLost * call SetColorOnFocusLost()
 au FocusGained * call SetColorOnFocusGained()
+
+" Very filetype dependent
+
+" Increase the limit of textwidth in git commit. 120 is enough for me to keep
+" one line with "Issue: " and then some link to trello afterwards.
+autocmd FileType gitcommit set textwidth=120

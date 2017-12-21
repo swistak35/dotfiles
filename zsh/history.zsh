@@ -1,5 +1,5 @@
 HISTFILE=~/.zshhistory
-HISTSIZE=50000
+HISTSIZE=5000000
 export SAVEHIST=$HISTSIZE
 
 # Ignoring dups in ZSH history
