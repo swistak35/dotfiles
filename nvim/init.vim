@@ -27,7 +27,7 @@ Plug 'mileszs/ack.vim'
 Plug 'vim-ruby/vim-ruby'
 Plug 'pangloss/vim-javascript'
 Plug 'groenewege/vim-less'
-Plug 'kchmck/vim-coffee-script'
+" Plug 'kchmck/vim-coffee-script'
 Plug 'tpope/vim-haml'
 Plug 'tpope/vim-cucumber'
 Plug 'hail2u/vim-css3-syntax'
@@ -41,7 +41,7 @@ Plug 'rust-lang/rust.vim'
 
 " Langserver support
 Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
-Plug 'tjdevries/nvim-langserver-shim'
+" Plug 'tjdevries/nvim-langserver-shim'
 
 """ Color schemes
 " Solarized
@@ -55,10 +55,12 @@ Plug 'ciaranm/inkpot'
 " Flattened (solarized simplified)
 Plug 'romainl/flattened'
 
+" Support for github in fugitive.vim
+Plug 'tpope/vim-rhubarb'
 " Highlight colors in CSS files
 Plug 'ap/vim-css-color'
 " Nice incremental searching
-Plug 'haya14busa/incsearch.vim'
+Plug 'haya14busa/incsearch.vim', Cond(!has('nvim'))
 " Autoclose xml tags
 " Plug 'docunext/closetag.vim'
 
@@ -79,7 +81,7 @@ Plug 'tpope/vim-sleuth'
 " cool ][ mappings
 Plug 'tpope/vim-unimpaired'
 " taglist bound to F3
-Plug 'taglist.vim'
+Plug 'vim-scripts/taglist.vim'
 " Some plugins need it, and then they can run tasks in background
 Plug 'tpope/vim-dispatch'
 " Changing theme between day & night
@@ -105,13 +107,16 @@ Plug 'FelikZ/ctrlp-py-matcher'
 " Make focus events work with vim inside a tmux
 Plug 'tmux-plugins/vim-tmux-focus-events'
 " Display full YAML path of a key in a YAML file
-Plug 'Einenlum/yaml-revealer'
+" Plug 'Einenlum/yaml-revealer'
+
+" Github support for fugitive
+Plug 'tpope/vim-rhubarb'
 
 " Plug 'vim-utils/vim-man'
 
 " Text objects
 Plug 'bkad/CamelCaseMotion'
-Plug 'argtextobj.vim'
+Plug 'vim-scripts/argtextobj.vim'
 Plug 'kana/vim-textobj-user'
 Plug 'nelstrom/vim-textobj-rubyblock'
 Plug 'whatyouhide/vim-textobj-xmlattr'
@@ -120,7 +125,7 @@ Plug 'mattn/vim-textobj-url'
 Plug 'whatyouhide/vim-textobj-erb'
 
 " Disables some features when opening very large files ( > 100 MB )
-Plug 'LargeFile'
+Plug 'vim-scripts/LargeFile'
 
 " Extensions (very experimental!) to show commit msgs in fugitive
 Plug 'tommcdo/vim-fugitive-blame-ext'
@@ -154,20 +159,19 @@ Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'junegunn/vim-easy-align'
-Plug 'Rename2'
+Plug 'vim-scripts/Rename2'
 Plug 'mmozuras/vim-github-comment'
-Plug 'indentLine.vim'
-Plug 'matchit.zip'
+Plug 'vim-scripts/indentLine.vim'
+Plug 'vim-scripts/matchit.zip'
 Plug 'ecomba/vim-ruby-refactoring'
 Plug 'tpope/vim-commentary'
-Plug 'pipe2eval', { 'do': 'chmod +x plugin/pipe2eval.sh' }
-Plug 'textobj-indent'
-Plug 'dbext.vim'
+Plug 'vim-scripts/pipe2eval', { 'do': 'chmod +x plugin/pipe2eval.sh' }
+Plug 'vim-scripts/textobj-indent'
+Plug 'vim-scripts/dbext.vim'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'AndrewRadev/switch.vim'
 Plug 'KabbAmine/zeavim.vim'
 Plug 't9md/vim-chef'
-Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'benekastah/neomake', Cond(has('nvim'))
 Plug 'szw/vim-tags'
 
@@ -179,13 +183,10 @@ Plug '~/projs/my-prototype-plugin'
 
 """ DISABLED PLUGINS
 " Plug 'tpope/vim-markdown'
-" Plug 'jimmyhchan/dustjs.vim'
 " Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 " Plug 'Shougo/neocomplete.vim'
 " Plug 'osyo-manga/vim-monster'
-" Plug 'scrooloose/syntastic'
 " Plug 'tpope/vim-markdown'
-" Plug 'rorymckinley/vim-symbols-strings'
 " Plug 'tacahiroy/ctrlp-funky'
 " Plug 'garbas/vim-snipmate'
 " Plug 'netrw.vim'
@@ -276,12 +277,15 @@ set wildmode=list:longest,full
 set autoread " Automatically reload files if they've changed on the disk
 
 " Folding
-set foldmethod=syntax
+" foldmethod=syntax works better, but on big ruby files it slows vim down very much
+set foldmethod=indent
 set foldlevel=2
 set foldnestmax=4
 
 " New feature in Neovim: https://neovim.io/news/2016/11/
-set inccommand=split
+if has('nvim')
+  set inccommand=split
+endif
 
 colorscheme PaperColor
 
@@ -409,14 +413,37 @@ command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincm
 """"""""""    Plugins
 """""""""""""""""""""""""""""""""""""
 
+""" svermeulen/vim-easyclip
+" Autoformat doesn't seem to work?
+let g:EasyClipAutoFormat = 1
+" Disable the feature that dd does not yank anymore
+let g:EasyClipEnableBlackHoleRedirect = 0
+" Disable keybindings which override marking
+let g:EasyClipUseCutDefaults = 0
+" Disable default keybindings
+let g:EasyClipUsePasteDefaults = 0
+nmap P <plug>EasyClipPasteBefore
+nmap p <plug>EasyClipPasteAfter
+xmap P <plug>EasyClipPasteBefore
+xmap p <plug>EasyClipPasteAfter
+nmap [w <plug>EasyClipSwapPasteForward
+nmap ]w <plug>EasyClipSwapPasteBackwards
+" Yank additional keybindings
+nmap [W <plug>EasyClipRotateYanksForward
+nmap ]W <plug>EasyClipRotateYanksBackward
+
+""" mxw/vim-jsx
+" Enable jsx syntax also in js files, it does not need to be JSX file
+let g:jsx_ext_required = 0
+
 """ autozimu/LanguageClient-neovim
 set hidden
 
 let g:LanguageClient_serverCommands = {
-    \ 'ruby': ['orbaclerun', 'server'],
+    \ 'ruby': ['orbaclerun', 'file-server'],
     \ }
-
-""" \ 'ruby': ['/home/swistak35/.rbenv/versions/2.3.1/bin/orbaclerun', 'server'],
+nnoremap <localleader>lj :call LanguageClient_textDocument_definition()<CR>
+nnoremap <localleader>ls :LanguageClientStart<CR>
 
 """ weynhamz/vim-plugin-minibufexpl
 nnoremap <leader>bd :MBEbd<CR>
@@ -468,7 +495,7 @@ nnoremap gs :Switch<CR>
 let g:closetag_filenames = "*.html,*.xml,*.html.erb"
 
 """ pipe2eval
-let g:pipe2eval_map_key = '<Leader>el'
+let g:pipe2eval_map_key = '<Leader>ev'
 
 """ tpope/vim-fugitive
 nnoremap <leader>gtc :Gcommit<CR>
@@ -569,18 +596,20 @@ let g:github_user='swistak35'
 let g:github_open_browser=1
 
 """ haya14busa/incsearch.vim
-set hlsearch
-let g:incsearch#magic = '\v'
-let g:incsearch#auto_nohlsearch = 1
-map / <Plug>(incsearch-forward)
-map ? <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
-map n  <Plug>(incsearch-nohl-n)
-map N  <Plug>(incsearch-nohl-N)
-map *  <Plug>(incsearch-nohl-*)
-map #  <Plug>(incsearch-nohl-#)
-map g* <Plug>(incsearch-nohl-g*)
-map g# <Plug>(incsearch-nohl-g#)
+if !has('nvim')
+  set hlsearch
+  let g:incsearch#magic = '\v'
+  let g:incsearch#auto_nohlsearch = 1
+  map / <Plug>(incsearch-forward)
+  map ? <Plug>(incsearch-backward)
+  map g/ <Plug>(incsearch-stay)
+  map n  <Plug>(incsearch-nohl-n)
+  map N  <Plug>(incsearch-nohl-N)
+  map *  <Plug>(incsearch-nohl-*)
+  map #  <Plug>(incsearch-nohl-#)
+  map g* <Plug>(incsearch-nohl-g*)
+  map g# <Plug>(incsearch-nohl-g#)
+endif
 
 """ gorkunov/smartgf.vim
 " let g:smartgf_create_default_mappings = 0
@@ -592,10 +621,6 @@ map g# <Plug>(incsearch-nohl-g#)
 " vmap gU <Plug>(smartgf-search-unfiltered)
 " map <F4> :SmargfRefreshTags<CR>
 " autocmd! BufWritePost * SmargfRefreshTags
-
-""" maxbrunsfeld/vim-yankstack
-nmap [w <Plug>yankstack_substitute_older_paste
-nmap ]w <Plug>yankstack_substitute_newer_paste
 
 """ christoomey/vim-tmux-runner
 let g:VtrPercentage = 15
@@ -653,6 +678,10 @@ nnoremap <leader>tt g<C-]>
 nnoremap <leader>tr <C-t>
 nnoremap <leader>ty :tag<CR>
 
+""" vim-ruby/vim-ruby
+let g:ruby_indent_block_style = 'do'
+let g:ruby_indent_assignment_style = 'variable'
+
 """""""""""""""""""""""""""""""""""""
 """"""""""    Other things
 """""""""""""""""""""""""""""""""""""
@@ -683,16 +712,27 @@ endfunction
 
 """"""""" DISABLED PLUGINS
 
+" Superseded by vim-easyclip, because of easyclip having more features (and
+" used anyway)
+" Plug 'maxbrunsfeld/vim-yankstack'
+""" maxbrunsfeld/vim-yankstack
+" nmap [w <Plug>yankstack_substitute_older_paste
+" nmap ]w <Plug>yankstack_substitute_newer_paste
+
+" Superseded by neomake
+" Plug 'scrooloose/syntastic'
 """ scrooloose/syntastic
 " let g:syntastic_ruby_checkers = ['rubocop']
 " Alternative: 'mri'
 " let g:syntastic_auto_jump = 3
 
+" Plug 'rorymckinley/vim-symbols-strings'
 """ rorymckinley/vim-symbols-strings
 " let g:symbolise_strings_map_keys = 0
 " nnoremap <silent> <Leader>sy :set opfunc=symbolsstrings#SymboliseStrings<CR>g@
 " nnoremap <silent> <Leader>st :set opfunc=symbolsstrings#StringifySymbols<CR>g@p
 
+" Vim-test has more features
 """ gabebw/vim-spec-runner
 " let g:spec_runner_dispatcher = 'call VtrSendCommand("be {command}")'
 " map <localleader>sc <Plug>RunCurrentSpecFile
@@ -706,10 +746,12 @@ endfunction
 "   autocmd FileType text         call pencil#init()
 " augroup END
 
+" Not working
 """ tacahiroy/ctrlp-funky
 " nmap <Leader>pf :CtrlPFunky<CR>
 " let g:ctrlp_funky_syntax_highlight = 1
 
+" Not working
 """ d11wtq/ctrlp_bdelete.vim
 " let g:ctrlp_bdelete_map = '<c-_>'
 " execute "nnoremap <buffer> <silent> ".g:ctrlp_bdelete_map." :call <sid>DeleteMarkedBuffers()<cr>"
@@ -723,12 +765,12 @@ endfunction
 " let g:blockle_mapping = '<Leader>bl'
 
 if has('nvim')
-  if !($TMUX =~ ".*tmate.*")
-    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-    let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-  endif
+"   if !($TMUX =~ ".*tmate.*")
+"     let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+"     " let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+"   endif
 
-  let g:solarized_italic=0
+"   let g:solarized_italic=0
 endif
 
 function! SetColorOnFocusLost()

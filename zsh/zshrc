@@ -98,8 +98,6 @@ ZSH_HIGHLIGHT_STYLES[globbing]='fg=magenta,bold'
 
 if type "keychain" > /dev/null; then
 	eval $(keychain --eval --agents ssh --noask -Q --quiet ~/.ssh/id_rsa)
-	eval $(keychain --eval --agents ssh --noask -Q --quiet /media/projs/repositories/arkency/kitchen/chef.key)
-	eval $(keychain --eval --agents ssh --noask -Q --quiet /media/projs/repositories/pons/kitchen/chef.key)
 fi
 
 # RVM
