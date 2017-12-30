@@ -1,5 +1,9 @@
 install: install-vim install-zsh install-git install-bin install-other install-nvim install-xfce
 
+install-emacs:
+	rm -rf ~/.emacs.d
+	ln -s `pwd`/emacs.d ~/.emacs.d
+
 install-vim:
 	rm -rf ~/.vim ~/.vimrc
 	ln -s `pwd`/vim ~/.vim
