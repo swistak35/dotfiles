@@ -4,6 +4,8 @@
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
+
+;;; Packaging
 (package-initialize)
 
 (require 'package)
@@ -14,30 +16,14 @@
   ;; For important compatibility libraries like cl-lib
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 
-;; Source: https://github.com/purcell/emacs.d
-; (defun require-package (package &optional min-version no-refresh)
-;   "Install given PACKAGE, optionally requiring MIN-VERSION.
-; If NO-REFRESH is non-nil, the available package lists will not be
-; re-downloaded in order to locate PACKAGE."
-;   (if (package-installed-p package min-version)
-;       t
-;     (if (or (assoc package package-archive-contents) no-refresh)
-;         (if (boundp 'package-selected-packages)
-;             ;; Record this as a package the user installed explicitly
-;             (package-install package nil)
-;           (package-install package))
-;       (progn
-;         (package-refresh-contents)
-;         (require-package package min-version t)))))
-
-
-;; Packaging
-(package-initialize)
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 (require 'use-package)
-(setq use-package-verbose t) ; Display information in messages when there are some problems with loading the package or it's load time is big
-(setq use-package-always-ensure t) ; Automatically install all use-packages if they are missing
+
+; Display information in messages when there are some problems with loading the package or it's load time is big
+(setq use-package-verbose t)
+; Automatically install all use-packages if they are missing
+(setq use-package-always-ensure t) 
 
 ;; Dired
 ; ???
@@ -54,6 +40,9 @@
 ; (require-package 'dired-narrow)
 
 ;; General options
+
+; Enable highlight on the whole current line
+(global-hl-line-mode 1)
 
 ;; Helm
 (use-package helm
@@ -82,6 +71,18 @@
                evil-normal-state-cursor '(box "White")
                evil-insert-state-cursor '(bar "White")
                evil-visual-state-cursor '(box "#F86155")))
+
+(use-package git-gutter-fringe
+             :if window-system
+             :after evil
+             :config
+             ; enable globally
+             (global-git-gutter-mode +1)
+             ; gutter will be on the right side
+             (setq git-gutter-fr:side 'right-fringe)
+             (define-key evil-normal-state-map "]n" 'git-gutter:next-hunk)
+             (define-key evil-normal-state-map "[n" 'git-gutter:previous-hunk)
+             )
 
 ;; Themes
 (use-package solarized-theme
