@@ -43,7 +43,7 @@ Plug 'ElmCast/elm-vim'
 Plug 'rust-lang/rust.vim'
 
 " Langserver support
-Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
 " Plug 'tjdevries/nvim-langserver-shim'
 
 """ Color schemes
@@ -434,6 +434,9 @@ let g:ruby_heredoc_syntax_filetypes = {
       \ "html" : {
       \   "start" : "HTML",
       \},
+      \ "sh" : {
+      \   "start" : "SH",
+      \},
 \}
 
 """ ternsjs/tern_for_vim
@@ -471,7 +474,11 @@ let g:LanguageClient_serverCommands = {
     \ 'python': ['pyls'],
     \ }
 nnoremap <localleader>lj :call LanguageClient_textDocument_definition()<CR>
+nnoremap T :call LanguageClient_textDocument_hover()<CR>
 nnoremap <localleader>ls :LanguageClientStart<CR>
+let g:LanguageClient_loggingFile = '/tmp/LanguageLog.log'
+let g:LanguageClient_loggingLevel = 'DEBUG'
+" let g:LanguageClient_hoverPreview = 'Always'
 
 """ mbbill/undotree
 nnoremap <F5> :UndotreeToggle<cr>

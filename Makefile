@@ -42,6 +42,8 @@ install-other:
 	ln -s `pwd`/other/taskrc ~/.taskrc
 	rm -f ~/.irbrc
 	ln -s `pwd`/other/irbrc ~/.irbrc
+	rm -f ~/.config/autostart-scripts/ssh-add.sh
+	ln -s `pwd`/other/ssh-add.sh ~/.config/autostart-scripts/ssh-add.sh
 
 
 install-xfce:

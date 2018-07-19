@@ -96,10 +96,6 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root)
 ZSH_HIGHLIGHT_STYLES[path]='fg=green,bold'
 ZSH_HIGHLIGHT_STYLES[globbing]='fg=magenta,bold'
 
-if type "keychain" > /dev/null; then
-	eval $(keychain --eval --agents ssh --noask -Q --quiet ~/.ssh/id_rsa 2> /dev/null)
-fi
-
 # RVM
 [[ (-s $HOME/.rvm) ]] && source $HOME/.rvm/scripts/rvm
 

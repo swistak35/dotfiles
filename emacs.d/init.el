@@ -43,6 +43,10 @@
 
 ; Enable highlight on the whole current line
 (global-hl-line-mode 1)
+; Don't make ~backup~ files
+(setq make-backup-files nil)
+(setq auto-save-file-name-transforms
+  `((".*" "~/.emacs.d/saves/" t)))
 
 ;; Helm
 (use-package helm
@@ -82,6 +86,20 @@
              (setq git-gutter-fr:side 'right-fringe)
              (define-key evil-normal-state-map "]n" 'git-gutter:next-hunk)
              (define-key evil-normal-state-map "[n" 'git-gutter:previous-hunk)
+             )
+
+(use-package yaml-mode)
+
+(use-package evil-nerd-commenter
+             :config
+             (define-key evil-normal-state-map "gcc" 'evilnc-comment-or-uncomment-lines)
+             (define-key evil-visual-state-map "gc" 'evilnc-comment-or-uncomment-lines)
+             )
+
+;; JSX mode
+(use-package rjsx-mode
+             :config
+             (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
              )
 
 ;; Themes

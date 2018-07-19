@@ -26,6 +26,9 @@ export LC_ALL=pl_PL.UTF-8
 export WORDCHARS='|*?[]~=&;!#$%^(){}<>'
 export DISABLE_AUTO_TITLE=true
 
+# which program to use when asking for password to ssh key
+export SSH_ASKPASS=ksshaskpass
+
 # temporarily for nixos
 # https://github.com/NixOS/nix/issues/599
 export LOCALE_ARCHIVE=/home/swistak35/.locale-archive

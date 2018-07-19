@@ -46,7 +46,6 @@ alias iitunel="ssh -C2qTnN -D 8979 i258338@tryglaw.ii.uni.wroc.pl"
 alias prb="pry -r '/home/swistak35/.rozne/myhomelib.rb'"
 alias :q="exit"
 alias adb_cleandb="adb shell pm clear"
-alias kcrsa="eval \$(keychain --eval --agents ssh -Q --quiet ~/.ssh/id_rsa)"
 alias fd='find . -type d -name'
 alias ff='find . -type f -name'
 alias largest_packages="pacman -Qi | awk '/Nazwa/ { name=\$3 } /Rozmiar po instalacji/ { printf \"%.3fMB\t%s\n\", \$4/1024, name }' | sort -rh | head -n 20"
