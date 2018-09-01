@@ -1,0 +1,71 @@
+#!/usr/bin/env ruby
+
+require 'togglv8'
+require 'freckle'
+require 'securerandom'
+
+### SETUP
+
+toggl_api_token = File.read("/home/swistak35/.toggl").strip
+freckle_api_token = File.read("/home/swistak35/.letsfreckle").strip
+project_mapping = {
+  "Arkency" => "Internal",
+  "Rails Event Store" => "Internal",
+  "Billetto" => "Billetto",
+}
+
+
+synchronization_id = SecureRandom.hex(8)
+puts "Synchronization uuid: #{synchronization_id}"
+
+toggl_api= TogglV8::API.new(toggl_api_token)
+user = toggl_api.me(all=true)
+workspaces = toggl_api.my_workspaces(user)
+raise if workspaces.size > 1
+workspace_id = workspaces.first['id']
+
+toggl_projects = toggl_api.projects(workspace_id)
+toggl_projects_mapping = project_mapping.keys.each_with_object({}) do |k, h|
+  proj = toggl_projects.find {|p| p["name"] == k }
+  h[proj["id"].to_i] = proj
+end
+toggl_synchronized_project_ids = toggl_projects_mapping.keys
+raise if toggl_projects_mapping.values.include?(nil)
+
+entries = toggl_api.get_time_entries({
+  start_date: Time.at(Time.now.to_i - 60 * 24 * 60 * 60).to_datetime, # 60 days ago
+  end_date: Time.now.to_datetime,
+})
+entries_to_synchronize = entries.select do |entry|
+  !entry.fetch("tags", []).include?("freckle-synced") &&
+    toggl_synchronized_project_ids.include?(entry["pid"].to_i)
+end.sort_by do |entry|
+  Time.parse(entry["start"])
+end
+
+
+
+
+
+
+freckle_api = Freckle::Client.new(token: freckle_api_token)
+freckle_projects = freckle_api.get_projects
+freckle_projects_mapping = project_mapping.values.each_with_object({}) do |v, h|
+  h[v] = freckle_projects.find {|p| p.name == v }
+end
+raise if freckle_projects_mapping.values.include?(nil)
+
+entries_to_synchronize.each do |entry|
+  puts "Synchronizing entry #{entry["id"]} from #{entry["start"]}"
+  toggl_project_name = toggl_projects_mapping[entry["pid"].to_i]["name"]
+  freckle_api.create_entry({
+    date: Time.parse(entry["start"]).to_date.to_s,
+    minutes: entry["duration"].to_i / 60,
+    description: "#{entry["description"]}  synced-#{synchronization_id}",
+    project_name: project_mapping[toggl_project_name],
+    # project_id: freckle_projects_mapping[project_mapping[toggl_project_name]].id,
+  })
+  toggl_api.update_time_entry(entry["id"], entry.merge({
+    "tags" => entry.fetch("tags", []) + ["freckle-synced", "synced-#{synchronization_id}"],
+  }))
+end
