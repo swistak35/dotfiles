@@ -9,7 +9,6 @@ export PATH=/usr/local/bin:$PATH
 export PATH=/home/swistak35/Pobrane/activator:$PATH
 export PATH=/home/swistak35/.gem/ruby/2.2.0/bin:$PATH
 export PATH=/home/swistak35/.cargo/bin:$PATH
-export PATH=/usr/local/cuda-8.0/bin${PATH:+:${PATH}}
 export LD_LIBRARY_PATH=/usr/lib32/nvidia-375/
 export LESS='-FRSX -i-P%f (%i/%m) Line %lt/%L'
 export EDITOR="vim"

@@ -47,6 +47,7 @@ antigen bundle redis-cli
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle Tarrasch/zsh-functional
 antigen bundle mix
+antigen apply
 
 source ~/.zsh/exports.zsh
 source ~/.zsh/keybindings.zsh
@@ -93,8 +94,8 @@ setopt autocd
 setopt extendedglob
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root)
-ZSH_HIGHLIGHT_STYLES[path]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[globbing]='fg=magenta,bold'
+# ZSH_HIGHLIGHT_STYLES[path]='fg=green,bold'
+# ZSH_HIGHLIGHT_STYLES[globbing]='fg=magenta,bold'
 
 # RVM
 [[ (-s $HOME/.rvm) ]] && source $HOME/.rvm/scripts/rvm
@@ -115,3 +116,8 @@ fi
 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+# export PATH="$PATH:$HOME/.rvm/bin"
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"

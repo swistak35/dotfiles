@@ -1,2 +1,2 @@
 #!/bin/sh
-ssh-add < /dev/null
+SSH_ASKPASS=ksshaskpass ssh-add < /dev/null

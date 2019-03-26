@@ -67,3 +67,5 @@
 	showPatch = true
 [diff "exif"]
 	textconv = exiftool
+[remote]
+	pushDefault = origin

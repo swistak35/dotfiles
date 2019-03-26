@@ -61,11 +61,12 @@ entries_to_synchronize.each do |entry|
   freckle_api.create_entry({
     date: Time.parse(entry["start"]).to_date.to_s,
     minutes: entry["duration"].to_i / 60,
-    description: "#{entry["description"]}  synced-#{synchronization_id}",
+    description: "#{entry["description"]}  synced-#{synchronization_id} entry-#{entry["id"]}",
     project_name: project_mapping[toggl_project_name],
     # project_id: freckle_projects_mapping[project_mapping[toggl_project_name]].id,
   })
   toggl_api.update_time_entry(entry["id"], entry.merge({
     "tags" => entry.fetch("tags", []) + ["freckle-synced", "synced-#{synchronization_id}"],
   }))
+  sleep 3
 end

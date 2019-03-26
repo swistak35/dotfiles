@@ -1,19 +1,2 @@
-#!/usr/bin/ruby
-
-$WOW = ARGV[0] || "tbc"
-
-if ARGV.include? "--log"
-  $LOG = "WINEDEBUG=-all"
-else
-  $LOG = "2> /dev/null"
-end
-
-$versions = {
-  "tbc" 	=> "wine \"/media/magazyn/Program Files/World of Warcraft 2.4.3/Wow.exe\"",
-  "wotlk" 	=> "wine \"/media/magazyn/Program Files/World of Warcraft 3.3.5a/Wow.exe\"",
-  "vanilla" 	=> "wine \"/media/magazyn/Program Files/World of Warcraft 1.12.1/Wow.exe\""
-}
-
-$cmd = $versions.keys.include?(ARGV[0]) ? ARGV[0] : "tbc"
-
-`#{$versions[$cmd]} #{$LOG}`
+#!/bin/sh
+env DXVK_HUD=fps,info DXVK_FAKE_DX10_SUPPORT=1 __GL_SYNC_TO_VBLANK=0 LD_PRELOAD="libpthread.so.0 libGL.so.1" WINEDEBUG=-all __GL_THREADED_OPTIMIZATION=1 wine64 /media/swistak35/szybki/World\ of\ Warcraft/_retail_/Wow.exe

@@ -41,6 +41,7 @@ Plug 'mxw/vim-jsx'
 Plug 'LnL7/vim-nix'
 Plug 'ElmCast/elm-vim'
 Plug 'rust-lang/rust.vim'
+Plug 'leafgarland/typescript-vim'
 
 " Langserver support
 Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
@@ -88,7 +89,7 @@ Plug 'vim-scripts/taglist.vim'
 " Some plugins need it, and then they can run tasks in background
 Plug 'tpope/vim-dispatch'
 " Changing theme between day & night
-Plug 'swistak35/bgshift.vim'
+" Plug 'swistak35/bgshift.vim'
 " snippets plugin
 Plug 'SirVer/ultisnips'
 " snippets
@@ -476,8 +477,10 @@ let g:LanguageClient_serverCommands = {
 nnoremap <localleader>lj :call LanguageClient_textDocument_definition()<CR>
 nnoremap T :call LanguageClient_textDocument_hover()<CR>
 nnoremap <localleader>ls :LanguageClientStart<CR>
+nnoremap <localleader>lr :LanguageClientStop<CR>:LanguageClientStart<CR>
 let g:LanguageClient_loggingFile = '/tmp/LanguageLog.log'
 let g:LanguageClient_loggingLevel = 'DEBUG'
+let g:LanguageClient_waitOutputTimeout = 240
 " let g:LanguageClient_hoverPreview = 'Always'
 
 """ mbbill/undotree
@@ -487,6 +490,13 @@ function! g:Undotree_CustomMap()
   nmap <buffer> K <plug>UndotreeGoNextState
   nmap <buffer> J <plug>UndotreeGoPreviousState
 endfunc
+
+function! g:JumpToFact()
+  let line_to_jump = system("./script/editor_jump_to_fact.rb ". @% . " " . (line(".") - 1) . " " . (col(".") - 1) . " 2> /dev/null")
+  :execute ":e config/initializers/application_subscriptions.rb"
+  :execute "normal! " . (line_to_jump + 1) . "G"
+endfunction
+nnoremap <localleader>ff :call JumpToFact()<CR>
 
 """ KabbAmine/zeavim.vim
 let g:zv_zeal_directory = "/usr/bin/zeal"
@@ -829,8 +839,8 @@ function! SetColorOnFocusGained()
   " endif
 endfunction
 
-au FocusLost * call SetColorOnFocusLost()
-au FocusGained * call SetColorOnFocusGained()
+" au FocusLost * call SetColorOnFocusLost()
+" au FocusGained * call SetColorOnFocusGained()
 
 " Very filetype dependent
 

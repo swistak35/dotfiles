@@ -47,18 +47,46 @@
 (setq make-backup-files nil)
 (setq auto-save-file-name-transforms
   `((".*" "~/.emacs.d/saves/" t)))
+(global-unset-key "\M-l") ; that was "downcase word" by default
+; Disable built-in VC manager
+(setq vc-handled-backends nil)
+
+
+(use-package evil
+             :config
+             (evil-mode 1)
+
+             (defvar evil-normal-state-leader-map (make-sparse-keymap)
+               "Keymap for \"leader key\" shortcuts.")
+             (define-key evil-normal-state-map "," evil-normal-state-leader-map)
+             (define-key evil-normal-state-map "Q" "@q")
+             (define-key evil-normal-state-leader-map "v" 'evil-window-vsplit)
+             (define-key evil-normal-state-leader-map "h" 'evil-window-split)
+             (setq
+               ;Disable displaying information about evil state
+               ;evil-mode-line-format nil
+
+               evil-normal-state-cursor '(box "White")
+               evil-insert-state-cursor '(bar "White")
+               evil-visual-state-cursor '(box "#F86155")))
 
 ;; Helm
 (use-package helm
+             :after evil
              :config
              (global-set-key (kbd "M-x") 'helm-M-x)
-             (global-set-key (kbd "M-p M-b") 'helm-buffers-list))
+             (setq helm-buffers-fuzzy-matching t)
+             (setq helm-recentf-fuzzy-matching t)
+             (define-key evil-normal-state-leader-map "pb" 'helm-mini)
+             (define-key evil-normal-state-leader-map "pc" 'helm-M-x)
+             )
 
 ;; FZF
 (use-package fzf
+             :after evil
              :config
-             (global-set-key (kbd "M-l M-p M-p") 'fzf-git-files))
-
+             (define-key evil-normal-state-leader-map "ff" 'fzf-git-files)
+             )
 
 ;; Hybrid-relative line numbering
 (use-package nlinum-relative
@@ -67,14 +95,6 @@
              (add-hook 'prog-mode-hook 'nlinum-relative-mode)
              (setq nlinum-relative-redisplay-delay 0)
              (setq nlinum-relative-current-symbol ""))
-
-(use-package evil
-             :config
-             (evil-mode 1)
-             (setq ;evil-mode-line-format nil ;Disable displaying information about evil state
-               evil-normal-state-cursor '(box "White")
-               evil-insert-state-cursor '(bar "White")
-               evil-visual-state-cursor '(box "#F86155")))
 
 (use-package git-gutter-fringe
              :if window-system
@@ -88,6 +108,14 @@
              (define-key evil-normal-state-map "[n" 'git-gutter:previous-hunk)
              )
 
+(use-package rspec-mode
+             :after evil
+             :config
+             (define-key evil-normal-state-leader-map "tn" 'rspec-verify-single)
+             (define-key evil-normal-state-leader-map "tf" 'rspec-verify)
+             (define-key evil-normal-state-leader-map "tl" 'rspec-rerun)
+             )
+
 (use-package yaml-mode)
 
 (use-package evil-nerd-commenter
@@ -96,10 +124,35 @@
              (define-key evil-visual-state-map "gc" 'evilnc-comment-or-uncomment-lines)
              )
 
+(use-package magit
+             :config
+             (add-to-list 'magit-no-confirm 'drop-stashes)
+             )
+
+(use-package evil-magit
+             :after evil magit
+             :config
+             (define-key evil-normal-state-leader-map "gs" 'magit-status)
+             (define-key evil-normal-state-leader-map "gg" 'magit-dispatch-popup)
+             (define-key evil-normal-state-leader-map "gb" 'magit-blame)
+             )
+
 ;; JSX mode
 (use-package rjsx-mode
              :config
              (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
+             )
+
+;; Elm mode
+(use-package elm-mode
+             :after evil
+             :config
+             (setq elm-format-on-save t)
+             ; Installable by `yarn global add elm-format`
+             (setq elm-format-command "/home/swistak35/.yarn/bin/elm-format")
+             (setq elm-tags-on-save t)
+             (setq elm-tags-exclude-elm-stuff nil)
+             (define-key evil-normal-state-leader-map "jj" 'elm-mode-goto-tag-at-point)
              )
 
 ;; Themes
