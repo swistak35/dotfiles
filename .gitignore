@@ -14,3 +14,6 @@ nvim/shada/*
 zsh/cache
 
 fluxbox/fbrun_history
+
+emacs.d/session.*
+emacs.d/recentf
