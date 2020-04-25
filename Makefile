@@ -44,6 +44,8 @@ install-other:
 	ln -s `pwd`/other/irbrc ~/.irbrc
 	rm -f ~/.config/autostart-scripts/ssh-add.sh
 	ln -s `pwd`/other/ssh-add.sh ~/.config/autostart-scripts/ssh-add.sh
+	rm -f ~/.config/redshift.conf
+	ln -s `pwd`/other/redshift.conf ~/.config/redshift.conf
 
 
 install-xfce:
