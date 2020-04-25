@@ -17,7 +17,7 @@ Plug 'mattn/gist-vim'
 Plug 'bling/vim-airline'
 Plug 'tpope/vim-rails'
 Plug 'tpope/vim-projectionist'
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
+" Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
 Plug 'tpope/vim-fugitive'
 " Plug 'fisadev/vim-ctrlp-cmdpalette'
 Plug 'mileszs/ack.vim'
@@ -25,6 +25,8 @@ Plug 'mileszs/ack.vim'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+
+Plug 'dense-analysis/ale'
 
 " Languages
 Plug 'vim-ruby/vim-ruby'
@@ -423,9 +425,19 @@ command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincm
 """"""""""    Plugins
 """""""""""""""""""""""""""""""""""""
 
+""" dense-analysis/ale
+let g:ale_fixers = {'javascript': ['prettier', 'eslint']}
+let g:ale_fix_on_save = 1
+let g:ale_linters = {'typescript': []}
+
+
+
 """
 let g:ruby_heredoc_syntax_defaults = {}
 let g:ruby_heredoc_syntax_filetypes = {
+      \ "json" : {
+      \   "start" : "JSON",
+      \},
       \ "javascript" : {
       \   "start" : "JS",
       \},

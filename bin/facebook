@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+def currently_locked?
+  `cat /etc/hosts | grep 'auto-facebook' | grep '^#' | wc -l`.strip.to_i.zero?
+end
+
+def unlock
+  if currently_locked?
+    `sudo sed -i '/auto-facebook/s/^/#/' /etc/hosts`
+    puts "Unlocked"
+  else
+    puts "Already unlocked"
+  end
+end
+
+def lock
+  if currently_locked?
+    puts "Already locked"
+  else
+    `sudo sed -i '/auto-facebook/s/^#//' /etc/hosts`
+    puts "Locked"
+  end
+end
+
+def show_warning
+  `zenity --warning --text="End of facebook time" --width 240`
+end
+
+trap "SIGINT" do
+  lock
+  exit 1
+end
+
+
+time_for_facebook = "10m"
+
+case ARGV[0]
+when "unlock"
+  unlock
+when "lock"
+  lock
+when nil
+  unlock
+  puts "Unlocked for #{time_for_facebook}"
+  `sleep #{time_for_facebook}`
+  show_warning
+  lock
+end

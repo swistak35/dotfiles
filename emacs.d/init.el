@@ -6,15 +6,17 @@
 ;; You may delete these explanatory comments.
 
 ;;; Packaging
-(package-initialize)
 
 (require 'package)
-
+; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+; (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
 (when (< emacs-major-version 24)
   ;; For important compatibility libraries like cl-lib
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+
+(package-initialize)
 
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
@@ -128,6 +130,9 @@
              :config
              (add-to-list 'magit-no-confirm 'drop-stashes)
              )
+
+; (use-package forge
+;              :after magit)
 
 (use-package evil-magit
              :after evil magit

@@ -25,3 +25,6 @@ custom_plan.rb
 # Orbacle
 .orbacle.db
 .orbaclerc
+
+.notes
+.notes.rb

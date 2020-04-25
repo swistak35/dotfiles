@@ -10,7 +10,7 @@
 	remotes = remote -v
 	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
 [push]
-	default = current
+	default = simple
 [github]
 	user = swistak35
 [ghi]
@@ -57,6 +57,7 @@
 [diff]
 	algorithm = patience
 	indentHeuristic = true
+	noprefix = true ; https://twitter.com/brandur/status/1182066723337293828
 [rebase]
 	autostash = true
 [color]

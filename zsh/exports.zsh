@@ -4,11 +4,12 @@ export PATH=$HOME/.bin:$PATH
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/.rvm/bin:$PATH
 export PATH=$HOME/.rbenv/bin:$PATH
+export PATH=$HOME/apps/bin:$PATH
 export PATH=/opt/android-sdk/tools:$PATH
 export PATH=/usr/local/bin:$PATH
-export PATH=/home/swistak35/Pobrane/activator:$PATH
 export PATH=/home/swistak35/.gem/ruby/2.2.0/bin:$PATH
 export PATH=/home/swistak35/.cargo/bin:$PATH
+export PATH=/snap/bin:$PATH
 export LD_LIBRARY_PATH=/usr/lib32/nvidia-375/
 export LESS='-FRSX -i-P%f (%i/%m) Line %lt/%L'
 export EDITOR="vim"
@@ -24,6 +25,7 @@ export LANG=pl_PL.UTF-8
 export LC_ALL=pl_PL.UTF-8
 export WORDCHARS='|*?[]~=&;!#$%^(){}<>'
 export DISABLE_AUTO_TITLE=true
+export N_PREFIX=/home/swistak35/.nodeenvs
 
 # which program to use when asking for password to ssh key
 export SSH_ASKPASS=ksshaskpass
