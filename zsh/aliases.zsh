@@ -21,6 +21,7 @@ alias emu='emulator -avd'
 alias bakemeup='sudo rdiff-backup --include-filelist /home/swistak35/.rdiff-backup-filelist / /media/backup/rdiffbackup'
 alias grep='grep --colour=auto'
 alias egrep='egrep --colour=auto'
+alias kcrsa="eval \$(keychain --eval --agents ssh -Q --quiet ~/.ssh/id_rsa)"
 alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
 alias diff='colordiff'
 alias rubysrv='ruby -run -e httpd . -p5000'
