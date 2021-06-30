@@ -1,4 +1,4 @@
-install: install-vim install-zsh install-git install-bin install-other install-nvim install-xfce
+install: install-vim install-tmux install-zsh install-git install-bin install-other install-nvim install-xfce install-yakuake
 
 install-emacs:
 	rm -rf ~/.emacs.d
@@ -18,7 +18,7 @@ install-zsh:
 	git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
 
 install-git:
-	rm -f ~/.global_gitignore ~/.gitconfig
+	rm -f ~/.global_gitignore ~/.gitconfig ~/.global_gitattributes
 	ln -s `pwd`/git/global_gitignore ~/.global_gitignore
 	ln -s `pwd`/git/global_gitattributes ~/.global_gitattributes
 	ln -s `pwd`/git/gitconfig ~/.gitconfig
@@ -27,13 +27,15 @@ install-bin:
 	rm -rf ~/.bin
 	ln -s `pwd`/bin ~/.bin
 
+install-tmux:
+	rm -f ~/.tmux.conf
+	ln -s `pwd`/other/tmux.conf ~/.tmux.conf
+
 install-other:
 	rm -f ~/.ghci
 	ln -s `pwd`/other/ghci ~/.ghci
 	rm -f ~/.ocamlinit
 	ln -s `pwd`/other/ocamlinit ~/.ocamlinit
-	rm -f ~/.tmux.conf
-	ln -s `pwd`/other/tmux.conf ~/.tmux.conf
 	rm -f ~/.gemrc
 	ln -s `pwd`/other/gemrc ~/.gemrc
 	rm -f ~/.Xmodmap
@@ -93,3 +95,8 @@ install-qnapi:
 	mkdir -p ~/.kde/share/apps/konqueror/servicemenus/
 	rm -f ~/.kde/share/apps/konqueror/servicemenus/qnapi-download.desktop
 	ln -s /usr/share/doc/qnapi/qnapi-download.desktop ~/.kde/share/apps/konqueror/servicemenus/qnapi-download.desktop
+
+install-yakuake:
+	mkdir -p ~/.config
+	rm -rf ~/.config/yakuakerc
+	ln -s `pwd`/yakuakerc ~/.config/yakuakerc
