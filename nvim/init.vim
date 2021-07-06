@@ -182,7 +182,7 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'AndrewRadev/switch.vim'
 Plug 'KabbAmine/zeavim.vim'
 Plug 't9md/vim-chef'
-Plug 'benekastah/neomake', Cond(has('nvim'))
+" Plug 'benekastah/neomake', Cond(has('nvim'))
 Plug 'szw/vim-tags'
 
 Plug 'the-lambda-church/merlin'
@@ -559,18 +559,18 @@ let g:airline_powerline_fonts = 1
 let g:vim_json_syntax_conceal = 0
 
 """ benekastah/neomake
-if has('nvim')
-  autocmd! BufWritePost,BufEnter * Neomake
-  let g:neomake_c_enabled_markers = ['clang']
-  let g:neomake_cpp_enabled_markers = ['clang++']
-  let g:neomake_coffeescript_enabled_markers = ['coffeelint']
-  let g:neomake_ruby_enabled_markers = ['rubocop']
-  let g:neomake_sh_enabled_markers = ['shellcheck']
-  let g:neomake_zsh_enabled_markers = ['shellcheck']
-  let g:neomake_jsx_enabled_markers = ['jsxlint']
-  let g:neomake_json_enabled_markers = ['jsonlint']
-  let g:neomake_javascript_enabled_markers = ['eslint']
-endif
+" if has('nvim')
+"   autocmd! BufWritePost,BufEnter * Neomake
+"   let g:neomake_c_enabled_markers = ['clang']
+"   let g:neomake_cpp_enabled_markers = ['clang++']
+"   let g:neomake_coffeescript_enabled_markers = ['coffeelint']
+"   let g:neomake_ruby_enabled_markers = ['rubocop']
+"   let g:neomake_sh_enabled_markers = ['shellcheck']
+"   let g:neomake_zsh_enabled_markers = ['shellcheck']
+"   let g:neomake_jsx_enabled_markers = ['jsxlint']
+"   let g:neomake_json_enabled_markers = ['jsonlint']
+"   let g:neomake_javascript_enabled_markers = ['eslint']
+" endif
 
 """ bkad/CamelCaseMotion
 map <S-W> <Plug>CamelCaseMotion_w
