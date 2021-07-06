@@ -598,11 +598,11 @@ vnoremap <leader>as1 :EasyAlign\ <CR>
 """ mileszs/ack.vim
 nnoremap <leader>a :Ack!<Space>
 if executable('ag')
-  let g:ackprg = 'ag --vimgrep'
+  let g:ackprg = 'ag --vimgrep --column'
 endif
-" if executable('rg')
-"   let g:ackprg = 'rg --no-heading --vimgrep'
-" endif
+if executable('rg')
+  let g:ackprg = 'rg --no-heading --smart-case --vimgrep'
+endif
 let g:ack_autofold_results = 0
 let g:ackpreview = 0
 " let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case"
