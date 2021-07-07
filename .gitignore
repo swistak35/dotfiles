@@ -12,6 +12,7 @@ nvim/plugged/*
 nvim/shada/*
 
 zsh/cache
+zsh/tmp/*
 
 fluxbox/fbrun_history
 

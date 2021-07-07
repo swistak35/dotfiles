@@ -45,16 +45,36 @@ switch-term-color() {
   fi
 }
 
+is_some_tmux_running() {
+  if tmux info &> /dev/null; then 
+    return 0
+  else
+    return 1
+  fi
+}
+
+switch-tmux-color() {
+  if is_some_tmux_running; then 
+    tmux source-file $HOME/.tmux/plugins/$1
+  fi
+}
+
 switch-theme-night() {
   switch-term-color "colors=Solarized"
+  switch-tmux-color "tmux-colors-solarized/tmuxcolors-dark.conf"
 }
 
 switch-theme-day() {
   switch-term-color "colors=SolarizedLight"
+  switch-tmux-color "tmux-colors-solarized/tmuxcolors-light.conf"
+}
+
+switch-theme-on() {
+  rm -f ~/.zsh/tmp/dont_switch_colors
 }
 
 switch-theme-off() {
-  export SWITCH_COLORS=nope
+  touch ~/.zsh/tmp/dont_switch_colors
 }
 
 be_rspec_with_notification() {
