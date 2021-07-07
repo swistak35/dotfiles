@@ -290,7 +290,7 @@ set autoread " Automatically reload files if they've changed on the disk
 " foldmethod=syntax works better, but on big ruby files it slows vim down very much
 set foldmethod=indent
 set foldlevel=2
-set foldnestmax=4
+set foldnestmax=5
 
 " New feature in Neovim: https://neovim.io/news/2016/11/
 if has('nvim')
