@@ -859,3 +859,6 @@ endfunction
 " Increase the limit of textwidth in git commit. 120 is enough for me to keep
 " one line with "Issue: " and then some link to trello afterwards.
 autocmd FileType gitcommit set textwidth=120
+
+
+command! -range RubyReplaceLetWithLvar :<line1>,<line2>!~/.bin/ruby_replace_let_with_lvar.rb
