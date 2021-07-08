@@ -32,8 +32,6 @@ source ~/.zsh/exports.zsh
 source ~/.zsh/keybindings.zsh
 source ~/.zsh/aliases.zsh
 source ~/.zsh/functions.zsh
-source ~/.zsh/promptleft.zsh
-source ~/.zsh/promptright.zsh
 source ~/.zsh/history.zsh
 source ~/.zsh/completion.zsh
 source ~/.zsh/directories.zsh
