@@ -20,10 +20,10 @@ zplug "plugins/gem", from:oh-my-zsh
 # antigen bundle sudo
 # antigen bundle systemd
 zplug "plugins/redis-cli", from:oh-my-zsh
-zplug "zsh-users/zsh-syntax-highlighting"
 zplug "Tarrasch/zsh-functional"
 zplug "plugins/mix", from:oh-my-zsh
 zplug "romkatv/powerlevel10k", as:theme, depth:1
+zplug "zsh-users/zsh-syntax-highlighting", defer:2
 
 # Then, source plugins and add commands to $PATH
 zplug load # --verbose
