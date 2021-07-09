@@ -16,12 +16,14 @@ zplug "plugins/rake-fast", from:oh-my-zsh
 # antigen bundle gitfast
 # antigen bundle mvn
 # antigen bundle rvm
-# antigen bundle sudo
 # antigen bundle systemd
 zplug "Tarrasch/zsh-functional"
 zplug "plugins/mix", from:oh-my-zsh
 zplug "romkatv/powerlevel10k", as:theme, depth:1
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
+
+# Esc-Esc to prefix last command with sudo
+zplug "plugins/sudo", from:oh-my-zsh
 
 # Completions
 zplug "plugins/ag",             from:oh-my-zsh, use:"_*", defer:2
