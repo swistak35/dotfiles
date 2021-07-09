@@ -70,5 +70,7 @@ case $1 in
   ;;
   "auto") switch-theme-auto
   ;;
-  *) echo "Unknown action, use one of: on, off, day, night, init, auto"
+  "help") echo "Actions: on, off, day, night, init, auto"
+  ;;
+  *) switch-theme-to-current
 esac
