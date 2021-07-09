@@ -1,4 +1,11 @@
 #!/usr/bin/env ruby
+#
+# Converts let/let! call into local variable assignment
+#
+# Example:
+#   let(:order) { test_actor.create_order }
+# into
+#   order = test_actor.create_order
 
 require 'parser/current'
 require 'unparser'
