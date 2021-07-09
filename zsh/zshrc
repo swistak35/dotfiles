@@ -13,17 +13,31 @@ zplug "plugins/rake-fast", from:oh-my-zsh
 # antigen bundle colored-man
 # antigen bundle extract
 # antigen bundle jump
-zplug "plugins/gem", from:oh-my-zsh
 # antigen bundle gitfast
 # antigen bundle mvn
 # antigen bundle rvm
 # antigen bundle sudo
 # antigen bundle systemd
-zplug "plugins/redis-cli", from:oh-my-zsh
 zplug "Tarrasch/zsh-functional"
 zplug "plugins/mix", from:oh-my-zsh
 zplug "romkatv/powerlevel10k", as:theme, depth:1
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
+
+# Completions
+zplug "plugins/ag",             from:oh-my-zsh, use:"_*", defer:2
+zplug "plugins/bundler",        from:oh-my-zsh, use:"_*", defer:2
+zplug "plugins/docker-compose", from:oh-my-zsh, use:"_*", defer:2
+zplug "plugins/gem",            from:oh-my-zsh, use:"_*", defer:2
+zplug "plugins/nanoc",          from:oh-my-zsh, use:"_*", defer:2
+zplug "plugins/nomad",          from:oh-my-zsh, use:"_*", defer:2
+zplug "plugins/rails",          from:oh-my-zsh, use:"_*", defer:2
+zplug "plugins/redis-cli",      from:oh-my-zsh, use:"_*", defer:2
+zplug "plugins/ripgrep",        from:oh-my-zsh, use:"_*", defer:2
+zplug "plugins/rust",           from:oh-my-zsh, use:"_*", defer:2
+zplug "plugins/rustup",         from:oh-my-zsh, use:"_*", defer:2
+zplug "plugins/terraform",      from:oh-my-zsh, use:"_*", defer:2
+zplug "plugins/tmuxinator",     from:oh-my-zsh, use:"_*", defer:2
+zplug "plugins/yarn",           from:oh-my-zsh, use:"_*", defer:2
 
 # Then, source plugins and add commands to $PATH
 zplug load # --verbose
