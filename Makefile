@@ -1,4 +1,4 @@
-install: install-vim install-git install-bin install-other install-nvim install-xfce
+install: install-vim install-bin install-other install-nvim install-xfce
 
 install-vim:
 	rm -rf ~/.vim ~/.vimrc
@@ -6,12 +6,6 @@ install-vim:
 	ln -s ~/.config/nvim/init.vim ~/.vimrc
 	vim +PlugInstall +qall
 	# [ -d ~/.eclim ] && ln -s ~/.eclim ~/.vim/eclim
-
-install-git:
-	rm -f ~/.global_gitignore ~/.gitconfig ~/.global_gitattributes
-	ln -s `pwd`/git/global_gitignore ~/.global_gitignore
-	ln -s `pwd`/git/global_gitattributes ~/.global_gitattributes
-	ln -s `pwd`/git/gitconfig ~/.gitconfig
 
 install-bin:
 	rm -rf ~/.bin
