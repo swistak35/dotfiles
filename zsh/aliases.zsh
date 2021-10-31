@@ -83,6 +83,7 @@ alias tms="tmuxinator start"
 alias tmn="tmux -2 new-session -s"
 alias tml="tmux list-sessions"
 alias tma="tmux -2 attach-session -t"
+alias tmc="clear; tmux clear-history; clear"
 
 
 # Suffix aliases
