@@ -182,7 +182,7 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'AndrewRadev/switch.vim'
 Plug 'KabbAmine/zeavim.vim'
 Plug 't9md/vim-chef'
-Plug 'benekastah/neomake', Cond(has('nvim'))
+" Plug 'benekastah/neomake', Cond(has('nvim'))
 Plug 'szw/vim-tags'
 
 Plug 'the-lambda-church/merlin'
@@ -290,7 +290,7 @@ set autoread " Automatically reload files if they've changed on the disk
 " foldmethod=syntax works better, but on big ruby files it slows vim down very much
 set foldmethod=indent
 set foldlevel=2
-set foldnestmax=4
+set foldnestmax=5
 
 " New feature in Neovim: https://neovim.io/news/2016/11/
 if has('nvim')
@@ -559,18 +559,18 @@ let g:airline_powerline_fonts = 1
 let g:vim_json_syntax_conceal = 0
 
 """ benekastah/neomake
-if has('nvim')
-  autocmd! BufWritePost,BufEnter * Neomake
-  let g:neomake_c_enabled_markers = ['clang']
-  let g:neomake_cpp_enabled_markers = ['clang++']
-  let g:neomake_coffeescript_enabled_markers = ['coffeelint']
-  let g:neomake_ruby_enabled_markers = ['rubocop']
-  let g:neomake_sh_enabled_markers = ['shellcheck']
-  let g:neomake_zsh_enabled_markers = ['shellcheck']
-  let g:neomake_jsx_enabled_markers = ['jsxlint']
-  let g:neomake_json_enabled_markers = ['jsonlint']
-  let g:neomake_javascript_enabled_markers = ['eslint']
-endif
+" if has('nvim')
+"   autocmd! BufWritePost,BufEnter * Neomake
+"   let g:neomake_c_enabled_markers = ['clang']
+"   let g:neomake_cpp_enabled_markers = ['clang++']
+"   let g:neomake_coffeescript_enabled_markers = ['coffeelint']
+"   let g:neomake_ruby_enabled_markers = ['rubocop']
+"   let g:neomake_sh_enabled_markers = ['shellcheck']
+"   let g:neomake_zsh_enabled_markers = ['shellcheck']
+"   let g:neomake_jsx_enabled_markers = ['jsxlint']
+"   let g:neomake_json_enabled_markers = ['jsonlint']
+"   let g:neomake_javascript_enabled_markers = ['eslint']
+" endif
 
 """ bkad/CamelCaseMotion
 map <S-W> <Plug>CamelCaseMotion_w
@@ -598,11 +598,11 @@ vnoremap <leader>as1 :EasyAlign\ <CR>
 """ mileszs/ack.vim
 nnoremap <leader>a :Ack!<Space>
 if executable('ag')
-  let g:ackprg = 'ag --vimgrep'
+  let g:ackprg = 'ag --vimgrep --column'
 endif
-" if executable('rg')
-"   let g:ackprg = 'rg --no-heading --vimgrep'
-" endif
+if executable('rg')
+  let g:ackprg = 'rg --no-heading --smart-case --vimgrep'
+endif
 let g:ack_autofold_results = 0
 let g:ackpreview = 0
 " let g:ack_default_options = " -s -H --nocolor --nogroup --column --smart-case"
@@ -859,3 +859,6 @@ endfunction
 " Increase the limit of textwidth in git commit. 120 is enough for me to keep
 " one line with "Issue: " and then some link to trello afterwards.
 autocmd FileType gitcommit set textwidth=120
+
+
+command! -range RubyReplaceLetWithLvar :<line1>,<line2>!~/.bin/ruby_replace_let_with_lvar.rb

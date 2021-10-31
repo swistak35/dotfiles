@@ -5,7 +5,6 @@ alias moar='more'
 
 # Sudo Aliases
 alias sudo='sudo '
-alias pacman='sudo pacman'
 alias mount='sudo mount'
 
 # App aliases
@@ -41,26 +40,18 @@ alias leavejobs="disown && exit"
 alias iplocation="curl ipinfo.io"
 alias checkport="nc -zv localhost"
 alias pstree_="pstree -ap"
-alias clearcache="pacman -Sc"
-alias recentpacs="yaourt -Q --date"
-alias iitunel="ssh -C2qTnN -D 8979 i258338@tryglaw.ii.uni.wroc.pl"
 alias prb="pry -r '/home/swistak35/.rozne/myhomelib.rb'"
 alias :q="exit"
 alias adb_cleandb="adb shell pm clear"
 alias fd='find . -type d -name'
 alias ff='find . -type f -name'
-alias largest_packages="pacman -Qi | awk '/Nazwa/ { name=\$3 } /Rozmiar po instalacji/ { printf \"%.3fMB\t%s\n\", \$4/1024, name }' | sort -rh | head -n 20"
 alias muo="/home/swistak35/projs/oss/muon/bin/muon2"
 alias fsum="paste -sd+ | bc"
 alias lst="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'"
 alias be='bundle exec'
-alias bes='bundle exec spring'
 alias jsonify='ruby -rjson -e "puts JSON.pretty_generate(JSON.parse(STDIN.read))"'
-alias fix_sudo_display='xhost + > /dev/null'
-alias idris="/opt/idris/.cabal-sandbox/bin/idris"
 alias rm='rm -I'
 alias gen-uuid='ruby -rsecurerandom -e "print SecureRandom.uuid"'
-alias load-anaconda="export PATH=/home/swistak35/projs/uwr-computer-vision/anaconda3/bin:$PATH"
 
 # Ruby
 alias rake="noglob rake" # allows square brackts for rake task invocation
@@ -115,8 +106,7 @@ alias ga='git add'
 alias gp='git push'
 alias gpom='git push origin master'
 alias gu='git pull'
-# alias gs='git status'
-alias gs='echo Use magit'
+alias gs='git status'
 alias gco='git checkout'
 alias gcob='git checkout -b'
 alias gd='git diff -w --patience --word-diff=color'

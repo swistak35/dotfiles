@@ -1,0 +1,9 @@
+[Desktop Entry]
+DefaultProfile=
+
+[Dialogs]
+FirstRun=false
+
+[Window]
+Height=90
+ShowSystrayIcon=false
