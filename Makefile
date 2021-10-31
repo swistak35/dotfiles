@@ -1,8 +1,4 @@
-install: install-vim install-tmux install-zsh install-git install-bin install-other install-nvim install-xfce install-yakuake
-
-install-emacs:
-	rm -rf ~/.emacs.d
-	ln -s `pwd`/emacs.d ~/.emacs.d
+install: install-vim install-git install-bin install-other install-nvim install-xfce
 
 install-vim:
 	rm -rf ~/.vim ~/.vimrc
@@ -10,12 +6,6 @@ install-vim:
 	ln -s ~/.config/nvim/init.vim ~/.vimrc
 	vim +PlugInstall +qall
 	# [ -d ~/.eclim ] && ln -s ~/.eclim ~/.vim/eclim
-
-install-zsh:
-	rm -rf ~/.zsh ~/.zshrc ~/.oh-my-zsh
-	ln -s `pwd`/zsh ~/.zsh
-	ln -s ~/.zsh/zshrc ~/.zshrc
-	git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
 
 install-git:
 	rm -f ~/.global_gitignore ~/.gitconfig ~/.global_gitattributes
@@ -26,10 +16,6 @@ install-git:
 install-bin:
 	rm -rf ~/.bin
 	ln -s `pwd`/bin ~/.bin
-
-install-tmux:
-	rm -f ~/.tmux.conf
-	ln -s `pwd`/other/tmux.conf ~/.tmux.conf
 
 install-other:
 	rm -f ~/.ghci
@@ -54,11 +40,6 @@ install-xfce:
 	ln -s `pwd`/thunar/uca.xml ~/.config/Thunar/uca.xml
 	rm ~/.config/Thunar/renamerrc
 	ln -s `pwd`/thunar/renamerrc ~/.config/Thunar/renamerrc
-
-install-nvim:
-	rm -rf ~/.nvimrc ~/.nvim ~/.config/nvim
-	ln -s `pwd`/nvim ~/.config/nvim
-	nvim +PlugInstall +qall
 
 install-vifm:
 	rm -rf ~/.vifm
@@ -94,8 +75,3 @@ install-qnapi:
 	mkdir -p ~/.kde/share/apps/konqueror/servicemenus/
 	rm -f ~/.kde/share/apps/konqueror/servicemenus/qnapi-download.desktop
 	ln -s /usr/share/doc/qnapi/qnapi-download.desktop ~/.kde/share/apps/konqueror/servicemenus/qnapi-download.desktop
-
-install-yakuake:
-	mkdir -p ~/.config
-	rm -rf ~/.config/yakuakerc
-	ln -s `pwd`/yakuakerc ~/.config/yakuakerc
