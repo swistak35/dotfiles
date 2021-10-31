@@ -18,4 +18,9 @@ fluxbox/fbrun_history
 
 emacs.d/session.*
 emacs.d/recentf
+emacs.d/image-dired/*
+emacs.d/elpa/*
+emacs.d/auto-save-list/*
+emacs.d/pcache/*
+emacs.d/saves/*
 emacs.d/transient/*
