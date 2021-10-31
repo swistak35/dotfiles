@@ -79,7 +79,7 @@ alias tdd='td ls +daily'
 
 # Tmux
 alias tmk="tmux kill-session -t"
-alias tms="mux start"
+alias tms="tmuxinator start"
 alias tmn="tmux -2 new-session -s"
 alias tml="tmux list-sessions"
 alias tma="tmux -2 attach-session -t"
