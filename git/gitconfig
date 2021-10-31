@@ -70,3 +70,6 @@
 	textconv = exiftool
 [remote]
 	pushDefault = origin
+[rerere]
+	enabled = true
+	autoupdate = false ; disabled, this cause the resolutions to be automatically staged. I am not yet sure I want that
