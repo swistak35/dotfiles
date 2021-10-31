@@ -18,3 +18,4 @@ fluxbox/fbrun_history
 
 emacs.d/session.*
 emacs.d/recentf
+emacs.d/transient/*
