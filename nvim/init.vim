@@ -117,7 +117,7 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 " Plug 'Einenlum/yaml-revealer'
 
 " Github support for fugitive
-Plug 'tpope/vim-rhubarb'
+" Plug 'tpope/vim-rhubarb'
 
 " Plug 'vim-utils/vim-man'
 
