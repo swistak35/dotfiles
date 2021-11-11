@@ -93,7 +93,7 @@ Plug 'tpope/vim-dispatch'
 " Changing theme between day & night
 " Plug 'swistak35/bgshift.vim'
 " snippets plugin
-Plug 'SirVer/ultisnips'
+" Plug 'SirVer/ultisnips'
 " snippets
 Plug 'swistak35/my-snippets.vim'
 " show "At match #N out out M matches" during search
@@ -701,9 +701,9 @@ nmap <silent> <localleader>tl :TestLast<CR>
 nmap <silent> <localleader>tv :TestVisit<CR>
 
 """ SirVer/ultisnips
-let g:UltiSnipsExpandTrigger="<c-e>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+" let g:UltiSnipsExpandTrigger="<c-e>"
+" let g:UltiSnipsJumpForwardTrigger="<c-b>"
+" let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 """ tpope/vim-rails
 nmap <localleader>rm :Rmigration<CR>
