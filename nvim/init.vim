@@ -699,6 +699,7 @@ nmap <silent> <localleader>tf :TestFile<CR>
 nmap <silent> <localleader>ts :TestSuite<CR>
 nmap <silent> <localleader>tl :TestLast<CR>
 nmap <silent> <localleader>tv :TestVisit<CR>
+nmap <silent> <localleader>te :call VtrSendCommand("be rspec --only-failures", 1)<CR>
 
 """ SirVer/ultisnips
 " let g:UltiSnipsExpandTrigger="<c-e>"
