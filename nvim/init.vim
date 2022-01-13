@@ -39,7 +39,7 @@ Plug 'hail2u/vim-css3-syntax'
 Plug 'elixir-lang/vim-elixir'
 Plug 'idris-hackers/idris-vim'
 Plug 'cypok/vim-sml'
-Plug 'mxw/vim-jsx'
+Plug 'MaxMEllon/vim-jsx-pretty'
 Plug 'LnL7/vim-nix'
 Plug 'ElmCast/elm-vim'
 Plug 'rust-lang/rust.vim'
@@ -427,7 +427,7 @@ command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincm
 
 """ dense-analysis/ale
 let g:ale_fixers = {'javascript': ['prettier', 'eslint']}
-let g:ale_fix_on_save = 1
+let g:ale_fix_on_save = 0
 let g:ale_linters = {'typescript': []}
 
 
@@ -474,10 +474,6 @@ nmap ]w <plug>EasyClipSwapPasteBackwards
 " Yank additional keybindings
 nmap [W <plug>EasyClipRotateYanksForward
 nmap ]W <plug>EasyClipRotateYanksBackward
-
-""" mxw/vim-jsx
-" Enable jsx syntax also in js files, it does not need to be JSX file
-let g:jsx_ext_required = 0
 
 """ autozimu/LanguageClient-neovim
 set hidden
