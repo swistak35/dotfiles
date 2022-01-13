@@ -1,6 +1,6 @@
 [user]
 	name = Rafał Łasocha
-	email = me@swistak35.com
+	email = rafal@lasocha.net
 	signingkey = C3712C4FD44FC9EB
 [alias]
 	log1 = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit

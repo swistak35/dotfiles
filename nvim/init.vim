@@ -29,7 +29,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'dense-analysis/ale'
 
 " Languages
-Plug 'vim-ruby/vim-ruby'
+" Plug 'vim-ruby/vim-ruby'
 Plug 'pangloss/vim-javascript'
 Plug 'groenewege/vim-less'
 " Plug 'kchmck/vim-coffee-script'
@@ -426,9 +426,12 @@ command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincm
 """""""""""""""""""""""""""""""""""""
 
 """ dense-analysis/ale
-let g:ale_fixers = {'javascript': ['prettier', 'eslint']}
+let g:ale_fixers = {'javascript': ['prettier', 'eslint'], 'ruby': ['rubocop']}
 let g:ale_fix_on_save = 0
-let g:ale_linters = {'typescript': []}
+let g:ale_linters = {'typescript': [], 'ruby': ['rubocop']}
+let g:ale_linters_explicit = 1
+let g:ale_completion_enabled = 1
+set omnifunc=ale#completion#OmniFunc
 
 
 

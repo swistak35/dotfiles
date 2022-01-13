@@ -4,6 +4,9 @@ DefaultProfile=
 [Dialogs]
 FirstRun=false
 
+[KFileDialog Settings]
+detailViewIconSize=16
+
 [Window]
 Height=90
 ShowSystrayIcon=false
