@@ -55,6 +55,10 @@
 
 
 (use-package evil
+             :ensure t
+             :init
+             (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+             (setq evil-want-keybinding nil)
              :config
              (evil-mode 1)
 
@@ -64,6 +68,9 @@
              (define-key evil-normal-state-map "Q" "@q")
              (define-key evil-normal-state-leader-map "v" 'evil-window-vsplit)
              (define-key evil-normal-state-leader-map "h" 'evil-window-split)
+             (define-key evil-normal-state-leader-map "gs" 'magit-status)
+             (define-key evil-normal-state-leader-map "gg" 'magit-dispatch-popup)
+             (define-key evil-normal-state-leader-map "gb" 'magit-blame)
              (setq
                ;Disable displaying information about evil state
                ;evil-mode-line-format nil
@@ -71,6 +78,12 @@
                evil-normal-state-cursor '(box "White")
                evil-insert-state-cursor '(bar "White")
                evil-visual-state-cursor '(box "#F86155")))
+
+(use-package evil-collection
+             :after evil
+             :ensure t
+             :config
+             (evil-collection-init))
 
 ;; Helm
 (use-package helm
@@ -134,13 +147,13 @@
 ; (use-package forge
 ;              :after magit)
 
-(use-package evil-magit
-             :after evil magit
-             :config
-             (define-key evil-normal-state-leader-map "gs" 'magit-status)
-             (define-key evil-normal-state-leader-map "gg" 'magit-dispatch-popup)
-             (define-key evil-normal-state-leader-map "gb" 'magit-blame)
-             )
+; (use-package evil-magit
+;              :after evil magit
+;              :config
+;              (define-key evil-normal-state-leader-map "gs" 'magit-status)
+;              (define-key evil-normal-state-leader-map "gg" 'magit-dispatch-popup)
+;              (define-key evil-normal-state-leader-map "gb" 'magit-blame)
+;              )
 
 ;; JSX mode
 (use-package rjsx-mode
@@ -159,6 +172,21 @@
              (setq elm-tags-exclude-elm-stuff nil)
              (define-key evil-normal-state-leader-map "jj" 'elm-mode-goto-tag-at-point)
              )
+
+(use-package org
+             :config
+             (global-set-key (kbd "C-c l") #'org-store-link)
+             (global-set-key (kbd "C-c a") #'org-agenda)
+             (global-set-key (kbd "C-c c") #'org-capture)
+             (setq org-agenda-include-diary t))
+
+(use-package evil-org
+  :ensure t
+  :after org
+  :hook (org-mode . (lambda () evil-org-mode))
+  :config
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
 
 ;; Themes
 (use-package solarized-theme
@@ -182,11 +210,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   (quote
-    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" default)))
+   '("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" default))
+ '(helm-minibuffer-history-key "M-p")
+ '(org-agenda-files '("~/projs/silverfin/todo.org"))
  '(package-selected-packages
-   (quote
-    (list-packages-ext solarized-theme dired-subtree dired-collapse dired-hacks-utils))))
+   '(list-packages-ext solarized-theme dired-subtree dired-collapse dired-hacks-utils)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
