@@ -66,6 +66,8 @@
                "Keymap for \"leader key\" shortcuts.")
              (define-key evil-normal-state-map "," evil-normal-state-leader-map)
              (define-key evil-normal-state-map "Q" "@q")
+             (define-key evil-normal-state-map "J" 'scroll-up-command)
+             (define-key evil-normal-state-map "K" 'scroll-down-command)
              (define-key evil-normal-state-leader-map "v" 'evil-window-vsplit)
              (define-key evil-normal-state-leader-map "h" 'evil-window-split)
              (define-key evil-normal-state-leader-map "gs" 'magit-status)
