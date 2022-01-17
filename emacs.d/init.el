@@ -183,6 +183,10 @@
              (setq org-priority-start-cycle-with-default nil)
              (setq org-default-priority ?D) ; A for MIT, B for the things for the week, C for the things which are ready to be executed
              (setq org-lowest-priority ?E)
+             (org-babel-do-load-languages
+               'org-babel-load-languages
+               '((emacs-lisp . t)
+                 (ruby . t)))
              (global-set-key (kbd "C-c l") #'org-store-link)
              (global-set-key (kbd "C-c a") #'org-agenda)
              (global-set-key (kbd "C-c c") #'org-capture)
