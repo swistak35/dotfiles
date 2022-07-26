@@ -56,6 +56,13 @@
 ; Disable built-in VC manager
 (setq vc-handled-backends nil)
 
+; Set how many lines are taken from previous page when scrolling by pages
+(setq next-screen-context-lines 6)
+
+(setq scroll-preserve-screen-position t)
+(setq scroll-step 1)
+(setq scroll-margin 1)
+
 
 (use-package evil
              :ensure t
