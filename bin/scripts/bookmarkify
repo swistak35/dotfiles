@@ -1,0 +1,76 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+require 'time'
+require 'fileutils'
+
+DATE_FORMAT = "%Y-%m-%d"
+
+path = Pathname.new(File.expand_path(ARGV[0]))
+
+def get_attribute(lines, attr, null_value: nil)
+  line_with_attr = lines.find {|l| l.start_with?("#{attr}:") }
+  attr_value = line_with_attr.sub("#{attr}:", "").strip
+  if null_value && null_value == attr_value
+    nil
+  else
+    attr_value
+  end
+end
+
+top_lines = File.readlines(path)[0..15]
+
+attrs = {
+  title: get_attribute(top_lines, "TITLE"),
+  date: Time.parse(get_attribute(top_lines, "DATE")),
+  lang: get_attribute(top_lines, "LANGUAGE"),
+  description: get_attribute(top_lines, "DESCRIPTION"),
+  author: get_attribute(top_lines, "AUTHOR", null_value: "No author"),
+  creator: get_attribute(top_lines, "CREATOR", null_value: "No creator"),
+  publisher: get_attribute(top_lines, "PUBLISHER", null_value: "No publisher"),
+}
+
+entry = <<~EOS
+*** around #{attrs[:date].strftime(DATE_FORMAT)} #{attrs[:title]}
+    :PROPERTIES:
+    :TITLE: #{attrs[:title]}
+    :FILE: ~/bookmarks/#{path.basename}
+    :DATE: #{attrs[:date]}
+    :TAGS: 
+    :DESCRIPTION: #{attrs[:description]}
+    :LANGUAGE: #{attrs[:lang]}
+EOS
+entry += <<EOS if attrs[:author]
+    :AUTHOR: #{attrs[:author]}
+EOS
+entry += <<EOS if attrs[:creator]
+    :CREATOR: #{attrs[:creator]}
+EOS
+entry += <<EOS if attrs[:publisher]
+    :PUBLISHER: #{attrs[:publisher]}
+EOS
+entry += <<EOS
+    :END:
+    [[~/bookmarks/#{path.basename}]]
+EOS
+
+
+
+puts entry
+
+confirmation = STDIN.gets.chomp
+
+unless ["yes", "y"].include?(confirmation)
+  puts "nothing done"
+  exit
+end
+
+FileUtils.mv(path, File.expand_path("~/bookmarks/#{path.basename}"))
+puts "= File moved"
+
+
+bookmarks_file = File.open(File.expand_path("~/notes/bookmarks.org"), "a") do |f|
+  f.puts entry
+end
+
+
