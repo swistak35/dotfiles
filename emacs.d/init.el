@@ -190,9 +190,12 @@
              (setq org-agenda-files '("~/notes" "~/projs/silverfin" "~/projs/railseventstore"))
              (setq org-log-done t)
              (setq org-agenda-skip-scheduled-if-done t)
+             (setq org-agenda-skip-deadline-if-done t)
              (setq org-priority-start-cycle-with-default nil)
              (setq org-default-priority ?D) ; A for MIT, B for the things for the week, C for the things which are ready to be executed
              (setq org-lowest-priority ?E)
+             (setq org-todo-keywords
+                   '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "SOMEDAY(s)" "CANCELLED(c)")))
              (org-babel-do-load-languages
                'org-babel-load-languages
                '((emacs-lisp . t)
