@@ -1,2 +1,2 @@
 #!/bin/bash
-wine "/media/magazyn/Program Files (x86)/Steam/Steam.exe" -no-dwrite
+wine "/media/windows/Program Files (x86)/Steam/Steam.exe" -no-dwrite
