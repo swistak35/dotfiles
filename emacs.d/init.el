@@ -201,6 +201,7 @@
              (global-set-key (kbd "C-c a") #'org-agenda)
              (global-set-key (kbd "C-c c") #'org-capture)
              (add-to-list 'org-modules 'org-habit t)
+             (setq org-refile-targets '((org-agenda-files :tag . "project")))
              (setq org-agenda-custom-commands
                    '(("n" "Agenda and all TODOs"
                       ((agenda "")
