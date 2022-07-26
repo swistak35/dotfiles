@@ -194,6 +194,8 @@
              (setq org-priority-start-cycle-with-default nil)
              (setq org-default-priority ?D) ; A for MIT, B for the things for the week, C for the things which are ready to be executed
              (setq org-lowest-priority ?E)
+             (setq org-agenda-start-on-weekday nil)
+             (setq org-agenda-show-future-repeats nil)
              (setq org-todo-keywords
                    '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "SOMEDAY(s)" "CANCELLED(c)")))
              (org-babel-do-load-languages
