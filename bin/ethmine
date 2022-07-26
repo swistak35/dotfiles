@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+~/apps/nanominer-linux-3.3.4-cuda11/nanominer ~/apps/nanominer-linux-3.3.4-cuda11/config_eth_zil_split.ini
