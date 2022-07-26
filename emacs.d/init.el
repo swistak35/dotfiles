@@ -5,6 +5,9 @@
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 
+;; Quick reloading reminder:
+;; M-: (load user-init-file)
+
 ;;; Packaging
 
 (require 'package)
