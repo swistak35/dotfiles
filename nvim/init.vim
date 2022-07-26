@@ -103,7 +103,7 @@ Plug 'christoomey/vim-tmux-navigator'
 " For ability to press v, vv, vvv, ...
 Plug 'terryma/vim-expand-region'
 " Display git information in NERDTree
-Plug 'Xuyuanp/nerdtree-git-plugin'
+" Plug 'Xuyuanp/nerdtree-git-plugin'
 " Buffer explorer. Bar at the top
 " Removed because it didn't fit my flow
 " Plug 'weynhamz/vim-plugin-minibufexpl'
