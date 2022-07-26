@@ -196,6 +196,10 @@
              (add-to-list 'org-modules 'org-habit t)
              (setq org-agenda-include-diary t))
 
+(use-package org-ql
+             :ensure t
+             :after org)
+
 (use-package evil-org
   :ensure t
   :after org
