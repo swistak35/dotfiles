@@ -24,3 +24,6 @@ emacs.d/auto-save-list/*
 emacs.d/pcache/*
 emacs.d/saves/*
 emacs.d/transient/*
+emacs.d/straight/build-cache.el
+emacs.d/straight/build
+emacs.d/straight/repos

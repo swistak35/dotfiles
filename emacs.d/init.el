@@ -1,34 +1,26 @@
-;; MELPA
-
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-
 ;; Quick reloading reminder:
 ;; M-: (load user-init-file)
 
 ;;; Packaging
 
-(require 'package)
-; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-; (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+; straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-(when (< emacs-major-version 24)
-  ;; For important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-
-(package-initialize)
-
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
+(straight-use-package 'use-package)
 (require 'use-package)
-
 ; Display information in messages when there are some problems with loading the package or it's load time is big
 (setq use-package-verbose t)
-; Automatically install all use-packages if they are missing
-(setq use-package-always-ensure t) 
 
 ;; Dired
 ; ???
@@ -65,7 +57,7 @@
 
 
 (use-package evil
-             :ensure t
+             :straight t
              :init
              (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
              (setq evil-want-keybinding nil)
@@ -93,13 +85,14 @@
 
 (use-package evil-collection
              :after evil
-             :ensure t
+             :straight t
              :config
              (evil-collection-init))
 
 ;; Helm
 (use-package helm
              :after evil
+             :straight t
              :config
              (global-set-key (kbd "M-x") 'helm-M-x)
              (setq helm-buffers-fuzzy-matching t)
@@ -111,12 +104,14 @@
 ;; FZF
 (use-package fzf
              :after evil
+             :straight t
              :config
              (define-key evil-normal-state-leader-map "ff" 'fzf-git-files)
              )
 
 ;; Hybrid-relative line numbering
 (use-package nlinum-relative
+             :straight t
              :config
              (nlinum-relative-setup-evil)
              (add-hook 'prog-mode-hook 'nlinum-relative-mode)
@@ -126,6 +121,7 @@
 (use-package git-gutter-fringe
              :if window-system
              :after evil
+             :straight t
              :config
              ; enable globally
              (global-git-gutter-mode +1)
@@ -137,21 +133,25 @@
 
 (use-package rspec-mode
              :after evil
+             :straight t
              :config
              (define-key evil-normal-state-leader-map "tn" 'rspec-verify-single)
              (define-key evil-normal-state-leader-map "tf" 'rspec-verify)
              (define-key evil-normal-state-leader-map "tl" 'rspec-rerun)
              )
 
-(use-package yaml-mode)
+(use-package yaml-mode
+             :straight t)
 
 (use-package evil-nerd-commenter
+             :straight t
              :config
              (define-key evil-normal-state-map "gcc" 'evilnc-comment-or-uncomment-lines)
              (define-key evil-visual-state-map "gc" 'evilnc-comment-or-uncomment-lines)
              )
 
 (use-package magit
+             :straight t
              :config
              (add-to-list 'magit-no-confirm 'drop-stashes)
              )
@@ -169,12 +169,14 @@
 
 ;; JSX mode
 (use-package rjsx-mode
+             :straight t
              :config
              (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
              )
 
 ;; Elm mode
 (use-package elm-mode
+             :straight t
              :after evil
              :config
              (setq elm-format-on-save t)
@@ -186,6 +188,7 @@
              )
 
 (use-package org
+             :straight t
              :config
              (setq org-agenda-files '("~/notes" "~/projs/silverfin" "~/projs/railseventstore"))
              (setq org-log-done t)
@@ -333,11 +336,11 @@
              (setq org-agenda-include-diary t))
 
 (use-package org-ql
-             :ensure t
+             :straight t
              :after org)
 
 (use-package evil-org
-  :ensure t
+  :straight t
   :after org
   :hook (org-mode . (lambda () evil-org-mode))
   :config
@@ -346,6 +349,7 @@
 
 ;; Themes
 (use-package solarized-theme
+             :straight t
              :config
              (setq x-underline-at-descent-line t) ; Underline is more under than usual
              )
