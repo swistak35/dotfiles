@@ -1,4 +1,5 @@
 (("annalist.el" . "134fa3f0fb91a636a1c005c483516d4b64905a6d")
+ ("burly.el" . "aade1b4f12f73a5bf821ae2490a5927443ada12a")
  ("compat" . "056e3ccffc716990dcb7b33273453d5fce0402de")
  ("dash.el" . "3df46d7d9fe74f52a661565888e4d31fd760f0df")
  ("el-get" . "0a9d5684089bb1be9bd2ff670358006add4c6aff")

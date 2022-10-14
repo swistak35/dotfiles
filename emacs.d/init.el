@@ -347,6 +347,9 @@
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 
+(use-package burly
+             :straight t)
+
 ;; Themes
 (use-package solarized-theme
              :straight t
