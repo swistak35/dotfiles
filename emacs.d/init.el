@@ -200,7 +200,7 @@
              (setq org-agenda-start-on-weekday nil)
              (setq org-agenda-show-future-repeats nil)
              (setq org-todo-keywords
-                   '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "SOMEDAY(s)" "CANCELLED(c)")))
+                   '((sequence "TODO(t)" "WAITING(w)" "SOMEDAY(s)" "|" "DONE(d)" "CANCELLED(c)")))
              (org-babel-do-load-languages
                'org-babel-load-languages
                '((emacs-lisp . t)
@@ -211,9 +211,94 @@
              (add-to-list 'org-modules 'org-habit t)
              (setq org-refile-targets '((org-agenda-files :tag . "project")))
              (setq org-agenda-custom-commands
-                   '(("n" "Agenda and all TODOs"
-                      ((agenda "")
-                       (alltodo "")))
+                   '(
+                     ("X" "Super agenda"
+                      (
+                       (org-ql-block '(and (todo "TODO")
+                                           (priority '= "A"))
+                                     ((org-ql-block-header "Najważniejsze")))
+                       ; (agenda "" ((org-agenda-span 'day)
+                       ;             (org-super-agenda-groups
+                       ;               '((:name "Today"
+                       ;                        :time-grid t
+                       ;                        :date today
+                       ;                        :todo "TODAY"
+                       ;                        :scheduled today
+                       ;                        :order 1)))))
+                       (agenda ""
+                               (
+                                (org-agenda-span 'day)
+                                (org-super-agenda-groups
+                                  '(
+                                    (:discard (:priority "A"))
+                                    (:discard (:and (:priority<= "B" :tag ("@workbreak" "@zaudio" "@zfilmem"))))
+                                    (:discard (:and (:not (:priority) :tag ("@workbreak" "@zaudio" "@zfilmem"))))
+                                    (:name "Poranek"
+                                           :tag "poranek")
+                                    (:name "During day"
+                                           :tag "duringday")
+                                    (:name "Next (work)"
+                                           :tag "work")
+                                    (:name "Dzisiejsze"
+                                           :scheduled today)
+                                    (:name "Wieczór"
+                                           :tag "wieczor")
+                                    (:name "Przypominajki"
+                                           :and (:scheduled past :priority<= "C")
+                                           :order 101)
+                                    (:discard (:tag "@emilka"))
+                                    (:discard (:todo "WAITING"))
+                                   ))
+                                  ))
+                       (org-ql-block '(and (todo "TODO")
+                                           (priority '= "B")
+                                           (not (scheduled)))
+                                     ((org-ql-block-header "Next to grab")))
+                       (org-ql-block '(and (todo "WAITING")
+                                           (not (tags "@emilka")))
+                                     ((org-ql-block-header "Zadania zablokowane")))
+                       (org-ql-block '(and (todo)
+                                           (not (scheduled))
+                                           (tags "@emilka"))
+                                     ((org-ql-block-header "Zadania dla Emilki")))
+                       (org-ql-block '(and (todo "TODO")
+                                           (priority '= "C")
+                                           (not (scheduled)))
+                                     ((org-ql-block-header "Up next")))
+                       (org-ql-block '(and (todo "TODO")
+                                           (or (not (scheduled))
+                                               (scheduled :to today))
+                                           (tags "@zaudio" "@zfilmem"))
+                                     ((org-ql-block-header "Zadania do zrobienia na audio")))
+                       ))
+                     ("W" "Watching"
+                      (
+                       (org-ql-block '(and (todo "WATCHING")
+                                           (or (not (scheduled))
+                                               (scheduled :to today)))
+                                     ((org-ql-block-header "Aktualnie oglądane")))
+                       (org-ql-block '(and (todo "TOWATCH")
+                                           (priority '= "A"))
+                                     ((org-ql-block-header "Najbliższe do obejrzenia")))
+                       (org-ql-block '(and (todo "TOWATCH")
+                                           (priority '= "B"))
+                                     ((org-ql-block-header "Chcielibyśmy obejrzeć wkrótce")))
+                       (org-ql-block '(and (todo "WATCHING")
+                                           (scheduled :from today)
+                                           (not (scheduled :on today)))
+                                     ((org-ql-block-header "Czekamy na odcinek")))
+                       (org-ql-block '(and (todo "TOWATCH")
+                                           (tags "movie")
+                                           (or (not (priority))
+                                               (priority '< "B")))
+                                     ((org-ql-block-header "Filmy do obejrzenia")))
+                       (org-ql-block '(and (todo "TOWATCH")
+                                           (not (tags "movie"))
+                                           (or (not (priority))
+                                               (priority '< "A")))
+                                     ((org-ql-block-header "Pozostałe do obejrzenia")))
+                       )
+                      )
                      ("N" "Agenda and all TODOs, but better"
                       (
                        (org-ql-block '(and (todo "TODO")
@@ -251,8 +336,9 @@
                                                (scheduled :to today)))
                                      ((org-ql-block-header "Things to do during work break")))
                        (org-ql-block '(and (todo "WAITING")
+                                           (not (tags "emilka")))
                                            ; (priority '< "A")
-                                           (not (scheduled)))
+                                           ; (not (scheduled)))
                                      ((org-ql-block-header "Things waiting")))
                        (tags-todo "emilka")
                        (org-ql-block '(and (todo "TODO")
@@ -308,29 +394,27 @@
                                            (not (todo "TODO" "DONE"))
                                            (ts)))
                        ))
-                     ("w" "For review"
-                      (
-                       ; (org-ql-block '(and (todo "TODO")
-                       ;                     (scheduled :to "+7d"))
-                       ;               ((org-ql-block-header "Things happening in nearest week")))
+                     ("v" "For review" (
+                       (org-ql-block '(and (todo "TODO")
+                                           (tags "quarter")
+                                           (not (tags "ARCHIVE")))
+                                     ((org-ql-block-header "Cele kwartalne")))
                        (org-ql-block '(and (todo "TODO")
                                            (tags "inbox"))
                                      ((org-ql-block-header "Inbox")))
                        (org-ql-block '(and (todo "TODO")
-                                           (priority '>= "C"))
-                                     ((org-ql-block-header "Things already prioritized")))
-                       (org-ql-block '(and (todo "TODO")
-                                           (not (tags "postponed"))
-                                           (not (tags "template"))
-                                           (not (tags "inbox"))
+                                           (not (tags "tickler"))
+                                           (not (tags "work"))
+                                           (not (tags "ARCHIVE"))
                                            (not (tags "quarter"))
-                                           (or (not (priority))
-                                               (priority '< "C"))
+                                           (not (tags "@emilka"))
+                                           (not (tags "inbox"))
                                            (not (scheduled)))
-                                     ((org-ql-block-header "Things up for grab")))
-                       (org-ql-block '(and (todo "TODO")
-                                           (tags "postponed"))
-                                     ((org-ql-block-header "Tags currently on hold")))
+                                     ((org-super-agenda-groups
+                                        '((:auto-outline-path)
+                                          (:name "Zadania które mógłby zrobić Kuba"
+                                                 :tag "kuba")))
+                                      (org-ql-block-header "Do zrobienia")))
                        ))
                      ))
              (setq org-agenda-include-diary t))
@@ -338,6 +422,16 @@
 (use-package org-ql
              :straight t
              :after org)
+
+(use-package org-super-agenda
+             :straight t
+             :after org
+             :config
+             (org-super-agenda-mode t)
+             ; To fix the j/k manipulation on the headers when viewing super agenda
+             ; https://github.com/alphapapa/org-super-agenda/issues/50
+             (setq org-super-agenda-header-map (make-sparse-keymap))
+             )
 
 (use-package evil-org
   :straight t
