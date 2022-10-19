@@ -236,7 +236,7 @@
                                     (:name "Poranek"
                                            :tag "poranek")
                                     (:name "During day"
-                                           :tag "duringday")
+                                           :tag "@duringday")
                                     (:name "Next (work)"
                                            :tag "work")
                                     (:name "Dzisiejsze"
