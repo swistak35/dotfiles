@@ -269,7 +269,12 @@
                                            (or (not (scheduled))
                                                (scheduled :to today))
                                            (tags "@zaudio" "@zfilmem"))
-                                     ((org-ql-block-header "Zadania do zrobienia na audio")))
+                                     ((org-super-agenda-groups
+                                        '(
+                                          (:name "Istotniejsze"
+                                                 :scheduled past)
+                                         ))
+                                      (org-ql-block-header "Zadania do zrobienia na audio")))
                        ))
                      ("W" "Watching"
                       (
