@@ -272,7 +272,8 @@
                                      ((org-super-agenda-groups
                                         '(
                                           (:name "Istotniejsze"
-                                                 :scheduled past)
+                                                 :scheduled past
+                                                 :scheduled today)
                                          ))
                                       (org-ql-block-header "Zadania do zrobienia na audio")))
                        ))
