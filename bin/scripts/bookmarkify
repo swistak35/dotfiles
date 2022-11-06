@@ -4,6 +4,11 @@ require 'pathname'
 require 'time'
 require 'fileutils'
 
+DEBUG_MODE = !!ENV["DEBUG"]
+
+
+# TODO Use tags, for tags
+
 DATE_FORMAT = "%Y-%m-%d"
 
 path = Pathname.new(File.expand_path(ARGV[0]))
@@ -22,6 +27,7 @@ top_lines = File.readlines(path)[0..15]
 
 attrs = {
   title: get_attribute(top_lines, "TITLE"),
+  url: get_attribute(top_lines, "URL"),
   date: Time.parse(get_attribute(top_lines, "DATE")),
   lang: get_attribute(top_lines, "LANGUAGE"),
   description: get_attribute(top_lines, "DESCRIPTION"),
@@ -30,12 +36,16 @@ attrs = {
   publisher: get_attribute(top_lines, "PUBLISHER", null_value: "No publisher"),
 }
 
+pp attrs if DEBUG_MODE
+
 entry = <<~EOS
-*** around #{attrs[:date].strftime(DATE_FORMAT)} #{attrs[:title]}
+*** around #{attrs[:date].strftime(DATE_FORMAT)} #{attrs[:title]} :bookmark:
     :PROPERTIES:
     :TITLE: #{attrs[:title]}
+    :URL: #{attrs[:url]}
     :FILE: ~/bookmarks/#{path.basename}
-    :DATE: #{attrs[:date]}
+    :DATE: 
+    :ARCHIVAL_DATE: #{attrs[:date]}
     :TAGS: 
     :DESCRIPTION: #{attrs[:description]}
     :LANGUAGE: #{attrs[:lang]}
@@ -54,8 +64,6 @@ entry += <<EOS
     [[~/bookmarks/#{path.basename}]]
 EOS
 
-
-
 puts entry
 
 confirmation = STDIN.gets.chomp
@@ -65,12 +73,9 @@ unless ["yes", "y"].include?(confirmation)
   exit
 end
 
-FileUtils.mv(path, File.expand_path("~/bookmarks/#{path.basename}"))
+FileUtils.mv(path, File.expand_path("~/bookmarks/#{path.basename}")) unless DEBUG_MODE
 puts "= File moved"
-
 
 bookmarks_file = File.open(File.expand_path("~/notes/bookmarks.org"), "a") do |f|
   f.puts entry
 end
-
-
