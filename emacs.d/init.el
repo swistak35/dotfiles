@@ -190,7 +190,7 @@
 (use-package org
              :straight t
              :config
-             (setq org-agenda-files '("~/notes" "~/projs/silverfin" "~/projs/railseventstore"))
+             (setq org-agenda-files '("~/notes" "~/projs/silverfin/notes" "~/projs/railseventstore"))
              (setq org-log-done t)
              (setq org-agenda-skip-scheduled-if-done t)
              (setq org-agenda-skip-deadline-if-done t)
