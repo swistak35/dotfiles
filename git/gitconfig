@@ -11,6 +11,7 @@
 	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
 [push]
 	default = simple
+	autoSetupRemote = true
 [github]
 	user = swistak35
 [ghi]
