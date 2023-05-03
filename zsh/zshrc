@@ -40,6 +40,7 @@ zplug "plugins/rustup",         from:oh-my-zsh, use:"_*", defer:2
 zplug "plugins/terraform",      from:oh-my-zsh, use:"_*", defer:2
 zplug "plugins/tmuxinator",     from:oh-my-zsh, use:"_*", defer:2
 zplug "plugins/yarn",           from:oh-my-zsh, use:"_*", defer:2
+zplug "plugins/dotenv",         from:oh-my-zsh, use:"_*", defer:2
 
 # Then, source plugins and add commands to $PATH
 zplug load # --verbose
