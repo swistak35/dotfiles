@@ -240,6 +240,9 @@
                                            :tag "@duringday")
                                     (:name "Next (work)"
                                            :tag "work")
+                                    (:name "Ćwiczenia na dziś"
+                                           :and (:tag ("exercises" "pick_one") :not (:scheduled future))
+                                           :tag ("exercises"))
                                     (:name "Dzisiejsze"
                                            :scheduled today)
                                     (:name "Wieczór"
@@ -255,6 +258,9 @@
                                            (priority '= "B")
                                            (not (scheduled)))
                                      ((org-ql-block-header "Next to grab")))
+                       (org-ql-block '(and (priority)
+                                           (tags "@cooking"))
+                                     ((org-ql-block-header "Gotowanie")))
                        (org-ql-block '(and (todo "WAITING")
                                            (not (tags "@emilka")))
                                      ((org-ql-block-header "Zadania zablokowane")))
