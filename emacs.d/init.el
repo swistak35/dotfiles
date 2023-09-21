@@ -237,16 +237,17 @@
                                     (:name "Poranek"
                                            :tag "poranek")
                                     (:name "During day"
+                                           :face (:append t)
                                            :tag "@duringday")
                                     (:name "Next (work)"
                                            :tag "work")
-                                    (:name "Ćwiczenia na dziś"
-                                           :and (:tag ("exercises" "pick_one") :not (:scheduled future))
-                                           :tag ("exercises"))
-                                    (:name "Dzisiejsze"
-                                           :scheduled today)
+                                    (:name "Ćwiczenia (na dziś)"
+                                           :auto-property "PickOneGroup"
+                                           :and (:tag ("exercises") :not (:scheduled future)))
                                     (:name "Wieczór"
                                            :tag "wieczor")
+                                    (:name "Dzisiejsze"
+                                           :scheduled today)
                                     (:name "Przypominajki"
                                            :and (:scheduled past :priority<= "C")
                                            :order 101)
