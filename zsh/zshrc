@@ -1,49 +1,157 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# # Initialization code that may require console input (password prompts, [y/n]
+# # confirmations, etc.) must go above this block; everything else may go below.
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
+
+# source ~/.zplug/init.zsh
+
+# # antigen bundle bundler
+# zplug "plugins/command-not-found", from:oh-my-zsh
+# zplug "plugins/rake-fast", from:oh-my-zsh
+# # antigen bundle extract
+# # antigen bundle jump
+# # antigen bundle gitfast
+# # antigen bundle mvn
+# # antigen bundle rvm
+# # antigen bundle systemd
+# zplug "Tarrasch/zsh-functional"
+# zplug "plugins/mix", from:oh-my-zsh
+
+# # Esc-Esc to prefix last command with sudo
+# zplug "plugins/sudo", from:oh-my-zsh
+
+# # Completions
+# zplug "plugins/ag",             from:oh-my-zsh, use:"_*", defer:2
+# zplug "plugins/bundler",        from:oh-my-zsh, use:"_*", defer:2
+# zplug "plugins/docker-compose", from:oh-my-zsh, use:"_*", defer:2
+# zplug "plugins/gem",            from:oh-my-zsh, use:"_*", defer:2
+# zplug "plugins/nanoc",          from:oh-my-zsh, use:"_*", defer:2
+# zplug "plugins/nomad",          from:oh-my-zsh, use:"_*", defer:2
+# zplug "plugins/rails",          from:oh-my-zsh, use:"_*", defer:2
+# zplug "plugins/redis-cli",      from:oh-my-zsh, use:"_*", defer:2
+# zplug "plugins/ripgrep",        from:oh-my-zsh, use:"_*", defer:2
+# zplug "plugins/rust",           from:oh-my-zsh, use:"_*", defer:2
+# zplug "plugins/rustup",         from:oh-my-zsh, use:"_*", defer:2
+# zplug "plugins/terraform",      from:oh-my-zsh, use:"_*", defer:2
+# zplug "plugins/tmuxinator",     from:oh-my-zsh, use:"_*", defer:2
+# zplug "plugins/yarn",           from:oh-my-zsh, use:"_*", defer:2
+# zplug "plugins/dotenv",         from:oh-my-zsh, use:"_*", defer:2
+
+# # source ~/.zsh/completions/tmuxinator.zsh
+# # source ~/.zsh/completions/zeus.zsh
+# source ~/.zsh/completions/_bw
+
+# # zmodload zsh/mathfunc
+# autoload zmv
+
+# autoload -U add-zsh-hook
+# function switch_term_colors() {
+#   ~/.bin/switch-colors auto
+# }
+# if (( $+commands[konsoleprofile] ))
+# then
+# 	add-zsh-hook precmd switch_term_colors
+# fi
+
+# # Auto cd in directories
+# setopt autocd
+
+# # Extended Globbing, for example: `cp ^*.(tar|bz2|gz)`
+# setopt extendedglob
+
+# ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root)
+# # ZSH_HIGHLIGHT_STYLES[path]='fg=green,bold'
+# # ZSH_HIGHLIGHT_STYLES[globbing]='fg=magenta,bold'
+
+
+
+# # nix
+# if [[ -a /home/swistak35/.nix-profile/etc/profile.d/nix.sh ]]
+# then
+# 	# export LOCALE_ARCHIVE=/home/swistak35/locale-archive
+# 	export LOCALE_ARCHIVE=/nix/store/4yhkx5xr14q3phjdqds3rhckrw4107xx-glibc-locales-2.21/lib/locale/locale-archive
+# 	. /home/swistak35/.nix-profile/etc/profile.d/nix.sh
+# fi
+
+
+
+
+### Added by Zinit's installer
+if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+    print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
+    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
+        print -P "%F{33} %F{34}Installation successful.%f%b" || \
+        print -P "%F{160} The clone has failed.%f%b"
 fi
 
-source ~/.zplug/init.zsh
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 
-# antigen bundle bundler
-zplug "plugins/command-not-found", from:oh-my-zsh
-zplug "plugins/rake-fast", from:oh-my-zsh
-# antigen bundle colored-man
-# antigen bundle extract
-# antigen bundle jump
-# antigen bundle gitfast
-# antigen bundle mvn
-# antigen bundle rvm
-# antigen bundle systemd
-zplug "Tarrasch/zsh-functional"
-zplug "plugins/mix", from:oh-my-zsh
-zplug "romkatv/powerlevel10k", as:theme, depth:1
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
+# Load a few important annexes, without Turbo
+# (this is currently required for annexes)
+zinit light-mode for \
+    zdharma-continuum/zinit-annex-as-monitor \
+    zdharma-continuum/zinit-annex-bin-gem-node \
+    zdharma-continuum/zinit-annex-patch-dl \
+    zdharma-continuum/zinit-annex-rust
 
-# Esc-Esc to prefix last command with sudo
-zplug "plugins/sudo", from:oh-my-zsh
+setopt promptsubst
 
-# Completions
-zplug "plugins/ag",             from:oh-my-zsh, use:"_*", defer:2
-zplug "plugins/bundler",        from:oh-my-zsh, use:"_*", defer:2
-zplug "plugins/docker-compose", from:oh-my-zsh, use:"_*", defer:2
-zplug "plugins/gem",            from:oh-my-zsh, use:"_*", defer:2
-zplug "plugins/nanoc",          from:oh-my-zsh, use:"_*", defer:2
-zplug "plugins/nomad",          from:oh-my-zsh, use:"_*", defer:2
-zplug "plugins/rails",          from:oh-my-zsh, use:"_*", defer:2
-zplug "plugins/redis-cli",      from:oh-my-zsh, use:"_*", defer:2
-zplug "plugins/ripgrep",        from:oh-my-zsh, use:"_*", defer:2
-zplug "plugins/rust",           from:oh-my-zsh, use:"_*", defer:2
-zplug "plugins/rustup",         from:oh-my-zsh, use:"_*", defer:2
-zplug "plugins/terraform",      from:oh-my-zsh, use:"_*", defer:2
-zplug "plugins/tmuxinator",     from:oh-my-zsh, use:"_*", defer:2
-zplug "plugins/yarn",           from:oh-my-zsh, use:"_*", defer:2
-zplug "plugins/dotenv",         from:oh-my-zsh, use:"_*", defer:2
+# Plugins needed for themes
+zinit wait lucid for \
+    OMZL::git.zsh \
+  atload"unalias grv" \
+    OMZP::git
 
-# Then, source plugins and add commands to $PATH
-zplug load # --verbose
+# Provide a simple prompt till the theme loads
+PS1="READY >"
+
+zinit wait'!' lucid for \
+  OMZL::prompt_info_functions.zsh \
+  OMZT::gnzh
+
+# Pure theme
+# zinit ice compile'(pure|async).zsh' pick'async.zsh' src'pure.zsh'
+# zinit light sindresorhus/pure
+
+# Starship theme
+# zinit ice from"gh-r" as"command" atload'eval "$(starship init zsh)"'
+# zinit load starship/starship
+
+# zinit snippet OMZ::plugins/git/git.plugin.zsh
+
+# Coloured man pages
+zinit snippet OMZP::colored-man-pages
+
+# Synxtax highlighting for ZSH
+zinit wait lucid light-mode atinit"zicompinit; zicdreplay" for \
+  zdharma-continuum/fast-syntax-highlighting
+
+zinit wait lucid blockf atpull'zinit creinstall -q .' for \
+  zsh-users/zsh-completions
+
+zinit wait lucid atload"_zsh_autosuggest_start" for \
+  zsh-users/zsh-autosuggestions
+
+# ideally replace with system package
+# zinit lucid as=program pick="$ZPFX/bin/(fzf|fzf-tmux)" \
+#     atclone="cp shell/completion.zsh _fzf_completion; \
+#       cp bin/(fzf|fzf-tmux) $ZPFX/bin" \
+#     make="PREFIX=$ZPFX install" for \
+#         junegunn/fzf
+
+
+# zinit as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' \
+#   atpull'%atclone' pick"direnv" src"zhook.zsh" for \
+#     dirzinit from"gh-r" as"program" mv"direnv* -> direnv" \
+
+# Handling .envrc files
+# Needs direnv package to be installed
+eval "$(direnv hook zsh)"
 
 source ~/.zsh/exports.zsh
 source ~/.zsh/keybindings.zsh
@@ -53,63 +161,22 @@ source ~/.zsh/history.zsh
 source ~/.zsh/completion.zsh
 source ~/.zsh/directories.zsh
 
+### End of Zinit's installer chunk
+
+# rbenv
+eval "$(rbenv init -)"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
 # This one is not committed to dotfiles repository.
 # There I keep secret env variables.
 if [[ -a ~/.zsh/secrets.zsh ]]; then
 	source ~/.zsh/secrets.zsh
 fi
 
-# source ~/.zsh/completions/tmuxinator.zsh
-# source ~/.zsh/completions/zeus.zsh
-
-# zmodload zsh/mathfunc
-autoload zmv
-
-autoload -U add-zsh-hook
-function switch_term_colors() {
-  ~/.bin/switch-colors auto
-}
-if (( $+commands[konsoleprofile] ))
-then
-	add-zsh-hook precmd switch_term_colors
-fi
-
-# Auto cd in directories
-setopt autocd
-
-# Extended Globbing, for example: `cp ^*.(tar|bz2|gz)`
-setopt extendedglob
-
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root)
-# ZSH_HIGHLIGHT_STYLES[path]='fg=green,bold'
-# ZSH_HIGHLIGHT_STYLES[globbing]='fg=magenta,bold'
-
-# RVM
-[[ (-s $HOME/.rvm) ]] && source $HOME/.rvm/scripts/rvm
-
 # Opam
 . /home/swistak35/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
-
-# rbenv
-eval "$(rbenv init -)"
-
-# nix
-if [[ -a /home/swistak35/.nix-profile/etc/profile.d/nix.sh ]]
-then
-	# export LOCALE_ARCHIVE=/home/swistak35/locale-archive
-	export LOCALE_ARCHIVE=/nix/store/4yhkx5xr14q3phjdqds3rhckrw4107xx-glibc-locales-2.21/lib/locale/locale-archive
-	. /home/swistak35/.nix-profile/etc/profile.d/nix.sh
-fi
-
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-# export PATH="$PATH:$HOME/.rvm/bin"
-
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 . $HOME/.asdf/asdf.sh
