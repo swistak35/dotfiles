@@ -1,2 +1,2 @@
 #!/bin/sh
-youtube-dl -f bestaudio --extract-audio --audio-format mp3 $*
+yt-ldp -f bestaudio --extract-audio --audio-format mp3 $*
