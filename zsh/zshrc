@@ -19,9 +19,6 @@
 # zplug "Tarrasch/zsh-functional"
 # zplug "plugins/mix", from:oh-my-zsh
 
-# # Esc-Esc to prefix last command with sudo
-# zplug "plugins/sudo", from:oh-my-zsh
-
 # # Completions
 # zplug "plugins/ag",             from:oh-my-zsh, use:"_*", defer:2
 # zplug "plugins/bundler",        from:oh-my-zsh, use:"_*", defer:2
@@ -146,6 +143,8 @@ zinit load zdharma-continuum/history-search-multi-word
 #       cp bin/(fzf|fzf-tmux) $ZPFX/bin" \
 #     make="PREFIX=$ZPFX install" for \
 #         junegunn/fzf
+# # Esc-Esc to prefix last command with sudo
+zinit snippet OMZP::sudo
 
 # zinit as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' \
 #   atpull'%atclone' pick"direnv" src"zhook.zsh" for \
