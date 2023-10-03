@@ -1,5 +1,4 @@
 # # antigen bundle bundler
-# zplug "plugins/command-not-found", from:oh-my-zsh
 # zplug "plugins/rake-fast", from:oh-my-zsh
 # zplug "Tarrasch/zsh-functional"
 # zplug "plugins/mix", from:oh-my-zsh
@@ -143,6 +142,9 @@ setopt autocd
 
 # Extended Globbing, for example: `cp ^*.(tar|bz2|gz)`
 setopt extendedglob
+
+# Give feedback on wrong command
+zinit snippet OMZP::command-not-found
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root)
 # ZSH_HIGHLIGHT_STYLES[path]='fg=green,bold'
