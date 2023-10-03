@@ -37,16 +37,6 @@
 # 	add-zsh-hook precmd switch_term_colors
 # fi
 
-# # Auto cd in directories
-# setopt autocd
-
-# # Extended Globbing, for example: `cp ^*.(tar|bz2|gz)`
-# setopt extendedglob
-
-# ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root)
-# # ZSH_HIGHLIGHT_STYLES[path]='fg=green,bold'
-# # ZSH_HIGHLIGHT_STYLES[globbing]='fg=magenta,bold'
-
 
 
 # # nix
@@ -147,6 +137,16 @@ zinit snippet OMZP::sudo
 
 # Option 2, needs direnv package to be installed
 eval "$(direnv hook zsh)"
+
+# Auto cd in directories
+setopt autocd
+
+# Extended Globbing, for example: `cp ^*.(tar|bz2|gz)`
+setopt extendedglob
+
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root)
+# ZSH_HIGHLIGHT_STYLES[path]='fg=green,bold'
+# ZSH_HIGHLIGHT_STYLES[globbing]='fg=magenta,bold'
 
 
 source ~/.zsh/exports.zsh
