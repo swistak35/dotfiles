@@ -4,18 +4,9 @@
 # if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
 #   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 # fi
-
-# source ~/.zplug/init.zsh
-
 # # antigen bundle bundler
 # zplug "plugins/command-not-found", from:oh-my-zsh
 # zplug "plugins/rake-fast", from:oh-my-zsh
-# # antigen bundle extract
-# # antigen bundle jump
-# # antigen bundle gitfast
-# # antigen bundle mvn
-# # antigen bundle rvm
-# # antigen bundle systemd
 # zplug "Tarrasch/zsh-functional"
 # zplug "plugins/mix", from:oh-my-zsh
 
