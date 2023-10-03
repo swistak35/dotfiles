@@ -210,7 +210,7 @@ alias pstree_="pstree -ap"
 alias prb="pry -r '/home/swistak35/.rozne/myhomelib.rb'"
 alias :q="exit"
 alias adb_cleandb="adb shell pm clear"
-alias fd='find . -type d -name'
+alias fd='fdfind'
 alias ff='find . -type f -name'
 alias muo="/home/swistak35/projs/oss/muon/bin/muon2"
 alias fsum="paste -sd+ | bc"
@@ -329,6 +329,7 @@ hash -d scripts="/home/swistak35/.bin/scripts"
 #########
 
 source ~/.zsh/functions.zsh
+source ~/.zsh/keybindings.zsh
 
 # autoload -U add-zsh-hook
 # function switch_term_colors() {
