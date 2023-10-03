@@ -1,3 +1,7 @@
+#########
+# ZINIT #
+#########
+
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
     print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
@@ -55,6 +59,9 @@ zinit wait'!' lucid for \
 zinit snippet OMZP::colored-man-pages
 
 # Synxtax highlighting for ZSH
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root)
+# ZSH_HIGHLIGHT_STYLES[path]='fg=green,bold'
+# ZSH_HIGHLIGHT_STYLES[globbing]='fg=magenta,bold'
 zinit wait lucid light-mode atinit"zicompinit; zicdreplay" for \
   zdharma-continuum/fast-syntax-highlighting
 
@@ -95,27 +102,21 @@ setopt extendedglob
 # Give feedback on wrong command
 zinit snippet OMZP::command-not-found
 
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root)
-# ZSH_HIGHLIGHT_STYLES[path]='fg=green,bold'
-# ZSH_HIGHLIGHT_STYLES[globbing]='fg=magenta,bold'
+zmodload zsh/mathfunc
 
-# # source ~/.zsh/completions/tmuxinator.zsh
-# # source ~/.zsh/completions/zeus.zsh
-# source ~/.zsh/completions/_bw
-
-# zmodload zsh/mathfunc
 autoload zmv
 
-# autoload -U add-zsh-hook
-# function switch_term_colors() {
-#   ~/.bin/switch-colors auto
-# }
-# if (( $+commands[konsoleprofile] ))
-# then
-# 	add-zsh-hook precmd switch_term_colors
-# fi
 
 
+###############
+# COMPLETIONS #
+###############
+
+source ~/.zsh/completion.zsh
+
+source ~/.zsh/completions/tmuxinator.zsh
+# # source ~/.zsh/completions/zeus.zsh
+source ~/.zsh/completions/_bw
 
 
 
@@ -157,10 +158,6 @@ export LOCALE_ARCHIVE=/home/swistak35/.locale-archive
 
 # fzf settings
 # export FZF_DEFAULT_COMMAND='ag -l' # to ignore files from .gitignore
-
-source ~/.zsh/aliases.zsh
-source ~/.zsh/functions.zsh
-source ~/.zsh/completion.zsh
 
 
 ###########
@@ -246,7 +243,6 @@ alias tml="tmux list-sessions"
 alias tma="tmux -2 attach-session -t"
 alias tmc="clear; tmux clear-history; clear"
 
-
 # Suffix aliases
 alias -g T='| tail'
 alias -g H='| head'
@@ -296,6 +292,7 @@ alias go='git show'
 alias goh='git show HEAD'
 
 
+
 ###########
 # HISTORY #
 ###########
@@ -315,6 +312,8 @@ setopt append_history
 setopt inc_append_history
 setopt share_history
 
+
+
 #############
 # HASH DIRS #
 #############
@@ -323,7 +322,22 @@ hash -d db="/media/magazyn/Dropbox"
 hash -d tmp="/media/magazyn/tmp"
 hash -d scripts="/home/swistak35/.bin/scripts"
 
-### End of Zinit's installer chunk
+
+
+#########
+# OTHER #
+#########
+
+source ~/.zsh/functions.zsh
+
+# autoload -U add-zsh-hook
+# function switch_term_colors() {
+#   ~/.bin/switch-colors auto
+# }
+# if (( $+commands[konsoleprofile] ))
+# then
+# 	add-zsh-hook precmd switch_term_colors
+# fi
 
 # rbenv
 eval "$(rbenv init -)"
