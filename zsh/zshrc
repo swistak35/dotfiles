@@ -96,6 +96,10 @@ zinit light-mode for \
     zdharma-continuum/zinit-annex-patch-dl \
     zdharma-continuum/zinit-annex-rust
 
+##########
+# PROMPT #
+##########
+
 setopt promptsubst
 
 # Plugins needed for themes
@@ -107,6 +111,7 @@ zinit wait lucid for \
 # Provide a simple prompt till the theme loads
 PS1="READY >"
 
+# Some OMZ theme
 zinit wait'!' lucid for \
   OMZL::prompt_info_functions.zsh \
   OMZT::gnzh
@@ -119,7 +124,9 @@ zinit wait'!' lucid for \
 # zinit ice from"gh-r" as"command" atload'eval "$(starship init zsh)"'
 # zinit load starship/starship
 
-# zinit snippet OMZ::plugins/git/git.plugin.zsh
+###################
+# FUNCTIONALITIES #
+###################
 
 # Coloured man pages
 zinit snippet OMZP::colored-man-pages
@@ -128,31 +135,34 @@ zinit snippet OMZP::colored-man-pages
 zinit wait lucid light-mode atinit"zicompinit; zicdreplay" for \
   zdharma-continuum/fast-syntax-highlighting
 
+# ZSH completion
 zinit wait lucid blockf atpull'zinit creinstall -q .' for \
   zsh-users/zsh-completions
 
 zinit wait lucid atload"_zsh_autosuggest_start" for \
   zsh-users/zsh-autosuggestions
 
-# zstyle :plugin:history-search-multi-word reset-prompt-protect 1
+# Ctrl+R fancy prompt
+zstyle :plugin:history-search-multi-word reset-prompt-protect 1
 zinit load zdharma-continuum/history-search-multi-word
 
-# ideally replace with system package
-# zinit lucid as=program pick="$ZPFX/bin/(fzf|fzf-tmux)" \
-#     atclone="cp shell/completion.zsh _fzf_completion; \
-#       cp bin/(fzf|fzf-tmux) $ZPFX/bin" \
-#     make="PREFIX=$ZPFX install" for \
-#         junegunn/fzf
 # # Esc-Esc to prefix last command with sudo
 zinit snippet OMZP::sudo
 
+# FZF in Ctrl+R
+# Disabled, because history-search-multi-word is nicer
+# [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Handling .envrc files
+
+# Option 1, installing direnv if needed
 # zinit as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' \
 #   atpull'%atclone' pick"direnv" src"zhook.zsh" for \
 #     dirzinit from"gh-r" as"program" mv"direnv* -> direnv" \
 
-# Handling .envrc files
-# Needs direnv package to be installed
+# Option 2, needs direnv package to be installed
 eval "$(direnv hook zsh)"
+
 
 source ~/.zsh/exports.zsh
 source ~/.zsh/keybindings.zsh
@@ -167,19 +177,15 @@ source ~/.zsh/directories.zsh
 # rbenv
 eval "$(rbenv init -)"
 
-# FZF in Ctrl+R
-# Disabled, because history-search-multi-word is nicer
-# [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# OCaml
+. /home/swistak35/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
 
+# Node
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+. $HOME/.asdf/asdf.sh
 
 # This one is not committed to dotfiles repository.
 # There I keep secret env variables.
 if [[ -a ~/.zsh/secrets.zsh ]]; then
-	source ~/.zsh/secrets.zsh
+  source ~/.zsh/secrets.zsh
 fi
-
-# Opam
-. /home/swistak35/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
-
-. $HOME/.asdf/asdf.sh
