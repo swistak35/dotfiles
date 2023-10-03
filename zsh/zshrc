@@ -137,13 +137,15 @@ zinit wait lucid blockf atpull'zinit creinstall -q .' for \
 zinit wait lucid atload"_zsh_autosuggest_start" for \
   zsh-users/zsh-autosuggestions
 
+# zstyle :plugin:history-search-multi-word reset-prompt-protect 1
+zinit load zdharma-continuum/history-search-multi-word
+
 # ideally replace with system package
 # zinit lucid as=program pick="$ZPFX/bin/(fzf|fzf-tmux)" \
 #     atclone="cp shell/completion.zsh _fzf_completion; \
 #       cp bin/(fzf|fzf-tmux) $ZPFX/bin" \
 #     make="PREFIX=$ZPFX install" for \
 #         junegunn/fzf
-
 
 # zinit as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' \
 #   atpull'%atclone' pick"direnv" src"zhook.zsh" for \
@@ -166,7 +168,9 @@ source ~/.zsh/directories.zsh
 # rbenv
 eval "$(rbenv init -)"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# FZF in Ctrl+R
+# Disabled, because history-search-multi-word is nicer
+# [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
