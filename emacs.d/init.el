@@ -22,6 +22,9 @@
 ; Display information in messages when there are some problems with loading the package or it's load time is big
 (setq use-package-verbose t)
 
+; Disable "Warning (comp)" from popping up
+(setq native-comp-async-report-warnings-errors nil)
+
 ;; Dired
 ; ???
 ; (setq-default dired-isearch-filenames "dwim")
@@ -166,6 +169,8 @@
 ;              (define-key evil-normal-state-leader-map "gg" 'magit-dispatch-popup)
 ;              (define-key evil-normal-state-leader-map "gb" 'magit-blame)
 ;              )
+
+
 
 ;; JSX mode
 (use-package rjsx-mode
@@ -454,6 +459,17 @@
   :config
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
+
+; ;; for org-roam
+; (use-package emacsql-sqlite
+;              :straight t)
+; (use-package org-roam
+;              :straight t
+;              :after org
+;              :config
+;              (require 'org-roam)
+;              (setq org-roam-directory (file-truename "~/notes/roam"))
+;              (org-roam-db-autosync-mode))
 
 (use-package burly
              :straight t)
