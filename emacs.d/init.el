@@ -263,6 +263,7 @@
                                   ))
                        (org-ql-block '(and (todo "TODO")
                                            (priority '= "B")
+                                           (not (tags "@emilka"))
                                            (not (scheduled)))
                                      ((org-ql-block-header "Next to grab")))
                        (org-ql-block '(and (priority)
