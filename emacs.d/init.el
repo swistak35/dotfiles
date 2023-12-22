@@ -205,6 +205,7 @@
              (setq org-lowest-priority ?E)
              (setq org-agenda-start-on-weekday nil)
              (setq org-agenda-show-future-repeats nil)
+             (setq org-startup-truncated nil) ; enable line wrap
              (setq org-todo-keywords
                    '((sequence "TODO(t)" "WAITING(w)" "SOMEDAY(s)" "|" "DONE(d)" "CANCELLED(c)")))
              (org-babel-do-load-languages
