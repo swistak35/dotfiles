@@ -462,16 +462,24 @@
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 
-; ;; for org-roam
-; (use-package emacsql-sqlite
-;              :straight t)
-; (use-package org-roam
-;              :straight t
-;              :after org
-;              :config
-;              (require 'org-roam)
-;              (setq org-roam-directory (file-truename "~/notes/roam"))
-;              (org-roam-db-autosync-mode))
+;; for org-roam
+(use-package emacsql-sqlite
+             :straight t)
+(use-package org-roam
+            :straight t
+             :after org
+             :config
+             (require 'org-roam)
+             (require 'org-roam-protocol)
+             (setq org-roam-directory (file-truename "~/notes/roam"))
+             (setq org-roam-capture-templates
+                   '(
+                     ("r" "rdefault" plain "%?"
+                       :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                                          "#+title: ${title}\n")
+                       :unnarrowed t)
+                     ))
+             (org-roam-db-autosync-mode))
 
 (use-package burly
              :straight t)
