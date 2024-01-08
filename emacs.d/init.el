@@ -292,6 +292,23 @@
                                          ))
                                       (org-ql-block-header "Zadania do zrobienia na audio")))
                        ))
+                     ("T" "Treadmill"
+                      (
+                       (agenda ""
+                               (
+                                (org-agenda-span 'day)
+                                (org-super-agenda-groups
+                                  '(
+                                    (:name "W pracy"
+                                           :tag "work")
+                                    (:discard (:not (:tag "@ontreadmill")))
+                                    ))
+                                ))
+                       (org-ql-block '(and (todo "TODO")
+                                           (tags "@ontreadmill")
+                                           (not (scheduled)))
+                                     ((org-ql-block-header "Zadania")))
+                       ))
                      ("W" "Watching"
                       (
                        (org-ql-block '(and (todo "WATCHING")
