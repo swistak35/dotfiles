@@ -20,6 +20,7 @@ emacs.d/session.*
 emacs.d/recentf
 emacs.d/image-dired/*
 emacs.d/elpa/*
+emacs.d/eln-cache/*
 emacs.d/auto-save-list/*
 emacs.d/pcache/*
 emacs.d/saves/*
@@ -27,3 +28,5 @@ emacs.d/transient/*
 emacs.d/straight/build-cache.el
 emacs.d/straight/build
 emacs.d/straight/repos
+emacs.d/forge-database.sqlite
+emacs.d/org-roam.db
