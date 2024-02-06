@@ -50,27 +50,20 @@ attrs = {
 pp attrs if DEBUG_MODE
 
 entry = <<~EOS
-*** around #{attrs[:date].strftime(DATE_FORMAT)} #{attrs[:title]} :bookmark:
+*** READ #{attrs[:title]}
     :PROPERTIES:
     :TITLE: #{attrs[:title]}
     :URL: #{attrs[:url]}
     :FILE: ~/bookmarks/#{path.basename}
-    :DATE: 
+    :DATE:
     :ARCHIVAL_DATE: #{attrs[:date]}
-    :TAGS: 
+    :TAGS:
     :DESCRIPTION: #{attrs[:description]}
     :LANGUAGE: #{attrs[:lang]}
-EOS
-entry += <<EOS if attrs[:author]
     :AUTHOR: #{attrs[:author]}
-EOS
-entry += <<EOS if attrs[:creator]
     :CREATOR: #{attrs[:creator]}
-EOS
-entry += <<EOS if attrs[:publisher]
     :PUBLISHER: #{attrs[:publisher]}
 EOS
-entry += <<EOS
     :END:
     [[~/bookmarks/#{path.basename}]]
 EOS
