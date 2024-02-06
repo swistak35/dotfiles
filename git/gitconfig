@@ -32,6 +32,8 @@
 	pushInsteadOf = "gist:"
 [url "git@heroku.com:"]
 	insteadOf = "heroku:"
+[gitlab "gitlab.silverfin.com/api/v4"]
+	user = rafal.lasocha
 [core]
 	excludesfile = /home/swistak35/.global_gitignore
 	attributesfile = /home/swistak35/.global_gitattributes

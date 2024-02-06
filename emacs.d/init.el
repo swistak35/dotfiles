@@ -21,9 +21,14 @@
 (require 'use-package)
 ; Display information in messages when there are some problems with loading the package or it's load time is big
 (setq use-package-verbose t)
+; Allow to upgrade built-in packages, i.e. transient
+(setq package-install-upgrade-built-in t)
 
 ; Disable "Warning (comp)" from popping up
 (setq native-comp-async-report-warnings-errors nil)
+
+; Set the path to authentication file
+(setq auth-sources '("~/.authinfo"))
 
 ;; Dired
 ; ???
@@ -58,6 +63,8 @@
 (setq scroll-step 1)
 (setq scroll-margin 1)
 
+(use-package transient
+             :straight t)
 
 (use-package evil
              :straight t
@@ -155,12 +162,19 @@
 
 (use-package magit
              :straight t
+             :after transient
              :config
              (add-to-list 'magit-no-confirm 'drop-stashes)
              )
 
-; (use-package forge
-;              :after magit)
+(use-package forge
+             :straight t
+             :after magit
+             :config
+             (push
+               '("gitlab.silverfin.com" "gitlab.silverfin.com/api/v4" "gitlab.silverfin.com" forge-gitlab-repository)
+               forge-alist)
+             )
 
 ; (use-package evil-magit
 ;              :after evil magit
