@@ -3,6 +3,7 @@
 require 'pathname'
 require 'time'
 require 'fileutils'
+require 'tempfile'
 
 DEBUG_MODE = !!ENV["DEBUG"]
 
@@ -75,6 +76,16 @@ entry += <<EOS
 EOS
 
 puts entry
+
+Tempfile.open do |tempfile|
+  tempfile.write(entry)
+  tempfile.flush
+
+  system("nvim #{tempfile.path}")
+
+  tempfile.rewind
+  entry = tempfile.read
+end
 
 confirmation = STDIN.gets.chomp
 
