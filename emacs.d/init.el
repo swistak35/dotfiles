@@ -63,6 +63,9 @@
 (setq scroll-step 1)
 (setq scroll-margin 1)
 
+; Tabs
+(setq tab-bar-mode t)
+
 (use-package transient
              :straight t)
 
@@ -514,7 +517,11 @@
              (org-roam-db-autosync-mode))
 
 (use-package burly
-             :straight t)
+             :straight t
+             :config
+             (burly-tabs-mode)
+             (define-key evil-normal-state-leader-map "pu" 'helm-filtered-bookmarks)
+             )
 
 ;; Themes
 (use-package solarized-theme
