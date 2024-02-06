@@ -11,7 +11,17 @@ DEBUG_MODE = !!ENV["DEBUG"]
 
 DATE_FORMAT = "%Y-%m-%d"
 
-path = Pathname.new(File.expand_path(ARGV[0]))
+path_in_arg = ARGV[0]
+if File.directory?(File.expand_path(path_in_arg))
+  puts "Directory given, looking for newest bookmark"
+  all_bookmark_files = Dir.glob(File.join(File.expand_path(path_in_arg), "/bookmark_*.html"))
+  newest_bookmark_file = all_bookmark_files.sort_by {|f| File.mtime(f) }.last
+  path = Pathname.new(File.expand_path(newest_bookmark_file))
+else
+  path = Pathname.new(File.expand_path(ARGV[0]))
+end
+
+puts "Processing file '#{path}'"
 
 def get_attribute(lines, attr, null_value: nil)
   line_with_attr = lines.find {|l| l.start_with?("#{attr}:") }
