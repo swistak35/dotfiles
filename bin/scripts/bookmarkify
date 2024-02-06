@@ -49,6 +49,10 @@ attrs = {
 
 pp attrs if DEBUG_MODE
 
+if attrs[:url].include?("foreignaffairs.com")
+  attrs[:publisher] = "Foreign Affairs"
+end
+
 entry = <<~EOS
 *** READ #{attrs[:title]}
     :PROPERTIES:
@@ -64,6 +68,14 @@ entry = <<~EOS
     :CREATOR: #{attrs[:creator]}
     :PUBLISHER: #{attrs[:publisher]}
 EOS
+
+if attrs[:url].include?("https://x.com/") || attrs[:url].include?("https://twitter.com/")
+entry << <<EOS
+    :KIND: tweet
+EOS
+end
+
+entry << <<EOS
     :END:
     [[~/bookmarks/#{path.basename}]]
 EOS
