@@ -34,7 +34,7 @@ def get_attribute(lines, attr, null_value: nil)
   end
 end
 
-top_lines = File.readlines(path)[0..15]
+top_lines = File.readlines(path)[0..30]
 
 attrs = {
   title: get_attribute(top_lines, "TITLE"),
