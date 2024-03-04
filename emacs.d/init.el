@@ -485,6 +485,15 @@
                      ))
              (setq org-agenda-include-diary t))
 
+(use-package helm-org
+             :straight t
+             :after org
+             :config
+             (define-key evil-normal-state-leader-map "po" 'helm-org-agenda-files-headings)
+             ; (add-to-list 'helm-completing-read-handlers-alist '(org-capture . helm-org-completing-read-tags))
+             ; (add-to-list 'helm-completing-read-handlers-alist '(org-set-tags . helm-org-completing-read-tags))
+             )
+
 (use-package org-ql
              :straight t
              :after org)
