@@ -117,6 +117,9 @@
              (define-key evil-normal-state-leader-map "pc" 'helm-M-x)
              )
 
+(use-package helm-ls-git
+             :after helm
+             :straight t)
 ;; FZF
 (use-package fzf
              :after evil
