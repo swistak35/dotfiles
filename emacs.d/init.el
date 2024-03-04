@@ -253,7 +253,19 @@
                       :prepend t)
                      ))
              (add-to-list 'org-modules 'org-habit t)
-             (setq org-refile-targets '((org-agenda-files :tag . "project")))
+             (setq org-reverse-note-taking-order t) ; i.e. this is important for refiling to put notes at the top
+             (setq org-refile-targets '((org-agenda-files :maxlevel . 2)))
+             (setq org-refile-use-outline-path t) ; Show the full path for refiling targets
+             (setq org-outline-path-complete-in-steps nil) ; Refile in a single go
+             (defun my-org-refile-target-verify-function () ; All of this to filter out some of the entries from the org-refile-targets
+               "Verify that the refile target is valid."
+               (let ((valid-tags '("tickler")))
+                 (or
+                   (= (nth 0 (org-heading-components)) 1)
+                   (and
+                     (not (cl-set-exclusive-or (org-get-tags-at) valid-tags))
+                     (= (nth 0 (org-heading-components)) 2)))))
+             (setq org-refile-target-verify-function 'my-org-refile-target-verify-function)
              (setq org-agenda-custom-commands
                    '(
                      ("X" "Super agenda"
