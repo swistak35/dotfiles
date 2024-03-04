@@ -212,7 +212,10 @@
 (use-package org
              :straight t
              :config
+             (require 'org-protocol)
+             (unless (server-running-p) (server-start)) ; Required for org-protocol to receive information
              (setq org-agenda-files '("~/notes" "~/pnotes/sf" "~/pnotes/res"))
+             (setq org-default-notes-file "~/notes/inbox.org")
              (setq org-log-done t)
              (setq org-agenda-skip-scheduled-if-done t)
              (setq org-agenda-skip-deadline-if-done t)
@@ -237,6 +240,8 @@
                    '(
                      ("m" "Movie" entry (file+headline "~/notes/movies.org" "Inbox")
                       "** TOWATCH %^{Please enter name}%?\n:PROPERTIES:\n:ID: %^{Please enter ID}\n:UPFLIX_LINK:\n:CREATED_AT: %U\n:END:%i\n")
+                     ("w" "Web" entry (file+headline "~/notes/inbox.org" "Inbox")
+                      "** %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n")
                      ))
              (add-to-list 'org-modules 'org-habit t)
              (setq org-refile-targets '((org-agenda-files :tag . "project")))
