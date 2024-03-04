@@ -245,6 +245,12 @@
                       "** TOWATCH %^{Please enter name}%?\n:PROPERTIES:\n:ID: %^{Please enter ID}\n:UPFLIX_LINK:\n:CREATED_AT: %U\n:END:%i\n")
                      ("w" "Web" entry (file+headline "~/notes/inbox.org" "Inbox")
                       "** %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n")
+                     ("t" "Task" entry (file+headline "~/notes/inbox.org" "Inbox")
+                      "** TODO %i\n")
+                     ("e" "Exercise log")
+                     ("ep" "Exercise log (Pull-up level 3)" entry (file+olp+datetree "~/notes/exercise-log.org" "Log")
+                      "*** Pull-up level 3\n:PROPERTIES:\n:KIND: pull-up level 3\n:BAND: purple\n:SET1: %^{Number of reps for set 1}\n:SET2: %^{Number of reps for set 2}\n:SET3: %^{Number of reps for set 3}\n:END:%i\n"
+                      :prepend t)
                      ))
              (add-to-list 'org-modules 'org-habit t)
              (setq org-refile-targets '((org-agenda-files :tag . "project")))
