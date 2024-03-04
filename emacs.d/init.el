@@ -289,6 +289,7 @@
                                     (:discard (:priority "A"))
                                     (:discard (:and (:priority<= "B" :tag ("@workbreak" "@zaudio" "@zfilmem"))))
                                     (:discard (:and (:not (:priority) :tag ("@workbreak" "@zaudio" "@zfilmem"))))
+                                    (:discard (:tag "@exercises"))
                                     (:name "Poranek"
                                            :tag "poranek")
                                     (:name "During day"
@@ -296,9 +297,6 @@
                                            :tag "@duringday")
                                     (:name "Next (work)"
                                            :tag "work")
-                                    (:name "Ćwiczenia (na dziś)"
-                                           :auto-property "PickOneGroup"
-                                           :and (:tag ("exercises") :not (:scheduled future)))
                                     (:name "Wieczór"
                                            :tag "wieczor")
                                     (:name "Dzisiejsze"
