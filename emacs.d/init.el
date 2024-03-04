@@ -497,9 +497,7 @@
                                            (not (tags "template"))
                                            (not (scheduled)))
                                      ((org-super-agenda-groups
-                                        '((:auto-outline-path)
-                                          (:name "Zadania które mógłby zrobić Kuba"
-                                                 :tag "kuba")))
+                                        '((:auto-outline-path)))
                                       (org-ql-block-header "Do zrobienia")))
                        ))
                      ))
