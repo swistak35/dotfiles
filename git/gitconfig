@@ -57,6 +57,7 @@
 	browser = firefox
 [branch]
 	autosetuprebase = always
+	sort = -committerdate
 [diff]
 	algorithm = patience
 	indentHeuristic = true
@@ -75,4 +76,11 @@
 	pushDefault = origin
 [rerere]
 	enabled = true
-	autoupdate = false ; disabled, this cause the resolutions to be automatically staged. I am not yet sure I want that
+	autoupdate = true ; was disabled, this cause the resolutions to be automatically staged. I am not yet sure I want that
+[column]
+	ui = auto
+[maintenance]
+	repo = /home/swistak35/projs/silverfin/code
+	repo = /home/swistak35/projs/railseventstore/rails_event_store
+[fetch]
+	writeCommitGraph = true
