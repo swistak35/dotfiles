@@ -503,6 +503,13 @@
                      ))
              (setq org-agenda-include-diary t))
 
+; These two look great, but org-quick-peek don't work right now
+; (use-package quick-peek
+;              :straight t)
+; (use-package org-quick-peek
+;              :after quick-peek
+;              :straight (:host github :repo "alphapapa/org-quick-peek" :branch "master"))
+
 (use-package helm-org
              :straight t
              :after org
