@@ -4,6 +4,7 @@ require 'pathname'
 require 'time'
 require 'fileutils'
 require 'tempfile'
+require 'securerandom'
 
 DEBUG_MODE = !!ENV["DEBUG"]
 
@@ -53,9 +54,12 @@ if attrs[:url].include?("foreignaffairs.com")
   attrs[:publisher] = "Foreign Affairs"
 end
 
+uuid = SecureRandom.uuid
+
 entry = <<~EOS
 *** READ #{attrs[:title]}
     :PROPERTIES:
+    :ID: #{uuid}
     :TITLE: #{attrs[:title]}
     :URL: #{attrs[:url]}
     :FILE: ~/bookmarks/#{path.basename}
