@@ -515,6 +515,10 @@
              ; (add-to-list 'helm-completing-read-handlers-alist '(org-set-tags . helm-org-completing-read-tags))
              )
 
+(use-package helm-org-rifle
+             :straight t
+             :after org)
+
 (use-package org-ql
              :straight t
              :after org)
