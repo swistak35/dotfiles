@@ -494,6 +494,7 @@
                                            (not (tags "quarter"))
                                            (not (tags "@emilka"))
                                            (not (tags "inbox"))
+                                           (not (tags "template"))
                                            (not (scheduled)))
                                      ((org-super-agenda-groups
                                         '((:auto-outline-path)
