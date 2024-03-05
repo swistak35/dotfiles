@@ -5,6 +5,8 @@ require 'time'
 require 'fileutils'
 require 'tempfile'
 require 'securerandom'
+require 'nokogiri'
+require 'time'
 
 DEBUG_MODE = !!ENV["DEBUG"]
 
@@ -35,12 +37,20 @@ def get_attribute(lines, attr, null_value: nil)
   end
 end
 
-top_lines = File.readlines(path)[0..30]
+def format_time(time)
+  return nil if time.nil?
+  "<#{time.strftime("%Y-%m-%d %H:%M:%S")}>"
+end
+
+content = File.read(path)
+top_lines = content.split("\n")[0..30]
+doc = Nokogiri::HTML.parse(content)
 
 attrs = {
+  uuid: SecureRandom.uuid,
   title: get_attribute(top_lines, "TITLE"),
   url: get_attribute(top_lines, "URL"),
-  date: Time.parse(get_attribute(top_lines, "DATE")),
+  archival_date: Time.parse(get_attribute(top_lines, "DATE")),
   lang: get_attribute(top_lines, "LANGUAGE"),
   description: get_attribute(top_lines, "DESCRIPTION"),
   author: get_attribute(top_lines, "AUTHOR", null_value: "No author"),
@@ -54,34 +64,39 @@ if attrs[:url].include?("foreignaffairs.com")
   attrs[:publisher] = "Foreign Affairs"
 end
 
-uuid = SecureRandom.uuid
+if attrs[:url].include?("https://x.com/") || attrs[:url].include?("https://twitter.com/")
+  attrs[:kind] = "tweet"
+
+  tweet_time = Time.parse(doc.css("time")[0].attributes["datetime"].value) + Time.zone_offset("CET")
+  attrs[:date] = tweet_time
+end
 
 entry = <<~EOS
-*** READ #{attrs[:title]}
-    :PROPERTIES:
-    :ID: #{uuid}
-    :TITLE: #{attrs[:title]}
-    :URL: #{attrs[:url]}
-    :FILE: ~/bookmarks/#{path.basename}
-    :DATE:
-    :ARCHIVAL_DATE: #{attrs[:date]}
-    :TAGS:
-    :DESCRIPTION: #{attrs[:description]}
-    :LANGUAGE: #{attrs[:lang]}
-    :AUTHOR: #{attrs[:author]}
-    :CREATOR: #{attrs[:creator]}
-    :PUBLISHER: #{attrs[:publisher]}
+** READ #{attrs[:title]}
+   :PROPERTIES:
+   :ID: #{attrs.fetch(:uuid)}
+   :TITLE: #{attrs[:title]}
+   :URL: #{attrs[:url]}
+   :FILE: ~/bookmarks/#{path.basename}
+   :DATE: #{format_time(attrs[:date])}
+   :ARCHIVAL_DATE: #{format_time(attrs[:archival_date] + Time.zone_offset("CET"))}
+   :TAGS:
+   :DESCRIPTION: #{attrs[:description]}
+   :LANGUAGE: #{attrs[:lang]}
+   :AUTHOR: #{attrs[:author]}
+   :CREATOR: #{attrs[:creator]}
+   :PUBLISHER: #{attrs[:publisher]}
 EOS
 
-if attrs[:url].include?("https://x.com/") || attrs[:url].include?("https://twitter.com/")
-entry << <<EOS
-    :KIND: tweet
+if attrs[:kind]
+  entry << <<EOS
+   :KIND: #{attrs[:kind]}
 EOS
 end
 
 entry << <<EOS
-    :END:
-    [[~/bookmarks/#{path.basename}]]
+   :END:
+   [[~/bookmarks/#{path.basename}]]
 EOS
 
 puts entry
