@@ -107,6 +107,7 @@
              :after evil
              :straight t
              :config
+             (helm-mode)
              (global-set-key (kbd "M-x") 'helm-M-x)
              (setq helm-buffers-fuzzy-matching t)
              (setq helm-recentf-fuzzy-matching t)
