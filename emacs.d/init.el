@@ -250,16 +250,18 @@
                      ("w" "Web" entry (file+headline "~/notes/inbox.org" "Inbox")
                       "** %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n")
                      ("t" "Task" entry (file+headline "~/notes/inbox.org" "Inbox")
-                      "** TODO %i\n")
+                      "** TODO %?\n"
+                      :prepend t)
                      ("e" "Exercise log")
                      ("ep" "Exercise log (Pull-up level 3)" entry (file+olp+datetree "~/notes/exercise-log.org" "Log")
-                      "*** Pull-up level 3\n:PROPERTIES:\n:KIND: pull-up level 3\n:BAND: purple\n:SET1: %^{Number of reps for set 1}\n:SET2: %^{Number of reps for set 2}\n:SET3: %^{Number of reps for set 3}\n:END:%i\n"
-                      :prepend t)
+                      "*** Pull-up level 3\n:PROPERTIES:\n:DATE: %t\n:KIND: pull-up level 3\n:BAND: green\n:SET1: %^{Number of reps for set 1}\n:SET2: %^{Number of reps for set 2}\n:SET3: %^{Number of reps for set 3}\n:END:%?\n"
+                      :prepend t
+                      :time-prompt t)
                      ))
              (add-to-list 'org-modules 'org-habit t)
              (setq org-reverse-note-taking-order t) ; i.e. this is important for refiling to put notes at the top
              (setq org-refile-targets '((org-agenda-files :maxlevel . 2)))
-             (setq org-refile-use-outline-path t) ; Show the full path for refiling targets
+             (setq org-refile-use-outline-path 'file) ; Show the full path for refiling targets
              (setq org-outline-path-complete-in-steps nil) ; Refile in a single go
              (defun my-org-refile-target-verify-function () ; All of this to filter out some of the entries from the org-refile-targets
                "Verify that the refile target is valid."
