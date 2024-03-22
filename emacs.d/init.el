@@ -121,6 +121,10 @@
 (use-package helm-ls-git
              :after helm
              :straight t)
+; (use-package helm-ag
+;              :after helm
+;              :straight t)
+
 ;; FZF
 (use-package fzf
              :after evil
@@ -355,7 +359,8 @@
                                                  :scheduled today)
                                          ))
                                       (org-ql-block-header "Zadania do zrobienia na audio")))
-                       ))
+		       )
+                       )
                      ("T" "Treadmill"
                       (
                        (agenda ""
