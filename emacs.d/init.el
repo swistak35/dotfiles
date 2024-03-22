@@ -270,7 +270,7 @@
                       :time-prompt t)
                      ))
              (add-to-list 'org-modules 'org-habit t)
-             (setq org-reverse-note-taking-order t) ; i.e. this is important for refiling to put notes at the top
+             (setq org-reverse-note-order t) ; i.e. this is important for refiling to put notes at the top
              (setq org-refile-targets '((org-agenda-files :maxlevel . 2)))
              (setq org-refile-use-outline-path 'file) ; Show the full path for refiling targets
              (setq org-outline-path-complete-in-steps nil) ; Refile in a single go
