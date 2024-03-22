@@ -39,7 +39,7 @@ end
 
 def format_time(time)
   return nil if time.nil?
-  "<#{time.strftime("%Y-%m-%d %H:%M:%S")}>"
+  "[#{time.strftime("%Y-%m-%d %H:%M:%S")}]"
 end
 
 content = File.read(path)
