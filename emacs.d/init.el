@@ -455,7 +455,7 @@
                        ;                     (not (scheduled)))
                        ;               ((org-ql-block-header "Other tasks")))
                        ))
-                     ("x" "Agenda for work"
+                     ("w" "Agenda for work"
                       (
                        (org-ql-block '(and (todo "TODO")
                                            (not (tags "work"))
@@ -476,24 +476,20 @@
                                            (or (priority '< "B")
                                                (not (priority))))
                                      ((org-ql-block-header "Tasks from current projects")))
-                       ; (tags-todo "work+SCHEDULED<\"<now>\""
-                       ;            ((org-agenda-overriding-header "Due tasks")))
-                       ; (tags-todo "work+DEADLINE\"<+3d\""
-                       ;            ((org-agenda-overriding-header "Imminent deadline")))
-                       ; (tags-todo "workbreak+SCHEDULED<\"<now>\""
-                       ;            ((org-agenda-overriding-header "Things to do during break")))
+                       ;; (org-ql-block '(and (todo "TODO")
+                       ;;                     (tags "workbreak")
+                       ;;                     (or (priority '< "A")
+                       ;;                         (scheduled :to today)))
+                       ;;               ((org-ql-block-header "Things to do during work break")))
                        (org-ql-block '(and (todo "TODO")
-                                           (tags "workbreak")
-                                           (or (priority '< "A")
-                                               (scheduled :to today)))
-                                     ((org-ql-block-header "Things to do during work break")))
-                       ; (agenda "")
-                       ; (tags-todo "work+PRIORITY>\"A\""
-                                  ; ((org-agenda-overriding-header "Other tasks")
-                                  ; (org-agenda-tags-todo-honor-ignore-options t)
-                                  ; (org-agenda-todo-ignore-scheduled t)))
+                                           (tags "work")
+                                           (not (tags "current" "template"))
+					   (not (scheduled))
+                                           (or (priority '< "B")
+                                               (not (priority))))
+                                     ((org-ql-block-header "Tasks from not-current projects")))
                        (org-ql-block '(and (tags "work")
-                                           (not (todo "TODO" "DONE"))
+                                           (not (todo "TODO" "DONE" "CANCELLED"))
                                            (ts)))
                        ))
                      ("v" "For review" (
