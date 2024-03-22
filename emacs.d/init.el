@@ -247,13 +247,24 @@
                    '(
                      ("m" "Movie" entry (file+headline "~/notes/movies.org" "Inbox")
                       "** TOWATCH %^{Please enter name}%?\n:PROPERTIES:\n:ID: %^{Please enter ID}\n:UPFLIX_LINK:\n:CREATED_AT: %U\n:END:%i\n")
-                     ("w" "Web" entry (file+headline "~/notes/inbox.org" "Inbox")
+                     ("w" "Web")
+                     ("ww" "Web" entry (file+headline "~/notes/bookmarks.org" "Bookmarks processed")
                       "** %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n")
+                     ("wt" "Task" entry (file+headline "~/notes/inbox.org" "Inbox")
+                      "** TODO %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
+                      :prepend t)
+                     ("wu" "To Read" entry (file+headline "~/notes/bookmarks.org" "To Read")
+                      "** TOREAD %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
+                      :prepend t)
                      ("t" "Task" entry (file+headline "~/notes/inbox.org" "Inbox")
                       "** TODO %?\n"
                       :prepend t)
                      ("e" "Exercise log")
-                     ("ep" "Exercise log (Pull-up level 3)" entry (file+olp+datetree "~/notes/exercise-log.org" "Log")
+                     ("et" "Treadmill walk" entry (file+olp+datetree "~/notes/exercise-log.org" "Log")
+                      "*** Treadmill walk\n:PROPERTIES:\n:DATE: %t\n:KIND: treadmill walk\n:DISTANCE: %^{Distance}\n:END:%?\n"
+                      :prepend t
+                      :time-prompt t)
+                     ("ep" "Pull-up level 3" entry (file+olp+datetree "~/notes/exercise-log.org" "Log")
                       "*** Pull-up level 3\n:PROPERTIES:\n:DATE: %t\n:KIND: pull-up level 3\n:BAND: green\n:SET1: %^{Number of reps for set 1}\n:SET2: %^{Number of reps for set 2}\n:SET3: %^{Number of reps for set 3}\n:END:%?\n"
                       :prepend t
                       :time-prompt t)
