@@ -311,13 +311,12 @@
                                     (:discard (:and (:priority<= "B" :tag ("@workbreak" "@zaudio" "@zfilmem"))))
                                     (:discard (:and (:not (:priority) :tag ("@workbreak" "@zaudio" "@zfilmem"))))
                                     (:discard (:tag "@exercises"))
+                                    (:discard (:tag "work"))
                                     (:name "Poranek"
                                            :tag "poranek")
                                     (:name "During day"
                                            :face (:append t)
                                            :tag "@duringday")
-                                    (:name "Next (work)"
-                                           :tag "work")
                                     (:name "Wieczór"
                                            :tag "wieczor")
                                     (:name "Dzisiejsze"
@@ -331,7 +330,7 @@
                                   ))
                        (org-ql-block '(and (todo "TODO")
                                            (priority '= "B")
-                                           (not (tags "@emilka"))
+                                           (not (tags "@emilka" "work"))
                                            (not (scheduled)))
                                      ((org-ql-block-header "Next to grab")))
                        (org-ql-block '(and (priority)
