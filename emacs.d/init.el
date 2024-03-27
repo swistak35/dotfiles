@@ -30,6 +30,15 @@
 ; Set the path to authentication file
 (setq auth-sources '("~/.authinfo"))
 
+; M-x world-clock
+(setq world-clock-time-format "%a %d %b %R %Z")
+(setq world-clock-list
+      '(("Europe/Warsaw" "Warszawa")
+	("Europe/Brussels" "Bruksela (Ghent)")
+        ("Europe/London" "Londyn")
+        ("America/New_York" "NASDAQ/NYSE (Nowy Jork)")))
+
+
 ;; Dired
 ; ???
 ; (setq-default dired-isearch-filenames "dwim")
