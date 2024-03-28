@@ -530,6 +530,38 @@
              (setq org-agenda-include-diary t)
 	     (setq rl-movies-upflix-replace-hostname "http://localhost:9393")
 	     (setq rl-movies-supported-subscriptions '("netflix" "disney" "viaplay" "skyshowtime" "canalplus" "cineman" "appletv" "hbomax" "cdapremium" "amazon" "tvpvod"))
+	     (defun remove-property-from-all-entries (property)
+	       "Remove PROPERTY from all entries in the buffer."
+	       (interactive "sProperty to remove: ")
+	       (save-excursion
+		 (goto-char (point-min))
+		 (while (re-search-forward org-heading-regexp nil t)
+		   (let ((props (org-entry-properties)))
+		     (when (assoc property props)
+		       (org-delete-property property))))))
+	     (defun list-explicitly-defined-properties-in-buffer ()
+	       "List explicitly defined properties used in the current buffer."
+	       (interactive)
+	       (let ((properties '()))
+		 (save-excursion
+		   (goto-char (point-min))
+		   (while (re-search-forward org-heading-regexp nil t)
+		     (let ((props (org-entry-properties)))
+		       (dolist (prop props)
+			 (when (cdr prop) ; Check if property has a value
+			   (push (car prop) properties))))))
+		 (message "Explicitly defined properties used in buffer: %s" (mapconcat 'identity (delete-dups properties) ", "))))
+	     (defun list-explicitly-used-tags-in-buffer ()
+	       "List explicitly used tags in the current buffer."
+	       (interactive)
+	       (let ((tags '()))
+		 (save-excursion
+		   (goto-char (point-min))
+		   (while (re-search-forward org-heading-regexp nil t)
+		     (let ((headline-tags (org-get-tags)))
+		       (dolist (tag headline-tags)
+			 (push tag tags)))))
+		 (message "Explicitly used tags in buffer: %s" (mapconcat 'identity (delete-dups tags) ", "))))
 	     (defun fetch-and-parse-json (url)
 	       "Fetches a webpage from the given URL and parses it as JSON."
 	       (let ((buffer (url-retrieve-synchronously url)))
