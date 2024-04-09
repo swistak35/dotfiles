@@ -237,6 +237,7 @@
              (setq org-agenda-files '("~/notes" "~/pnotes/sf" "~/pnotes/res"))
              (setq org-default-notes-file "~/notes/inbox.org")
              (setq org-log-done t)
+	     (setq org-log-into-drawer t) ; Causes to log the CLOSED timestamps into the LOGBOOK property, instead of the entry content
              (setq org-agenda-skip-scheduled-if-done t)
              (setq org-agenda-skip-deadline-if-done t)
              (setq org-agenda-skip-unavailable-files t)
