@@ -537,6 +537,7 @@
                                       (org-ql-block-header "Do zrobienia")))
                        ))
                      ))
+
              (setq org-agenda-include-diary t)
 	     (setq rl-movies-upflix-replace-hostname "http://localhost:9393")
 	     (setq rl-movies-supported-subscriptions '("netflix" "disney" "viaplay" "skyshowtime" "canalplus" "cineman" "appletv" "hbomax" "cdapremium" "amazon" "tvpvod"))
@@ -686,7 +687,42 @@
 
 (use-package org-ql
              :straight t
-             :after org)
+             :after org
+	     :config
+	     (setq org-ql-views
+		   (append 
+			   (list
+			    (cons "Silverfin Tasks (sft)"
+				  (list :buffers-files "~/pnotes/sf/gtd.org"
+					:query '(and (todo "TODO" "WAITING") (tags "work"))
+					:title "Silverfin Tasks"
+					:sort nil
+					:narrow nil
+					:super-groups '((:discard (:tag "template"))
+							(:name "Top priority"
+							       :priority "A")
+							(:discard (:scheduled future))
+							(:name "Blocked & waiting"
+							       :todo "WAITING")
+							(:name "Morning ticklers"
+							       :and (:tag "tickler" :scheduled t))
+							(:name "Scheduled"
+							       :scheduled t)
+							(:priority "B")
+							(:name "Current projects"
+							       :tag "current")
+							(:priority "C")
+							(:discard (:scheduled t))
+							(:auto-outline-path))))
+			    (cons "Movies on Netflix"
+				  (list :buffers-files "~/notes/movies.org"
+					:query '(and (tags "on_netflix"))
+					:title "Movies on Netflix"
+					:sort nil
+					:narrow nil
+					:super-groups nil))
+			    )))
+	     )
 
 (use-package org-super-agenda
              :straight t
