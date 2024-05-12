@@ -271,19 +271,27 @@
              (global-set-key (kbd "C-c l") #'org-store-link)
              (global-set-key (kbd "C-c a") #'org-agenda)
              (global-set-key (kbd "C-c c") #'org-capture)
+	     (defun my/org-capture-maybe-create-id ()
+	       (when (org-capture-get :create-id)
+		 (org-id-get-create)))
+	     (add-hook 'org-capture-mode-hook #'my/org-capture-maybe-create-id)
              (setq org-capture-templates
                    '(
                      ("m" "Movie" entry (file+headline "~/notes/movies.org" "Inbox")
                       "** TOWATCH %^{Please enter name}%?\n:PROPERTIES:\n:ID: %^{Please enter ID}\n:UPFLIX_LINK:\n:CREATED_AT: %U\n:END:%i\n")
                      ("w" "Web")
                      ("ww" "Web" entry (file+headline "~/notes/bookmarks.org" "Bookmarks processed")
-                      "** %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n")
+                      "** %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
+		      :create-id t
+		      :prepend t)
                      ("wt" "Task" entry (file+headline "~/notes/inbox.org" "Inbox")
                       "** TODO %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
-                      :prepend t)
+                      :prepend t
+		      :create-id t)
                      ("wu" "To Read" entry (file+headline "~/notes/bookmarks.org" "To Read")
                       "** TOREAD %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
-                      :prepend t)
+                      :prepend t
+		      :create-id t)
                      ("wr" "Read" entry (file+headline "~/notes/bookmarks.org" "Bookmarks processed")
                       "** READ %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
                       :prepend t
@@ -297,14 +305,16 @@
                       :prepend t)
                      ("e" "Exercise log")
                      ("et" "Treadmill walk" entry (file+olp+datetree "~/notes/exercise-log.org" "Log")
-                      "*** Treadmill walk\n:PROPERTIES:\n:DATE: %t\n:KIND: treadmill walk\n:DISTANCE: %^{Distance}\n:END:%?\n"
+                      "*** Treadmill walk\n:PROPERTIES:\n:DATE: %U\n:KIND: treadmill walk\n:DISTANCE: %^{Distance}\n:END:%?\n"
+                      :prepend t
+                      :time-prompt t)
 		     ("ef" "Zestaw od fizjoterapeuty")
 		     ("ef4" "Zestaw od fizjoterapeuty nr 4" entry (file+olp+datetree "~/notes/exercise-log.org" "Log")
                       "*** Zestaw od fizjoterapeuty nr 4\n:PROPERTIES:\n:DATE: %U\n:KIND: zestaw od fizjoterapeuty nr 4\n:KLĘK_PODPARTY: 3x15\n:OKRAZANIE_PRZEDMIOTU_GUMA: 3/6\n:PRZYSIADY_GUMA: 2/6\n:WYKROKI: 3x10\n:KOPENHASKIE_PRZEWODZENIE: 20s\n:END:%?\n"
                       :prepend t
                       :time-prompt t)
                      ("ep" "Pull-up level 3" entry (file+olp+datetree "~/notes/exercise-log.org" "Log")
-                      "*** Pull-up level 3\n:PROPERTIES:\n:DATE: %t\n:KIND: pull-up level 3\n:BAND: green\n:SET1: %^{Number of reps for set 1}\n:SET2: %^{Number of reps for set 2}\n:SET3: %^{Number of reps for set 3}\n:END:%?\n"
+                      "*** Pull-up level 3\n:PROPERTIES:\n:DATE: %U\n:KIND: pull-up level 3\n:BAND: green\n:SET1: %^{Number of reps for set 1}\n:SET2: %^{Number of reps for set 2}\n:SET3: %^{Number of reps for set 3}\n:END:%?\n"
                       :prepend t
                       :time-prompt t)
 		     ("ek" "Kettlebell sets")
