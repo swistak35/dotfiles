@@ -357,9 +357,9 @@
                                            (not (tags "@emilka" "work"))
                                            (not (scheduled)))
                                      ((org-ql-block-header "Next to grab")))
-                       (org-ql-block '(and (priority)
-                                           (tags "@cooking"))
-                                     ((org-ql-block-header "Gotowanie")))
+                       ;; (org-ql-block '(and (priority)
+                       ;;                     (tags "@cooking"))
+                       ;;               ((org-ql-block-header "Gotowanie")))
                        (org-ql-block '(and (todo "WAITING")
                                            (not (tags "@emilka")))
                                      ((org-ql-block-header "Zadania zablokowane")))
@@ -724,6 +724,13 @@
 					:query '(and (tags "on_netflix"))
 					:title "Movies on Netflix"
 					:sort nil
+					:narrow nil
+					:super-groups nil))
+			    (cons "Cooking plans"
+				  (list :buffers-files "~/notes/cooking.org"
+					:query '(and (tags "@cooking"))
+					:title "Cooking plans"
+					:sort '(priority)
 					:narrow nil
 					:super-groups nil))
 			    )))
