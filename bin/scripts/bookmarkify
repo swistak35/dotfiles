@@ -119,6 +119,12 @@ end
 
 confirmation = STDIN.gets.chomp
 
+if confirmation == "rm"
+  FileUtils.rm(path) unless DEBUG_MODE
+  puts "File removed."
+  exit
+end
+
 unless ["yes", "y"].include?(confirmation)
   puts "nothing done"
   exit
