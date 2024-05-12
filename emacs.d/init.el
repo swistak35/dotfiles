@@ -121,6 +121,10 @@
 	     (define-key copilot-completion-map (kbd "<backtab>") 'copilot-accept-completion-by-word)
 	     )
 
+(use-package gptel
+             :straight t
+	     :ensure t)
+
 ;; Helm
 (use-package helm
              :after evil

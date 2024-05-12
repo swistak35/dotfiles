@@ -25,6 +25,7 @@
  ("git-gutter-fringe" . "648cb5b57faec55711803cdc9434e55a733c3eba")
  ("gnu-elpa-mirror" . "9f00468601c5b97d6b9a15e040b897b17b0ac756")
  ("goto-chg" . "278cd3e6d5107693aa2bb33189ca503f22f227d0")
+ ("gptel" . "e994a443d35a34082ad5d6d45dd92163b10635cd")
  ("helm" . "6662f731d36fe6dd3b27618b2fbb44aa5736e168")
  ("helm-ls-git" . "35b3a548694039463749cc18bd628e8f4e3c8019")
  ("helm-org" . "c80e53315ce6b096e2d0e630702df924bf00bf6a")
