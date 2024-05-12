@@ -284,18 +284,34 @@
                      ("wu" "To Read" entry (file+headline "~/notes/bookmarks.org" "To Read")
                       "** TOREAD %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
                       :prepend t)
+                     ("wr" "Read" entry (file+headline "~/notes/bookmarks.org" "Bookmarks processed")
+                      "** READ %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
+                      :prepend t
+		      :create-id t)
+                     ("wm" "Movie" entry (file+headline "~/notes/movies.org" "Inbox")
+                      "** TOWATCH %:description\n:PROPERTIES:\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n")
+                     ("wb" "Book" entry (file+headline "~/notes/books.org" "Inbox")
+                      "** TOREAD %:description\n:PROPERTIES:\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n")
                      ("t" "Task" entry (file+headline "~/notes/inbox.org" "Inbox")
                       "** TODO %?\n"
                       :prepend t)
                      ("e" "Exercise log")
                      ("et" "Treadmill walk" entry (file+olp+datetree "~/notes/exercise-log.org" "Log")
                       "*** Treadmill walk\n:PROPERTIES:\n:DATE: %t\n:KIND: treadmill walk\n:DISTANCE: %^{Distance}\n:END:%?\n"
+		     ("ef" "Zestaw od fizjoterapeuty")
+		     ("ef4" "Zestaw od fizjoterapeuty nr 4" entry (file+olp+datetree "~/notes/exercise-log.org" "Log")
+                      "*** Zestaw od fizjoterapeuty nr 4\n:PROPERTIES:\n:DATE: %U\n:KIND: zestaw od fizjoterapeuty nr 4\n:KLĘK_PODPARTY: 3x15\n:OKRAZANIE_PRZEDMIOTU_GUMA: 3/6\n:PRZYSIADY_GUMA: 2/6\n:WYKROKI: 3x10\n:KOPENHASKIE_PRZEWODZENIE: 20s\n:END:%?\n"
                       :prepend t
                       :time-prompt t)
                      ("ep" "Pull-up level 3" entry (file+olp+datetree "~/notes/exercise-log.org" "Log")
                       "*** Pull-up level 3\n:PROPERTIES:\n:DATE: %t\n:KIND: pull-up level 3\n:BAND: green\n:SET1: %^{Number of reps for set 1}\n:SET2: %^{Number of reps for set 2}\n:SET3: %^{Number of reps for set 3}\n:END:%?\n"
                       :prepend t
                       :time-prompt t)
+		     ("ek" "Kettlebell sets")
+		     ("ek1" "Kettlebell 1" entry (file+olp+datetree "~/notes/exercise-log.org" "Log")
+		      "*** Kettlebell zestaw 1\n:PROPERTIES:\n:DATE: %U\n:KIND: kettlebell 1\n:OVERHEAD_PRESS_WEIGHT: 12\n:HALOS_WEIGHT: 16\n:ROW_WEIGHT: 20\n:HALOS_SET1: \n:OVERHEAD_PRESS_RIGHT_SET1: \n:OVERHEAD_PRESS_LEFT_SET1: \n:ROW_RIGHT_SET1: \n:ROW_LEFT_SET1: \n:HALOS_SET2: \n:OVERHEAD_PRESS_LEFT_SET2: \n:OVERHEAD_PRESS_RIGHT_SET2: \n:ROW_RIGHT_SET2: \n:ROW_LEFT_SET2: \n:HALOS_SET3: \n:OVERHEAD_PRESS_RIGHT_SET3: \n:OVERHEAD_PRESS_LEFT_SET3: \n:ROW_RIGHT_SET3: \n:ROW_LEFT_SET3: \n:END:%?\n"
+		      :prepend t
+		      :time-prompt t)
                      ))
              (add-to-list 'org-modules 'org-habit t)
              (setq org-reverse-note-order t) ; i.e. this is important for refiling to put notes at the top
