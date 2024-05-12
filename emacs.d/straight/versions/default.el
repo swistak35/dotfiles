@@ -41,6 +41,7 @@
  ("nlinum-relative" . "5b9950c97ba79a6f0683e38b13da23f39e01031c")
  ("nongnu-elpa" . "f06fc1286a20c827cbbd53a8c3ed53b2ac41c9d9")
  ("org" . "8507efa8481a77a035b4bd02ed807385b7e6fc38")
+ ("org-capture-pop-frame" . "d88b75cc02fc53716701051dbdd906db0515de8c")
  ("org-ql" . "e41fe9018a4699532ec875bedddc9746f8e362aa")
  ("org-rifle" . "03a52265040b8c6510a8269213d750c451779c38")
  ("org-super-agenda" . "51c9da5ce7b791150758984bab469d2222516844")

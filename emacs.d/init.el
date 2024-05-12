@@ -739,6 +739,10 @@
              (setq org-super-agenda-header-map (make-sparse-keymap))
              )
 
+(use-package org-capture-pop-frame
+  :straight t
+  :after org)
+
 (use-package evil-org
   :straight t
   :after org
