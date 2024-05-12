@@ -115,6 +115,7 @@
  	     :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
 	     :ensure t
 	     :config
+	     (setq copilot-node-executable "/home/swistak35/.asdf/shims/node")
 	     (add-hook 'prog-mode-hook 'copilot-mode)
 	     (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
 	     (define-key copilot-completion-map (kbd "<backtab>") 'copilot-accept-completion-by-word)
