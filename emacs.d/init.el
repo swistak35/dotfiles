@@ -39,6 +39,10 @@
         ("America/New_York" "NASDAQ/NYSE (Nowy Jork)")))
 
 
+; ctags
+; Needs exuberant-ctags package to be installed
+(setq path-to-ctags "/usr/bin/ctags-exuberant")
+
 ;; Dired
 ; ???
 ; (setq-default dired-isearch-filenames "dwim")
