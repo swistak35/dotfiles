@@ -830,6 +830,15 @@
               ("C-x C-a l" . activities-list))
              )
 
+; recommended system package: fd-find
+(use-package projectile
+	     :straight t
+	     :init
+	     (projectile-mode +1)
+	     :config
+	     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+	     )
+
 ;; Themes
 (use-package solarized-theme
              :straight t

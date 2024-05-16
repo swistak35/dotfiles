@@ -49,6 +49,7 @@
  ("peg" . "ee4a6a766c5f19bb196e7b2487ffff3ca892eea3")
  ("persist" . "29641378698ff8f05b877e132f82cad8f77be3be")
  ("popup-el" . "5420f7fbdc1df31d3158bcb57d1ed9cf15a4c8ef")
+ ("projectile" . "0163b335a18af0f077a474d4dc6b36e22b5e3274")
  ("rjsx-mode" . "b697fe4d92cc84fa99a7bcb476f815935ea0d919")
  ("rspec-mode" . "484f0bab468674852aaf3e0ad0c3b3d4335d4316")
  ("s.el" . "dda84d38fffdaf0c9b12837b504b402af910d01d")
