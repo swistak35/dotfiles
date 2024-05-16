@@ -843,6 +843,15 @@
 	     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 	     )
 
+(use-package projectile-rails
+	     :straight t
+	     :init
+	     (projectile-rails-global-mode)
+	     :config
+	     (define-key projectile-rails-mode-map (kbd "C-c r") 'projectile-rails-command-map)
+	     )
+	     
+
 ;; Themes
 (use-package solarized-theme
              :straight t
