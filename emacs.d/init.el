@@ -850,7 +850,12 @@
 	     :config
 	     (define-key projectile-rails-mode-map (kbd "C-c r") 'projectile-rails-command-map)
 	     )
-	     
+
+(use-package rbenv
+	     :straight t
+	     :init
+	     (global-rbenv-mode)
+	     )
 
 ;; Themes
 (use-package solarized-theme

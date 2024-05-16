@@ -54,6 +54,7 @@
  ("projectile" . "0163b335a18af0f077a474d4dc6b36e22b5e3274")
  ("projectile-rails" . "701784df7befe17b861f1b53fe9cbc59d0b94b9f")
  ("rake" . "452ea0caca33376487103c64177c295ed2960cca")
+ ("rbenv.el" . "588b817d510737b9d6afd6d1ecddd517d96b78e5")
  ("rjsx-mode" . "b697fe4d92cc84fa99a7bcb476f815935ea0d919")
  ("rspec-mode" . "484f0bab468674852aaf3e0ad0c3b3d4335d4316")
  ("s.el" . "dda84d38fffdaf0c9b12837b504b402af910d01d")
