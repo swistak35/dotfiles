@@ -857,6 +857,12 @@
 	     (global-rbenv-mode)
 	     )
 
+(use-package asdf
+ 	     :straight (:host github :repo "tabfugnic/asdf.el" :files ("*.el"))
+	     :config
+	     (asdf-enable)
+	     )
+
 ;; Themes
 (use-package solarized-theme
              :straight t

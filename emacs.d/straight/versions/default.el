@@ -1,5 +1,6 @@
 (("activities" . "ab23979b15568ac1094821d7c3d071a69d9e60ef")
  ("annalist.el" . "134fa3f0fb91a636a1c005c483516d4b64905a6d")
+ ("asdf.el" . "1d95d6f81ef93135d801f49eb3f84cb96a47403a")
  ("burly.el" . "6626df0c2054cb0662bf113ba4cbad641b588d0f")
  ("closql" . "dc8cacbafc4d99ac25280c973a754a5ee5dbe2b0")
  ("compat" . "0108c5d31f1866cd4797efaa89431ac1d9af641f")
