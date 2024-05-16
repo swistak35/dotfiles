@@ -13,6 +13,7 @@
  ("emacs-reformatter" . "f454b179ab7d39dc8783b9f2a046cab353b272f5")
  ("emacsmirror-mirror" . "df69edbd0242b1cca9c8eab9e4098c7de8d04c86")
  ("emacsql" . "5aba772e562f0b22e36e34c9b4c256ffe439654c")
+ ("emacs-slim" . "8c92169817f2fa59255f547f0a9fb4fbb8309db9")
  ("evil" . "b27997b693dca40a08bfea00ae961f10bf839c0c")
  ("evil-collection" . "d1dec4ef730554a2b9d5b96098abf166685aaa38")
  ("evil-nerd-commenter" . "b1a92221c9735c2681806a3d5a86c7258e73089f")

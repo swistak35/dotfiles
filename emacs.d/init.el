@@ -863,6 +863,9 @@
 	     (asdf-enable)
 	     )
 
+(use-package slim-mode
+             :straight t)
+
 ;; Themes
 (use-package solarized-theme
              :straight t
