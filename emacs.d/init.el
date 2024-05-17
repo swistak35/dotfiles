@@ -850,6 +850,8 @@
 	     (projectile-mode +1)
 	     :config
 	     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+             (define-key evil-normal-state-leader-map "pr" 'projectile-recentf)
+             (define-key evil-normal-state-leader-map "pp" 'projectile-find-file)
 	     )
 
 (use-package projectile-rails
