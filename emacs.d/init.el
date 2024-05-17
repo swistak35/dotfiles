@@ -177,9 +177,12 @@
              ; enable globally
              (global-git-gutter-mode +1)
              ; gutter will be on the right side
-             (setq git-gutter-fr:side 'right-fringe)
+             (setq git-gutter-fr:side 'left-fringe)
              (define-key evil-normal-state-map "]n" 'git-gutter:next-hunk)
              (define-key evil-normal-state-map "[n" 'git-gutter:previous-hunk)
+	     (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
+	     (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
+	     (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom)
              )
 
 (use-package rspec-mode
