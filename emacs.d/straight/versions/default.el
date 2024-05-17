@@ -10,6 +10,7 @@
  ("el-get" . "4f0d43b3da56794149e9cf8fd80c91a48f8cb55a")
  ("elm-mode" . "1e277684d8a6681a2410cce2dd589ee30a998369")
  ("emacs-async" . "0efee626a44f794e061850f605364310953b6b7a")
+ ("emacs-direnv" . "c0bf3b81c7a97e2a0d06d05495e86848254fcc1f")
  ("emacs-reformatter" . "f454b179ab7d39dc8783b9f2a046cab353b272f5")
  ("emacsmirror-mirror" . "df69edbd0242b1cca9c8eab9e4098c7de8d04c86")
  ("emacsql" . "5aba772e562f0b22e36e34c9b4c256ffe439654c")

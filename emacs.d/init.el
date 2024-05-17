@@ -869,6 +869,11 @@
 (use-package slim-mode
              :straight t)
 
+(use-package direnv
+	     :straight t
+	     :init
+	     (direnv-mode))
+
 ;; Themes
 (use-package solarized-theme
              :straight t
