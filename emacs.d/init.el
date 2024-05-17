@@ -27,6 +27,12 @@
 ; Disable "Warning (comp)" from popping up
 (setq native-comp-async-report-warnings-errors nil)
 
+; Display compilation window, like the one with tests, in a more smart way
+(setq split-width-threshold most-positive-fixnum)
+
+; Automatically scroll down the compilation buffer
+(setq compilation-scroll-output t)
+
 ; Set the path to authentication file
 (setq auth-sources '("~/.authinfo"))
 
