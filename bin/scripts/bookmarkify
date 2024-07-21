@@ -73,8 +73,9 @@ if attrs[:url].include?("https://x.com/") || attrs[:url].include?("https://twitt
   author = doc.css("a div div span span")[0].content
   attrs[:author] = author
 
-  content = doc.css("div[data-testid='tweetText']")[0].content
-  attrs[:content] = content
+  # may not have content if tweet is just a picture
+  content = doc.css("div[data-testid='tweetText']")[0]&.content
+  attrs[:content] = content if content
 end
 
 entry = <<~EOS
