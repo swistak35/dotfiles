@@ -10,7 +10,6 @@ require 'time'
 
 DEBUG_MODE = !!ENV["DEBUG"]
 
-
 # TODO Use tags, for tags
 
 DATE_FORMAT = "%Y-%m-%d"
@@ -62,6 +61,13 @@ pp attrs if DEBUG_MODE
 
 if attrs[:url].include?("foreignaffairs.com")
   attrs[:publisher] = "Foreign Affairs"
+end
+
+if attrs[:url].include?("medium.com")
+  attrs[:publisher] = "Medium"
+
+  publish_date = doc.css("span[data-testid='storyPublishDate']")[0]&.content
+  attrs[:date] = Time.parse(publish_date).to_date if publish_date
 end
 
 if attrs[:url].include?("https://x.com/") || attrs[:url].include?("https://twitter.com/")
