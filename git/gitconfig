@@ -9,6 +9,10 @@
 	branches = branch -a
 	remotes = remote -v
 	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+	cleanup = "!git branch --merged | grep  -v '\\*' | xargs -n 1 git branch -d"
+	upstream-name = !git remote | egrep -o '(upstream|origin)' | tail -1
+	head-branch = !git remote show $(git upstream-name) | awk '/HEAD branch/ {print $NF}'
+	main = !git switch $(git head-branch) && git pull --stat --autostash && git cleanup
 [push]
 	default = simple
 	autoSetupRemote = true
