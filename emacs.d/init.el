@@ -381,12 +381,15 @@
                                            :face (:append t)
                                            :tag "@duringday")
                                     (:name "Wieczór"
-                                           :tag "wieczor")
+                                           :tag "wieczor"
+					   :order 100)
+				    (:name "Codzienne"
+					   :tag "daily")
                                     (:name "Dzisiejsze"
                                            :scheduled today)
-                                    (:name "Przypominajki"
-                                           :and (:scheduled past :priority<= "C")
-                                           :order 101)
+                                    ;; (:name "Przypominajki"
+                                    ;;        :and (:scheduled past :priority<= "C")
+                                    ;;        :order 101)
                                     (:discard (:tag "@emilka"))
                                     (:discard (:todo "WAITING"))
                                    ))
@@ -402,10 +405,6 @@
                        (org-ql-block '(and (todo "WAITING")
                                            (not (tags "@emilka")))
                                      ((org-ql-block-header "Zadania zablokowane")))
-                       (org-ql-block '(and (todo)
-                                           (not (scheduled))
-                                           (tags "@emilka"))
-                                     ((org-ql-block-header "Zadania dla Emilki")))
                        (org-ql-block '(and (todo "TODO")
                                            (priority '= "C")
                                            (not (scheduled)))
@@ -421,6 +420,10 @@
                                                  :scheduled today)
                                          ))
                                       (org-ql-block-header "Zadania do zrobienia na audio")))
+                       (org-ql-block '(and (todo)
+                                           (not (scheduled))
+                                           (tags "@emilka"))
+                                     ((org-ql-block-header "Zadania dla Emilki")))
 		       )
                        )
                      ("T" "Treadmill"
@@ -439,6 +442,27 @@
                                            (tags "@ontreadmill")
                                            (not (scheduled)))
                                      ((org-ql-block-header "Zadania")))
+                       ))
+		     ("A" "Audio"
+                      (
+                       (org-ql-block '(and (todo "TODO")
+                                           (tags "@zaudio"))
+                                     ((org-super-agenda-groups
+                                        '(
+					  (:discard (:scheduled future))
+					  (:name "Codzienne"
+						 :tag "daily")
+					  (:name "Najlepiej dziś"
+						r:priority "B")
+					  (:name "Do zrobienia w ciągu kilku dni"
+						 :priority "C")
+					  (:name "Czekają sobie na dłuższy kwant czasu"
+						 :priority "D")
+					  (:name "W ogóle luzik"
+						 :priority "E")
+                                          (:name "Pozostałe")
+                                         ))
+                                     (org-ql-block-header "Zadania")))
                        ))
                      ("W" "Watching"
                       (
