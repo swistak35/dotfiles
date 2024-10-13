@@ -355,7 +355,8 @@
                      ("X" "Super agenda"
                       (
                        (org-ql-block '(and (todo "TODO")
-                                           (priority '= "A"))
+                                           (priority '= "A")
+					   (not (tags "work")))
                                      ((org-ql-block-header "Najważniejsze")))
                        ; (agenda "" ((org-agenda-span 'day)
                        ;             (org-super-agenda-groups
@@ -403,13 +404,15 @@
                        ;;                     (tags "@cooking"))
                        ;;               ((org-ql-block-header "Gotowanie")))
                        (org-ql-block '(and (todo "WAITING")
-                                           (not (tags "@emilka")))
+                                           (not (tags "@emilka" "work")))
                                      ((org-ql-block-header "Zadania zablokowane")))
                        (org-ql-block '(and (todo "TODO")
                                            (priority '= "C")
+					   (not (tags "@emilka" "work"))
                                            (not (scheduled)))
                                      ((org-ql-block-header "Up next")))
                        (org-ql-block '(and (todo "TODO")
+					   (not (tags "@emilka" "work"))
                                            (or (not (scheduled))
                                                (scheduled :to today))
                                            (tags "@zaudio" "@zfilmem"))
