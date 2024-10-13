@@ -20,6 +20,7 @@
  ("evil-nerd-commenter" . "b1a92221c9735c2681806a3d5a86c7258e73089f")
  ("evil-org-mode" . "b1f309726b1326e1a103742524ec331789f2bf94")
  ("f.el" . "1e7020dc0d4c52d3da9bd610d431cab13aa02d8c")
+ ("flycheck" . "7a6398ea3538a898eba0276f0f89b2f878325a89")
  ("forge" . "b16b6ec4f7612f5a8fc6d50133cc6189f062c183")
  ("fringe-helper.el" . "ef4a9c023bae18ec1ddd7265f1f2d6d2e775efdd")
  ("fzf.el" . "21912ebc7e1084aa88c9d8b7715e782a3978ed23")
