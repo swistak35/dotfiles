@@ -777,10 +777,10 @@
 					:title "Silverfin Tasks"
 					:sort nil
 					:narrow nil
-					:super-groups '((:discard (:tag "template"))
+					:super-groups '((:discard (:scheduled future))
+							(:discard (:tag "template"))
 							(:name "Top priority"
 							       :priority "A")
-							(:discard (:scheduled future))
 							(:name "Blocked & waiting"
 							       :todo "WAITING")
 							(:name "Morning ticklers"
