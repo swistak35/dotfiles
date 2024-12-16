@@ -2,9 +2,21 @@
 
 require 'fileutils'
 require 'open3'
-require "json"
+require 'json'
+require 'optparse'
 
-DRY_RUN = false
+# Command-line option parsing
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: ruby add_subtitles.rb [options] DIRECTORY"
+
+  opts.on("-d", "--dry-run", "Perform a dry run without modifying files") do
+    options[:dry_run] = true
+  end
+end.parse!
+
+# Default value for DRY_RUN (false if not specified in the CLI)
+DRY_RUN = options[:dry_run] || false
 
 def add_subtitles(video_file, subtitle_file)
   output_file = File.join(File.dirname(video_file), "#{File.basename(video_file, File.extname(video_file))}_with_subs.mkv")
@@ -37,16 +49,10 @@ def video_has_english_subtitle(video_file)
   command = "mkvmerge -J '#{video_file}'"
   output = `#{command}`
   json_result = JSON.parse(output)
-  # binding.irb
   subtitles = json_result["tracks"].select {|t| t["type"] == "subtitles" }
   subtitles_langs = subtitles.map {|sub| sub["properties"]["language_ietf"] || sub["properties"]["language"] }
 
   !(subtitles_langs & ["en", "eng", "en-US"]).empty?
-  #
-  # stdout, stderr, status = Open3.capture3(*command)
-  #
-  # return stdout.include?('English') if status.success?
-  # false
 end
 
 def find_subtitle_file(video_file, subtitle_files)
@@ -91,4 +97,9 @@ end
 
 # Set the directory you want to process
 directory = ARGV[0]
+if directory.nil? || !Dir.exist?(directory)
+  puts "Please provide a valid directory."
+  exit 1
+end
+
 process_videos(directory)
