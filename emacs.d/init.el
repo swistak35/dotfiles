@@ -918,6 +918,13 @@
 	     :init
 	     (direnv-mode))
 
+(use-package transpose-frame
+	     :straight t
+	     :config
+	     (define-key evil-normal-state-leader-map "wf" 'transpose-frame)
+	     (define-key evil-normal-state-leader-map "wr" 'rotate-frame-clockwise)
+	     )
+
 ;; Themes
 (use-package solarized-theme
              :straight t
