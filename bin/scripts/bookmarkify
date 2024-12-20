@@ -7,6 +7,8 @@ require 'tempfile'
 require 'securerandom'
 require 'nokogiri'
 require 'time'
+require 'uri'
+require 'rack'
 
 DEBUG_MODE = !!ENV["DEBUG"]
 
@@ -82,6 +84,30 @@ if attrs[:url].include?("https://x.com/") || attrs[:url].include?("https://twitt
   # may not have content if tweet is just a picture
   content = doc.css("div[data-testid='tweetText']")[0]&.content
   attrs[:content] = content if content
+
+  tweet_id = URI.parse(attrs[:url]).path.split("/").last
+
+  if doc.css("div[data-testid='videoComponent']").size > 0
+    @video_url = attrs[:url]
+    @video_output = "tweet_#{tweet_id}.mp4"
+  end
+end
+
+def obfuscated_for_filename(string)
+  string.tr("/\\", "")
+end
+
+if attrs[:url].include?("https://www.youtube.com")
+  video_title = doc.css("div#title h1")&.first&.content.strip
+  attrs[:title] = video_title if video_title
+
+  channel_name = doc.css("div#owner ytd-channel-name a").first.content.strip
+  attrs[:publisher] = channel_name
+
+  video_id = Rack::Utils.parse_nested_query(URI.parse(attrs[:url]).query).fetch("v")
+
+  @video_url = attrs[:url]
+  @video_output = "#{obfuscated_for_filename(channel_name)} - #{obfuscated_for_filename(video_title)} - #{video_id}.mp4"
 end
 
 entry = <<~EOS
@@ -105,6 +131,26 @@ if attrs[:kind]
   entry << <<EOS
    :KIND: #{attrs[:kind]}
 EOS
+end
+
+if @video_url
+  puts "There seems to be video associated with that bookmark (#{@video_output}). Do you want to archive it?"
+  should_download_video_confirmation = STDIN.gets.chomp
+  if should_download_video_confirmation == "y"
+    full_video_output_path = File.join("/media/magazyn/tmp/download/archiwum", @video_output)
+
+    download_successful = system("yt-ldp -o \"#{full_video_output_path}\" \"#{@video_url}\"")
+    if !download_successful
+      print "Seems like download failed. Abort?"
+      should_abort = STDIN.gets.chomp
+      if should_abort == "y"
+        exit 1
+      end
+    end
+    entry << <<EOS
+   :ARCHIVED_VIDEO: [[file:#{full_video_output_path}]]
+EOS
+  end
 end
 
 entry << <<EOS
@@ -136,6 +182,7 @@ unless ["yes", "y"].include?(confirmation)
   puts "nothing done"
   exit
 end
+
 
 FileUtils.mv(path, File.expand_path("~/bookmarks/#{path.basename}")) unless DEBUG_MODE
 puts "= File moved"
