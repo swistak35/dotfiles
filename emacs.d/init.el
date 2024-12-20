@@ -85,6 +85,10 @@
 ; Tabs
 (setq tab-bar-mode t)
 
+;(global-set-key (kbd "C-a x") 'kill-current-buffer)
+;(global-set-key (kbd "C-a b") 'projectile-previous-project-buffer)
+;(global-set-key (kbd "C-a n") 'projectile-previous-project-buffer)
+
 (use-package transient
              :straight t)
 
