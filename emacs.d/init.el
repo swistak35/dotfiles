@@ -276,6 +276,7 @@
              (setq org-agenda-skip-scheduled-if-done t)
              (setq org-agenda-skip-deadline-if-done t)
              (setq org-agenda-skip-unavailable-files t)
+	     (setq org-agenda-window-setup 'other-window)
              (setq org-priority-start-cycle-with-default nil)
              (setq org-default-priority ?D) ; A for MIT, B for the things for the week, C for the things which are ready to be executed
              (setq org-lowest-priority ?E)
