@@ -20,6 +20,8 @@ DRY_RUN = options[:dry_run] || false
 
 def add_subtitles(video_file, subtitle_file)
   output_file = File.join(File.dirname(video_file), "#{File.basename(video_file, File.extname(video_file))}_with_subs.mkv")
+  original_file = "#{File.basename(video_file, File.extname(video_file))}_original#{File.extname(video_file)}"
+  original_file_path = File.join(File.dirname(video_file), original_file)
 
   command = [
     'mkvmerge',
@@ -38,8 +40,18 @@ def add_subtitles(video_file, subtitle_file)
 
     if status.success?
       puts "Subtitles #{File.basename(subtitle_file)} added to #{File.basename(video_file)} successfully."
+
+      # Rename the original file
+      File.rename(video_file, original_file_path)
+      # puts "Original video file renamed to #{original_file_path}"
+
+      # Rename the new file to match the original file name
+      File.rename(output_file, video_file)
+      # puts "New video file renamed to #{video_file}"
     else
       puts "Error adding subtitles #{File.basename(subtitle_file)} to #{File.basename(video_file)}: #{stderr}"
+      puts stdout
+      puts status
     end
   end
 end
