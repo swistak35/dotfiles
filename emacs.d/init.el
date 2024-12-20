@@ -436,6 +436,15 @@
                                            (not (scheduled))
                                            (tags "@emilka"))
                                      ((org-ql-block-header "Zadania dla Emilki")))
+		       (org-ql-block '(or (and (todo "TODO" "DONE")
+					       (closed :on today))
+					  ;; Not possible to implement correctly (looking at LAST_REPEAT being on today)
+					  ;; because of this: https://github.com/alphapapa/org-ql/issues/192
+					  ;; (and (todo "TODO")
+					  ;;      (property "LAST_REPEAT")
+					  ;;      (ts :on today))
+					  )
+				     ((org-ql-block-header "Zrobione dzisiaj")))
 		       )
                        )
                      ("T" "Treadmill"
