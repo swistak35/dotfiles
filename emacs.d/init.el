@@ -791,6 +791,7 @@
              :config
 	     (setq helm-org-headings-max-depth 1)
              (define-key evil-normal-state-leader-map "po" 'helm-org-agenda-files-headings)
+             (define-key evil-normal-state-leader-map "ph" 'helm-org-in-buffer-headings)
              ; (add-to-list 'helm-completing-read-handlers-alist '(org-capture . helm-org-completing-read-tags))
              ; (add-to-list 'helm-completing-read-handlers-alist '(org-set-tags . helm-org-completing-read-tags))
              )
