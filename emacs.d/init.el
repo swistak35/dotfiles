@@ -720,6 +720,23 @@
 		   (let ((props (org-entry-properties)))
 		     (when (assoc "UPFLIX_LINK" props)
 		       (rl-movies-refresh-entry))))))
+	     (defun rl-movies-set-title ()
+	       "Update the headline title at point based on TITLE_PL, TITLE_EN, and YEAR properties."
+	       (interactive)
+	       (let* ((title-pl (org-entry-get (point) "TITLE_PL"))
+		      (title-en (org-entry-get (point) "TITLE_EN"))
+		      (year (org-entry-get (point) "YEAR"))
+		      (todo (org-get-todo-state))
+		      (tags (org-get-tags-string))
+		      (new-title (string-join (delq nil (list title-en "/" title-pl (concat "(" year ")"))) " ")))
+		 (when new-title
+		   (save-excursion
+		     (org-back-to-heading t)
+		     (looking-at org-outline-regexp)
+		     (let ((stars (match-string 0)))
+		       ;; Replace the current headline, preserving leading stars, TODO state, and tags
+		       (re-search-forward org-heading-regexp)
+		       (replace-match (concat stars todo " " new-title " " tags) t t))))))
 	     (defun rl-movies-refresh-entry ()
 	       (interactive)
 	       (let* ((link1 (org-entry-get nil "UPFLIX_LINK"))
