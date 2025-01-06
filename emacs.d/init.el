@@ -303,8 +303,11 @@
 	     (add-hook 'org-capture-mode-hook #'my/org-capture-maybe-create-id)
              (setq org-capture-templates
                    '(
-                     ("m" "Movie" entry (file+headline "~/notes/movies.org" "Inbox")
-                      "** TOWATCH %^{Please enter name}%?\n:PROPERTIES:\n:ID: %^{Please enter ID}\n:UPFLIX_LINK:\n:CREATED_AT: %U\n:END:%i\n")
+		     ("m" "Movie")
+                     ("mu" "Movie from Upflix" entry (file+headline "~/notes/movies.org" "Inbox")
+                      "** TOWATCH \n:PROPERTIES:\n:UPFLIX_LINK: %^{Please enter upflix link}\n:CREATED_AT: %U\n:END:%i\n")
+                     ("mf" "Movie from Filmweb" entry (file+headline "~/notes/movies.org" "Inbox")
+                      "** TOWATCH \n:PROPERTIES:\n:FILMWEB_LINK: %^{Please enter filmweb link}\n:CREATED_AT: %U\n:END:%i\n")
                      ("w" "Web")
                      ("ww" "Web" entry (file+headline "~/notes/bookmarks.org" "Bookmarks processed")
                       "** %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
