@@ -452,6 +452,20 @@
 					  ;;      (ts :on today))
 					  )
 				     ((org-ql-block-header "Zrobione dzisiaj")))
+		       (org-ql-block '(tags "inbox")
+				     ((org-ql-block-header "Inbox")))
+
+		       ; Random Quote block
+		       ; need to add :sort (random) but as of 0.8 still not implemented
+		       ; also need to add "pick 1", but also not implemented
+		       ;; (org-ql-block '(tags "quote")
+		       ;; 		     ((org-ql-block-header "Quote")))
+
+		       ; Random Rule to remember for yourself
+		       ; need to add :sort (random) but as of 0.8 still not implemented
+		       ; also need to add "pick 1", but also not implemented
+		       (org-ql-block '(tags "rule")
+		        		     ((org-ql-block-header "Random Rule of the day")))
 		       )
                        )
                      ("T" "Treadmill"
@@ -728,7 +742,7 @@
 		      (year (org-entry-get (point) "YEAR"))
 		      (todo (org-get-todo-state))
 		      (tags (org-get-tags-string))
-		      (new-title (string-join (delq nil (list title-en "/" title-pl (concat "(" year ")"))) " ")))
+		      (new-title (string-join (delq nil (list (if (= (length title-en) 0) nil (concat title-en " /")) title-pl (concat "(" year ")"))) " ")))
 		 (when new-title
 		   (save-excursion
 		     (org-back-to-heading t)
@@ -815,12 +829,12 @@
 					:narrow nil
 					:super-groups '((:discard (:scheduled future))
 							(:discard (:tag "template"))
-							(:name "Top priority"
+							(:name "Extreme top priority"
 							       :priority "A")
+							(:name "Morning ticklers"
+							       :and (:tag "tickler" :tag "morning" :scheduled t))
 							(:name "Blocked & waiting"
 							       :todo "WAITING")
-							(:name "Morning ticklers"
-							       :and (:tag "tickler" :scheduled t))
 							(:name "Scheduled"
 							       :scheduled t)
 							(:priority "B")
