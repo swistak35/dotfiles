@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+def convert_file(file)
+  # Check if the file has .ts extension
+  return unless File.extname(file) == '.ts'
+
+  # Define the new file name with .mkv extension
+  new_file = file.sub(/\.ts$/, '.mkv')
+
+  # Run the conversion using `some_converter` command
+  system("mkvmerge -o '#{new_file}' '#{file}'")
+
+  # Optionally, you can remove the original .ts file after conversion
+  # File.delete(file)
+end
+
+def convert_directory(directory)
+  # Check if the given directory exists
+  unless Dir.exist?(directory)
+    puts "The specified directory does not exist."
+    return
+  end
+
+  # Iterate over each .ts file in the directory
+  Dir.glob(File.join(directory, '*.ts')).each do |file|
+    convert_file(file)
+  end
+end
+
+def process_argument(argument)
+  if File.file?(argument)
+    convert_file(argument)
+  elsif File.directory?(argument)
+    convert_directory(argument)
+  else
+    puts "The specified argument is neither a valid file nor a directory."
+  end
+end
+
+# Check if user provided an argument
+if ARGV.length != 1
+  puts "Usage: ruby convert_script.rb <file_or_directory_path>"
+else
+  process_argument(ARGV[0])
+end
