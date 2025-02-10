@@ -133,6 +133,15 @@
 	     (add-hook 'prog-mode-hook 'copilot-mode)
 	     (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
 	     (define-key copilot-completion-map (kbd "<backtab>") 'copilot-accept-completion-by-word)
+
+	     ; Needed because
+	     ; https://github.com/copilot-emacs/copilot.el/issues/312
+	     (add-to-list 'copilot-indentation-alist '(prog-mode 2))
+	     (add-to-list 'copilot-indentation-alist '(org-mode 2))
+	     (add-to-list 'copilot-indentation-alist '(ruby-mode 2))
+	     ;; (add-to-list 'copilot-indentation-alist '(text-mode 2))
+	     ;; (add-to-list 'copilot-indentation-alist '(closure-mode 2))
+	     ;; (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
 	     )
 
 (use-package gptel
