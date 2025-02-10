@@ -65,6 +65,7 @@
  ("solarized-emacs" . "94e7c342da1b04326028708e5503973d554bd828")
  ("straight.el" . "9b11112b2e7aedd994feb2d8f95bd66dbc5749a5")
  ("transient" . "55d5d41b48d7f7bc1ecf1f90c012d7821dff5724")
+ ("transpose-frame" . "94c87794d53883a2358d13da264ad8dab9a52daa")
  ("treepy.el" . "75fe3ec37e6f9b2bdfd6d0584efd984d0c00a43e")
  ("ts.el" . "552936017cfdec89f7fc20c254ae6b37c3f22c5b")
  ("use-package" . "28531e9b94c72ed777803e10e391ea287496ffc2")
