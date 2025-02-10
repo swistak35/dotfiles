@@ -983,6 +983,9 @@
 	     (define-key evil-normal-state-leader-map "wr" 'rotate-frame-clockwise)
 	     )
 
+(use-package ruby-end
+             :straight t)
+
 ;; Themes
 (use-package solarized-theme
              :straight t
