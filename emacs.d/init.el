@@ -658,6 +658,54 @@
                      ))
 
              (setq org-agenda-include-diary t)
+
+	     (defun sf-generate-org-link ()
+	       "Generate an org-mode formatted link by replacing the word at point if it matches a pattern or prompts for input."
+	       (interactive)
+	       (let* ((bounds (bounds-of-thing-at-point 'line))
+		      (line-at-point (if bounds (buffer-substring-no-properties (car bounds) (cdr bounds))))
+		      (word-at-point (and line-at-point
+					  (cond ((string-match "!\\(\\w+\\)" line-at-point) (match-string 0 line-at-point))
+						((string-match "\\$\\(\\w+\\)" line-at-point) (match-string 0 line-at-point))
+						((string-match "SDS!\\(\\w+\\)" line-at-point) (match-string 0 line-at-point)))))
+		      (input (or word-at-point
+				 (read-string "Enter the argument: ")))
+		      (url "")
+		      (link-description "Link")
+		      case-fold-search)  ; Case-sensitive matching
+		 (cond
+		  ;; Case 1: Argument starts with "!"
+		  ((string-prefix-p "!" input)
+		   (let ((some-string (substring input 1)))
+		     (setq url (format "https://gitlab.silverfin.com/development/silverfin/-/merge_requests/%s" some-string))
+		     (setq link-description (format "MR %s" some-string))))
+
+		  ;; Case 2: Argument starts with "$"
+		  ((string-prefix-p "$" input)
+		   (let ((some-string (substring input 1)))
+		     (setq url (format "https://gitlab.silverfin.com/development/silverfin/-/issues/%s" some-string))
+		     (setq link-description (format "Issue %s" some-string))))
+
+		  ;; Case 3: Argument starts with "SDS!"
+		  ((string-prefix-p "SDS!" input)
+		   (let ((some-string (substring input 4)))
+		     (setq url (format "https://gitlab.silverfin.com/development/sf-sync/-/merge_requests/%s" some-string))
+		     (setq link-description (format "SDS MR %s" some-string))))
+
+		  ;; Default case: No match
+		  (t
+		   (message "Warning: No matching pattern for input: %s" input)
+		   (setq url nil)))
+
+		 ;; Replace the word at point or insert the link if URL is set
+		 (when url
+		   (if word-at-point
+		       (progn
+			 (goto-char (car bounds))
+			 (re-search-forward (regexp-quote word-at-point) (cdr bounds))
+			 (replace-match (format "[[%s][%s]]" url link-description)))
+		     (insert (format "[[%s][%s]]" url link-description))))))
+
 	     (setq rl-movies-upflix-replace-hostname "http://localhost:9393")
 	     (setq rl-movies-supported-subscriptions '("netflix" "disney" "viaplay" "skyshowtime" "canalplus" "cineman" "appletv" "hbomax" "cdapremium" "amazon" "tvpvod"))
 	     (defun remove-property-from-all-entries (property)
