@@ -223,6 +223,9 @@
 (use-package yaml-mode
              :straight t)
 
+(use-package yaml-pro
+  :straight t)
+
 (use-package evil-nerd-commenter
              :straight t
              :config

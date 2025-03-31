@@ -79,5 +79,6 @@
  ("use-package" . "a6e856418d2ebd053b34e0ab2fda328abeba731c")
  ("with-editor" . "1d5860cfd05d6805018bd071b8f9b56493ba11c6")
  ("yaml-mode" . "d91f878729312a6beed77e6637c60497c5786efa")
+ ("yaml-pro" . "f7706ea170de98d29b7cdd5a4f189bd038b1e27b")
  ("yaml.el" . "09e46d563f1f3ff948852e08360c7d3c76e2acba"))
 :gamma
