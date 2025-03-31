@@ -1113,6 +1113,12 @@
   (setq org-journal-dir (file-truename "~/notes/journal"))
   )
 
+(use-package org-contacts
+  :straight t
+  :config
+  (setq org-contacts-files (list (file-truename "~/notes/contacts.org")))
+  )
+
 ;; Themes
 (use-package solarized-theme
              :straight t
