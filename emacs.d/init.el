@@ -373,6 +373,8 @@
 		      :create-id t)
                      ("wm" "Movie" entry (file+headline "~/notes/movies.org" "Inbox")
                       "** TOWATCH %:description\n:PROPERTIES:\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n")
+                     ("wl" "Lunch video" entry (file+headline "~/notes/bookmarks.org" "Lunch videos")
+                      "** TOREAD %:description\n:PROPERTIES:\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n")
                      ("wb" "Book" entry (file+headline "~/notes/books.org" "Inbox")
                       "** TOREAD %:description\n:PROPERTIES:\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n")
                      ("t" "Task" entry (file+headline "~/notes/inbox.org" "Inbox")
