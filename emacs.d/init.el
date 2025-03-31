@@ -235,6 +235,7 @@
              :after transient
              :config
              (add-to-list 'magit-no-confirm 'drop-stashes)
+	     (setopt magit-format-file-function #'magit-format-file-nerd-icons)
              )
 
 (use-package forge
@@ -1038,6 +1039,9 @@
 
 (use-package ruby-end
              :straight t)
+
+(use-package nerd-icons
+  :straight t)
 
 ;; Themes
 (use-package solarized-theme

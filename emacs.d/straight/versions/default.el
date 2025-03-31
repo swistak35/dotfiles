@@ -44,6 +44,7 @@
  ("map" . "016e8711dea9ddbd26016711a64fbe78cba55668")
  ("markdown-mode" . "7659bc470d096e7a53285fa246cbabcb07d66a33")
  ("melpa" . "699f4d019b5b462f0386986776e5063cbfea3965")
+ ("nerd-icons.el" . "546ee20caf825e65da4c5435d31f13d269ed2a81")
  ("nlinum" . "6ea265c6ef5b9339fcef350141feadf3192f7853")
  ("nlinum-relative" . "5b9950c97ba79a6f0683e38b13da23f39e01031c")
  ("nongnu-elpa" . "dde46e3d82a33b2f50ed9725b447a6b7ab70d19b")
