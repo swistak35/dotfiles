@@ -1135,6 +1135,15 @@
 (use-package ruby-end
              :straight t)
 
+(use-package ultra-scroll
+ 	     :straight (:host github :repo "jdtsmith/ultra-scroll")
+             ;:load-path "~/code/emacs/ultra-scroll" ; if you git clone'd instead of package-vc-install
+	     :init
+	     (setq scroll-conservatively 101 ; important!
+		   scroll-margin 0)
+	     :config
+	     (ultra-scroll-mode 1))
+
 (use-package nerd-icons
   :straight t)
 

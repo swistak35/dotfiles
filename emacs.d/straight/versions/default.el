@@ -77,6 +77,7 @@
  ("treepy.el" . "651e2634f01f346da9ec8a64613c51f54b444bc3")
  ("ts.el" . "552936017cfdec89f7fc20c254ae6b37c3f22c5b")
  ("use-package" . "a6e856418d2ebd053b34e0ab2fda328abeba731c")
+ ("ultra-scroll" . "2c517bf9b61bf432f706ff8a585ba453c7476be2")
  ("with-editor" . "1d5860cfd05d6805018bd071b8f9b56493ba11c6")
  ("yaml-mode" . "d91f878729312a6beed77e6637c60497c5786efa")
  ("yaml-pro" . "f7706ea170de98d29b7cdd5a4f189bd038b1e27b")
