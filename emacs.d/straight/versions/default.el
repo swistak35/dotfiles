@@ -52,6 +52,7 @@
  ("nongnu-elpa" . "dde46e3d82a33b2f50ed9725b447a6b7ab70d19b")
  ("org" . "84118cad6ba1da0a9c21464ca0a368fed26223ea")
  ("org-capture-pop-frame" . "d88b75cc02fc53716701051dbdd906db0515de8c")
+ ("org-journal" . "17b34ce8df9649a73b715c13698220bde1628668")
  ("org-ql" . "98c62ab0a6c084ae4132110e24d9fe1ace91d363")
  ("org-rifle" . "03a52265040b8c6510a8269213d750c451779c38")
  ("org-roam" . "5c06471c3a11348342719fd9011486455adeb701")

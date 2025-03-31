@@ -1107,6 +1107,12 @@
 (use-package nerd-icons
   :straight t)
 
+(use-package org-journal
+  :straight t
+  :config
+  (setq org-journal-dir (file-truename "~/notes/journal"))
+  )
+
 ;; Themes
 (use-package solarized-theme
              :straight t
