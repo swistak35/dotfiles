@@ -430,13 +430,18 @@
                                     (:discard (:priority "A"))
                                     (:discard (:and (:priority<= "B" :tag ("@workbreak" "@zaudio" "@zfilmem"))))
                                     (:discard (:and (:not (:priority) :tag ("@workbreak" "@zaudio" "@zfilmem"))))
-                                    (:discard (:tag "@exercises"))
                                     (:discard (:tag "work"))
+				    (:name "Ćwiczenia"
+					   :tag "@exercises"
+					   :order 101)
                                     (:name "Poranek"
                                            :tag "poranek")
                                     (:name "During day"
                                            :face (:append t)
                                            :tag "@duringday")
+				    (:name "Popołudnie"
+					   :tag "popoludnie"
+					   :order 99)
                                     (:name "Wieczór"
                                            :tag "wieczor"
 					   :order 100)
@@ -932,6 +937,8 @@
 							       :and (:tag "tickler" :tag "morning" :scheduled t))
 							(:name "Blocked & waiting"
 							       :todo "WAITING")
+							(:name "End of Day ticklers"
+							       :and (:tag "tickler" :tag "evening" :scheduled t))
 							(:name "Scheduled"
 							       :scheduled t)
 							(:priority "B")
