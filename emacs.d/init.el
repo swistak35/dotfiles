@@ -737,6 +737,15 @@
 			 (replace-match (format "[[%s][%s]]" url link-description)))
 		     (insert (format "[[%s][%s]]" url link-description))))))
 
+
+	     (defun toggle-org-html-export-on-save ()
+	       (interactive)
+	       (if (memq 'org-html-export-to-html after-save-hook)
+		   (progn
+		     (remove-hook 'after-save-hook 'org-html-export-to-html t)
+		     (message "Disabled org html export on save for current buffer..."))
+		 (add-hook 'after-save-hook 'org-html-export-to-html nil t)
+		 (message "Enabled org html export on save for current buffer...")))
 	     (setq rl-movies-upflix-replace-hostname "http://localhost:9393")
 	     (setq rl-movies-supported-subscriptions '("netflix" "disney" "viaplay" "skyshowtime" "canalplus" "cineman" "appletv" "hbomax" "cdapremium" "amazon" "tvpvod"))
 	     (defun remove-property-from-all-entries (property)
