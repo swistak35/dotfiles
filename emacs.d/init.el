@@ -49,6 +49,10 @@
 ; Needs exuberant-ctags package to be installed
 (setq path-to-ctags "/usr/bin/ctags-exuberant")
 
+
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+
 ;; Dired
 ; ???
 ; (setq-default dired-isearch-filenames "dwim")
