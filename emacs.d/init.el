@@ -400,7 +400,14 @@
 		      :prepend t
 		      :time-prompt t)
                      ))
+
              (add-to-list 'org-modules 'org-habit t)
+	     (setq org-habit-graph-column 60)
+	     (setq org-habit-show-habits-only-for-today nil)
+	     (setq org-habit-following-days 3)
+	     (setq org-habit-today-glyph ?T)
+	     (setq org-habit-completed-glyph ?V)
+
              (setq org-reverse-note-order t) ; i.e. this is important for refiling to put notes at the top
              (setq org-refile-targets '((org-agenda-files :maxlevel . 2)))
              (setq org-refile-use-outline-path 'file) ; Show the full path for refiling targets
