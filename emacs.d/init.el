@@ -1003,6 +1003,12 @@
 	     (define-key projectile-rails-mode-map (kbd "C-c r") 'projectile-rails-command-map)
 	     )
 
+(use-package ag
+  	     :straight t
+	     :init
+	     (setq ag-highlight-search t)
+	     )
+
 (use-package rbenv
 	     :straight t
 	     :init

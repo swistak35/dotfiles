@@ -1,4 +1,5 @@
 (("activities" . "489cfe2a1b86c1017eed6b8b6dbc9dd0d3df7fc5")
+ ("ag.el" . "ed7e32064f92f1315cecbfc43f120bbc7508672c")
  ("annalist.el" . "e1ef5dad75fa502d761f70d9ddf1aeb1c423f41d")
  ("asdf.el" . "1d95d6f81ef93135d801f49eb3f84cb96a47403a")
  ("burly.el" . "d5b7133b5b629dd6bca29bb16660a9e472e82e25")
