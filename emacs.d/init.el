@@ -127,7 +127,7 @@
 
 (use-package copilot
  	     :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
-	     :ensure t
+	     :straight t
 	     :config
 	     (setq copilot-node-executable "/home/swistak35/.asdf/shims/node")
 	     (add-hook 'prog-mode-hook 'copilot-mode)
@@ -145,8 +145,7 @@
 	     )
 
 (use-package gptel
-             :straight t
-	     :ensure t)
+             :straight t)
 
 
 (use-package flycheck
