@@ -93,6 +93,12 @@
 ;(global-set-key (kbd "C-a b") 'projectile-previous-project-buffer)
 ;(global-set-key (kbd "C-a n") 'projectile-previous-project-buffer)
 
+
+; So that the underscore is treated as a part of the word
+; May be an overkill if it will cause issues in other places than jumping word-by-word, alternative suggestions are there
+; https://emacs.stackexchange.com/questions/9583/how-to-treat-underscore-as-part-of-the-word
+(modify-syntax-entry ?_ "w")
+
 (use-package transient
              :straight t)
 
