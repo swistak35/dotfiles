@@ -708,7 +708,8 @@
                        ))
                      ))
 
-             (setq org-agenda-include-diary t)
+             ;(setq org-agenda-include-diary t)
+
 
 	     (defun sf-generate-org-link ()
 	       "Generate an org-mode formatted link by replacing the word at point if it matches a pattern or prompts for input."
