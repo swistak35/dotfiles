@@ -940,23 +940,87 @@
   (evil-org-agenda-set-keys))
 
 ;; for org-roam
-; (use-package emacsql-sqlite
-;              :straight t)
-; (use-package org-roam
-;             :straight t
-;              :after org
-;              :config
-;              (require 'org-roam)
-;              (require 'org-roam-protocol)
-;              (setq org-roam-directory (file-truename "~/notes/roam"))
-;              (setq org-roam-capture-templates
-;                    '(
-;                      ("r" "rdefault" plain "%?"
-;                        :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-;                                           "#+title: ${title}\n")
-;                        :unnarrowed t)
-;                      ))
-;              (org-roam-db-autosync-mode))
+;; (use-package emacsql-sqlite
+             ;; :straight t)
+(use-package org-roam
+  :straight t
+  :after org
+  :custom
+  (org-roam-completion-everywhere t)
+  (org-roam-directory (file-truename "~/notes/roam"))
+  (org-roam-capture-templates
+	'(
+	  ("d" "default" plain
+	   "%?"
+	   :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
+	   :unnarrowed t)
+	  ;; ("b" "book notes" plain (file "~/.emacs.d/templates/BookNoteTemplate.org")
+	  ;;  :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+	  ;;  :unnarrowed t)
+	  ))
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+	 ("C-c n f" . org-roam-node-find)
+	 ("C-c n i" . org-roam-node-insert)
+         ("C-c n I" . org-roam-node-insert-immediate)
+	 :map org-mode-map
+	 ("C-M-i" . completion-at-point)
+	 :map org-roam-dailies-map
+         ("Y" . org-roam-dailies-capture-yesterday)
+         ("T" . org-roam-dailies-capture-tomorrow)
+	 )
+  :bind-keymap
+  ("C-c n d" . org-roam-dailies-map)
+  :config
+  (require 'org-roam-dailies)
+  (require 'org-roam-protocol)
+  (org-roam-db-autosync-enable)
+
+  (defun org-roam-node-insert-immediate (arg &rest args)
+    (interactive "P")
+    (let ((args (push arg args))
+	  (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+						    '(:immediate-finish t)))))
+      (apply #'org-roam-node-insert args)))
+
+  ;; Doesn't work very well with dailies. It marks them completely as done.
+  ;; (defun my/org-roam-copy-todo-to-today ()
+  ;;   (interactive)
+  ;;   (let ((org-refile-keep t) ;; Set this to nil to delete the original!
+  ;; 	  (org-roam-dailies-capture-templates
+  ;; 	   '(("t" "tasks" entry "%?"
+  ;; 	      :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Tasks")))))
+  ;; 	  (org-after-refile-insert-hook #'save-buffer)
+  ;; 	  today-file
+  ;; 	  pos)
+  ;;     (save-window-excursion
+  ;; 	(org-roam-dailies--capture (current-time) t)
+  ;; 	(setq today-file (buffer-file-name))
+  ;; 	(setq pos (point)))
+
+  ;;     ;; Only refile if the target file is different than the current file
+  ;;     (unless (equal (file-truename today-file)
+  ;;                    (file-truename (buffer-file-name)))
+  ;; 	(org-refile nil nil (list "Tasks" today-file nil pos)))))
+
+  ;; (add-to-list 'org-after-todo-state-change-hook
+  ;; 	       (lambda ()
+  ;; 		 (when (equal org-state "DONE")
+  ;; 		   (my/org-roam-copy-todo-to-today))))
+  )
+
+(use-package org-roam-ui
+  :straight
+  (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+  :after org-roam
+  ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+  ;;         a hookable mode anymore, you're advised to pick something yourself
+  ;;         if you don't care about startup time, use
+  ;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
 
 (use-package burly
              :straight t
