@@ -333,6 +333,7 @@
              (setq org-agenda-start-on-weekday nil)
              (setq org-agenda-show-future-repeats nil)
              (setq org-startup-truncated nil) ; enable line wrap
+	     (setq org-id-link-to-org-use-id 'create-if-interactive) ; Try to store ID links, if ID is not there, create one
              (add-hook 'org-mode-hook (lambda () (run-with-idle-timer 600 t 'org-save-all-org-buffers))) ; autosave every 10 minutes
              (setq org-todo-keywords
                    '((sequence "TODO(t)" "WAITING(w)" "SOMEDAY(s)" "|" "DONE(d)" "CANCELLED(c)")))
