@@ -356,6 +356,15 @@
                      ("mf" "Movie from Filmweb" entry (file+headline "~/notes/movies.org" "Inbox")
                       "** TOWATCH \n:PROPERTIES:\n:FILMWEB_LINK: %^{Please enter filmweb link}\n:CREATED_AT: %U\n:END:%i\n")
                      ("w" "Web")
+		     ("wa" "Archive" entry (file+headline "~/notes/bookmarks.org" "Archive")
+		      "** READ %:description\n%i\n"
+                      :prepend t)
+		     ("wr" "Read Later" entry (file+headline "~/notes/bookmarks.org" "Read Later")
+		      "** TOREAD [[%:link][%:description]]\n  :PROPERTIES:\n  :DATE: %U\n  :END:\n%i\n"
+                      :prepend t)
+                     ("wl" "Lunch video" entry (file+headline "~/notes/bookmarks.org" "Read Later")
+                      "** TOREAD [[%:link][%:description]] :lunch_video:\n  :PROPERTIES:\n  :DATE: %U\n  :END:\n%i\n"
+		      :prepend t)
                      ("ww" "Web" entry (file+headline "~/notes/bookmarks.org" "Bookmarks processed")
                       "** %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
 		      :create-id t
@@ -368,16 +377,17 @@
                       "** TOREAD %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
                       :prepend t
 		      :create-id t)
-                     ("wr" "Read" entry (file+headline "~/notes/bookmarks.org" "Bookmarks processed")
-                      "** READ %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
-                      :prepend t
-		      :create-id t)
+                     ;; ("wr" "Read" entry (file+headline "~/notes/bookmarks.org" "Bookmarks processed")
+                     ;;  "** READ %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
+                     ;;  :prepend t
+		     ;;  :create-id t)
                      ("wm" "Movie" entry (file+headline "~/notes/movies.org" "Inbox")
                       "** TOWATCH %:description\n:PROPERTIES:\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n")
-                     ("wl" "Lunch video" entry (file+headline "~/notes/bookmarks.org" "Lunch videos")
-                      "** TOREAD %:description\n:PROPERTIES:\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n")
                      ("wb" "Book" entry (file+headline "~/notes/books.org" "Inbox")
                       "** TOREAD %:description\n:PROPERTIES:\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n")
+		     ("wz" "Test" entry (file+headline "~/notes/bookmarks.org" "Test")
+		      "** READ %:description\n%i\n"
+                      :prepend t)
                      ("t" "Task" entry (file+headline "~/notes/inbox.org" "Inbox")
                       "** TODO %?\n"
                       :prepend t)
