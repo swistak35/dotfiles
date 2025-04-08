@@ -17,15 +17,41 @@ def list_subtitles(mkv_file)
     json_result = JSON.parse(output)
 
     subtitles = json_result["tracks"].select {|t| t["type"] == "subtitles" }
+    audio = json_result["tracks"].select { |t| t["type"] == "audio" }
+
+    # if subtitles.empty?
+    #   puts "No subtitles found in #{mkv_file}"
+    # else
+    #   subtitles_langs = subtitles.map {|sub| sub["properties"]["language_ietf"] || sub["properties"]["language"] }
+    #   puts "Subtitles #{subtitles_langs.join(", ")} found in #{mkv_file}"
+    #   # subtitle_tracks.each do |track_id|
+    #   #   puts "Subtitle Track ID: #{track_id[0]} - #{mkv_file}"
+    #   # end
+    # end
+
+
+    puts "\nFile: #{mkv_file}"
 
     if subtitles.empty?
-      puts "No subtitles found in #{mkv_file}"
+      puts "  No subtitle tracks found."
     else
-      subtitles_langs = subtitles.map {|sub| sub["properties"]["language_ietf"] || sub["properties"]["language"] }
-      puts "Subtitles #{subtitles_langs.join(", ")} found in #{mkv_file}"
-      # subtitle_tracks.each do |track_id|
-      #   puts "Subtitle Track ID: #{track_id[0]} - #{mkv_file}"
-      # end
+      subtitles.each_with_index do |sub, index|
+        lang = sub["properties"]["language_ietf"] || sub["properties"]["language"] || "und"
+        codec = sub["codec"]
+        id = sub["id"]
+        puts "  Subtitle Track #{index + 1} (ID #{id}): Language: #{lang}, Codec: #{codec}"
+      end
+    end
+
+    if audio.empty?
+      puts "  No audio tracks found."
+    else
+      audio.each_with_index do |aud, index|
+        lang = aud["properties"]["language_ietf"] || aud["properties"]["language"] || "und"
+        codec = aud["codec"]
+        id = aud["id"]
+        puts "  Audio Track #{index + 1} (ID #{id}): Language: #{lang}, Codec: #{codec}"
+      end
     end
   else
     puts "Error fetching information for file: #{mkv_file}"
@@ -41,7 +67,7 @@ def process_directory(directory)
   end
 
   # Find all MKV files in the directory
-  mkv_files = Dir.glob("#{directory}/**/*.mkv")
+  mkv_files = Dir.glob("#{directory}/**/*.mp4")
 
   if mkv_files.empty?
     puts "No MKV files found in #{directory}"

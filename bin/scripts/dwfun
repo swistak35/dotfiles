@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cd ~/Obrazy/heheszki/
+yt-ldp $1

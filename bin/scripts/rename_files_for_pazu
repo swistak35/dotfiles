@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+require 'optparse'
+
+options = {
+  dry_run: false
+}
+
+# Parse command line options
+OptionParser.new do |opts|
+  opts.banner = "Usage: ruby rename_files.rb [options] PREFIX DIRECTORY"
+
+  opts.on("--dry-run", "Simulate renaming without making changes") do
+    options[:dry_run] = true
+  end
+end.parse!
+
+# Check for required positional arguments
+if ARGV.length != 2
+  puts "Usage: ruby rename_files.rb [--dry-run] PREFIX DIRECTORY"
+  exit 1
+end
+
+prefix = ARGV[0]
+directory = ARGV[1]
+
+# Validate the directory
+unless Dir.exist?(directory)
+  puts "Error: Directory '#{directory}' does not exist."
+  exit 1
+end
+
+# Go through all files in the directory
+Dir.foreach(directory) do |filename|
+  next if filename == '.' || filename == '..' # skip current and parent directory entries
+
+  old_path = File.join(directory, filename)
+  next unless File.file?(old_path) # skip subdirectories
+
+  season_info, *rest = filename.split("_")
+
+  new_filename = "#{prefix} - #{season_info} - #{rest.join("_")}"
+  new_path = File.join(directory, new_filename)
+
+  if File.exist?(new_path)
+    puts "Skipping '#{filename}' -> '#{new_filename}' (target exists)"
+  else
+    if options[:dry_run]
+      puts "[Dry run] Would rename '#{filename}' -> '#{new_filename}'"
+    else
+      FileUtils.mv(old_path, new_path)
+      puts "Renamed '#{filename}' -> '#{new_filename}'"
+    end
+  end
+end

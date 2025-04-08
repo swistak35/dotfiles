@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+
+RJUST_COUNT = 3
+
+require 'fileutils'
+
+def decrement_filename_numbers(directory, n, dry_run, new_prefix)
+  unless Dir.exist?(directory)
+    puts "Error: Directory '#{directory}' does not exist."
+    return
+  end
+
+  Dir.entries(directory).sort.each do |filename|
+    match = filename.match(/(.*?)(\d+)([^\d]*)$/)
+
+    if match
+      prefix, number, suffix = match.captures
+      new_number = number.to_i - n
+
+      if new_number < 0
+        puts "Skipping '#{filename}': Resulting number is negative."
+        next
+      end
+
+      new_filename = "#{prefix}#{new_prefix}#{new_number.to_s.rjust(RJUST_COUNT, "0")}#{suffix}"
+      old_path = File.join(directory, filename)
+      new_path = File.join(directory, new_filename)
+
+      if dry_run
+        puts "Would rename: #{filename} -> #{new_filename}"
+      else
+        FileUtils.mv(old_path, new_path)
+        puts "Renamed: #{filename} -> #{new_filename}"
+      end
+    end
+  end
+end
+
+if ARGV.length < 2
+  puts "Usage: ruby script.rb <directory> <N> <NEW_PREFIX> [--dry-run]"
+  exit
+end
+
+directory = ARGV[0]
+n = ARGV[1].to_i
+new_prefix = ARGV[2]
+dry_run = ARGV.include?("--dry-run")
+
+decrement_filename_numbers(directory, n, dry_run, new_prefix)

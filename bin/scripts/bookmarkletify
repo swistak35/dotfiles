@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Check if a file was provided as an argument
+if [ -z "$1" ]; then
+  echo "Usage: $0 <path-to-js-file>"
+  exit 1
+fi
+
+# Ensure the file exists
+if [ ! -f "$1" ]; then
+  echo "Error: File not found!"
+  exit 1
+fi
+
+# Check if xsel is installed
+if ! command -v xsel &> /dev/null; then
+  echo "Error: xsel is not installed. Please install it to use clipboard functionality."
+  exit 1
+fi
+
+# Read, minify, and URL-encode the JavaScript file into a bookmarklet
+bookmarklet() {
+  local file="$1"
+
+  # Read the file, remove new lines, minify spaces
+  local minified
+  minified=$(tr -d '\n' < "$file" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s/[[:space:]]\+/ /g')
+
+  # URL-encode the minified content
+  local encoded
+  encoded=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote('''$minified'''))")
+
+  # Create the bookmarklet string
+  local bookmarklet_string="javascript:(function()%7B$encoded%7D)()%3B"
+
+  # Output the bookmarklet
+  echo "$bookmarklet_string"
+
+  # Copy the result to clipboard using xsel
+  echo "$bookmarklet_string" | xsel --clipboard --input
+  echo "Bookmarklet copied to clipboard."
+}
+
+# Run the function with the provided file
+bookmarklet "$1"
