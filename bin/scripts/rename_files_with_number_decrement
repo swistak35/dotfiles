@@ -11,7 +11,8 @@ def decrement_filename_numbers(directory, n, dry_run, new_prefix)
   end
 
   Dir.entries(directory).sort.each do |filename|
-    match = filename.match(/(.*?)(\d+)([^\d]*)$/)
+    # match = filename.match(/(.*)(\d+)([^\d]*)$/)
+    match = filename.match(/(.*)E(\d+)(.*)$/)
 
     if match
       prefix, number, suffix = match.captures
