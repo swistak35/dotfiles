@@ -182,11 +182,11 @@
              :straight t)
 
 
-(use-package flycheck
-	     :straight t
-             :ensure t
-	     :config
-	     (add-hook 'after-init-hook #'global-flycheck-mode))
+;; (use-package flycheck
+;; 	     :straight t
+;;              :ensure t
+;; 	     :config
+;; 	     (add-hook 'after-init-hook #'global-flycheck-mode))
 
 
 ;; Helm
@@ -213,12 +213,12 @@
 ;              :straight t)
 
 ;; FZF
-(use-package fzf
-             :after evil
-             :straight t
-             :config
-             (define-key evil-normal-state-leader-map "ff" 'fzf-git-files)
-             )
+;; (use-package fzf
+;;              :after evil
+;;              :straight t
+;;              :config
+;;              (define-key evil-normal-state-leader-map "ff" 'fzf-git-files)
+;;              )
 
 ;; Hybrid-relative line numbering
 (use-package nlinum-relative
@@ -348,6 +348,7 @@
 	       (when (org-capture-get :create-id)
 		 (org-id-get-create)))
 	     (add-hook 'org-capture-mode-hook #'my/org-capture-maybe-create-id)
+
              (setq org-capture-templates
                    '(
 		     ("m" "Movie")
@@ -1096,12 +1097,12 @@
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
 
-(use-package burly
-             :straight t
-             :config
-             ; (burly-tabs-mode)
-             (define-key evil-normal-state-leader-map "pu" 'helm-filtered-bookmarks)
-             )
+;; (use-package burly
+;;              :straight t
+;;              :config
+;;              ; (burly-tabs-mode)
+;;              (define-key evil-normal-state-leader-map "pu" 'helm-filtered-bookmarks)
+;;              )
 
 (use-package activities
              :straight t
@@ -1177,15 +1178,6 @@
 
 (use-package ruby-end
              :straight t)
-
-(use-package ultra-scroll
- 	     :straight (:host github :repo "jdtsmith/ultra-scroll")
-             ;:load-path "~/code/emacs/ultra-scroll" ; if you git clone'd instead of package-vc-install
-	     :init
-	     (setq scroll-conservatively 101 ; important!
-		   scroll-margin 0)
-	     :config
-	     (ultra-scroll-mode 1))
 
 (use-package nerd-icons
   :straight t)
