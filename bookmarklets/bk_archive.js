@@ -75,6 +75,14 @@ function capture_singlefile_page() {
     id = crypto.randomUUID()
     date = null
 
+    if (url.includes("https://x.com")) {
+        date = new Date(document.getElementsByTagName('time')[0].getAttribute('datetime'))
+
+        author = document.querySelectorAll("a div div span span")[0].textContent 
+
+        selection = document.querySelectorAll("div[data-testid='tweetText']")[0].textContent
+    }
+
     property_lines = [
         ':PROPERTIES:',
         `:ID: ${id}`,
@@ -83,6 +91,9 @@ function capture_singlefile_page() {
         `:TITLE: ${title}`,
         `:ARCHIVED_AT: ${format_org_mode_date(archival_date)}`,
     ]
+    if (date) {
+        property_lines.push(`:DATE: ${format_org_mode_date(date)}`)
+    }
     if (description) {
         property_lines.push(`:DESCRIPTION: ${description}`)
     }
