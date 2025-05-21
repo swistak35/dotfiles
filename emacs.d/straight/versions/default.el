@@ -6,6 +6,7 @@
  ("closql" . "d925b8c9c1c724b49d7af7806b7ec1d71209d6e3")
  ("compat" . "77b5bb2fc581b68fb1f2c0e4214696c9b182cb5c")
  ("consult" . "e57fbb65584f3160f98a2569b1674c8065ec8df8")
+ ("consult-org-roam" . "a6dec09dcd06a3014409044399c4f8860ca45ef1")
  ("copilot.el" . "867a3debf907cbd7c5b0eb8837354a1efc7c2db9")
  ("dash.el" . "1de9dcb83eacfb162b6d9a118a4770b1281bcd84")
  ("editorconfig-emacs" . "24f5b2b1cd4e37adc245fb59f7edeb6872a707a4")
