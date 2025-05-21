@@ -18,6 +18,7 @@
  ("emacs-websocket" . "40c208eaab99999d7c1e4bea883648da24c03be3")
  ("emacsmirror-mirror" . "6bb30727508dc2847d75c3b90f4f35d27de23690")
  ("emacsql" . "d6529f010a0573630122b826230e72157ab8fa88")
+ ("embark" . "923d0ec52e2e3e0ae44e497c31c7888e87d08a8f")
  ("evil" . "c222ce1ea6fbefaed08308c061371ebdf01b078f")
  ("evil-collection" . "7ab9179591bc2f9474f480f52ec8dc44cf0a05f1")
  ("evil-nerd-commenter" . "ae52c5070a48793e2c24474c9c8dbf20175d18a0")
