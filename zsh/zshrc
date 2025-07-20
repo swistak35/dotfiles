@@ -42,13 +42,13 @@ zinit wait lucid for \
 PS1="READY >"
 
 # Some OMZ theme
-zinit wait'!' lucid for \
-  OMZL::prompt_info_functions.zsh \
-  OMZT::gnzh
+# zinit wait'!' lucid for \
+#   OMZL::prompt_info_functions.zsh \
+#   OMZT::gnzh
 
 # Pure theme
-# zinit ice compile'(pure|async).zsh' pick'async.zsh' src'pure.zsh'
-# zinit light sindresorhus/pure
+zinit ice compile'(pure|async).zsh' pick'async.zsh' src'pure.zsh'
+zinit light sindresorhus/pure
 
 # Starship theme
 # zinit ice from"gh-r" as"command" atload'eval "$(starship init zsh)"'
