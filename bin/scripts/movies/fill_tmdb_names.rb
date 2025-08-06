@@ -95,13 +95,15 @@ class TmdbNameFiller
 
       puts "\n#{"Processing:".ljust(LJUST_SIZE)} #{filename}"
 
-      tmdb_id = find_movie_in_tmdb(filename)
+      tmdb_results = find_movie_in_tmdb(filename)
 
-      if tmdb_id
-        new_filename = add_tmdb_tag(filename, tmdb_id)
-        new_path = File.join(File.dirname(file_path), new_filename)
+      if tmdb_results
+        selected_tmdb_id = select_movie_result(filename, tmdb_results)
 
-        if @no_confirm || confirm_rename(filename, new_filename)
+        if selected_tmdb_id
+          new_filename = add_tmdb_tag(filename, selected_tmdb_id)
+          new_path = File.join(File.dirname(file_path), new_filename)
+
           if @dry_run
             puts "#{"DRY RUN Would rename:".ljust(LJUST_SIZE)} '#{filename}' to '#{new_filename}'"
           else
@@ -151,10 +153,14 @@ class TmdbNameFiller
 
       # binding.irb
       if results && results.any?
-        best_result = results.first
-        puts format_result(best_result)
-        # Return the ID of the first (best) match
-        return results.first.id
+        top_results = results.first(3)
+
+        puts "#{"Found results:".ljust(LJUST_SIZE)}"
+        top_results.each_with_index do |result, index|
+          puts format_result(result, index + 1)
+        end
+
+        return top_results
       else
         return nil
       end
@@ -165,8 +171,9 @@ class TmdbNameFiller
     end
   end
 
-  def format_result(result)
-    "#{"Best result:".ljust(LJUST_SIZE)} #{result.title} (#{year_from_release_date(result.release_date)}) #{result.original_title != result.title ? "/ #{result.original_title} " : ""}-- #{result.overview}"
+  def format_result(result, option_number = nil)
+    prefix = option_number ? "#{option_number}:" : "Selected:"
+    "#{prefix.ljust(LJUST_SIZE)} #{result.title} (#{year_from_release_date(result.release_date)}) #{result.original_title != result.title ? "/ #{result.original_title} " : ""}-- #{result.overview}"
   end
 
   def obfuscate_title(filename)
@@ -234,10 +241,29 @@ class TmdbNameFiller
     end
   end
 
-  def confirm_rename(old_name, new_name)
-    print "#{"Rename:".ljust(LJUST_SIZE)} '#{old_name}' to '#{new_name}'? (y/n): "
+  def select_movie_result(filename, results)
+    if @no_confirm
+      # Auto-select first result when no-confirm is enabled
+      return results.first.id
+    end
+
+    print "#{"Select option:".ljust(LJUST_SIZE)} "
+    valid_options = (1..results.length).map(&:to_s) + ['n']
+    print "(#{valid_options.join('/')}) or 'n' to skip: "
+
     response = STDIN.gets.chomp.downcase
-    response == 'y'
+
+    if response == 'n'
+      return nil
+    elsif response.match?(/^[1-3]$/) && response.to_i <= results.length
+      selected_index = response.to_i - 1
+      selected_result = results[selected_index]
+      puts format_result(selected_result)
+      return selected_result.id
+    else
+      puts "Invalid option. Skipping."
+      return nil
+    end
   end
 end
 
