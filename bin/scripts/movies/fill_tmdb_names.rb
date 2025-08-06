@@ -1,7 +1,17 @@
 #!/usr/bin/env ruby
 
+# Inline bundle to install dependencies
+require 'bundler/inline'
+
+gemfile do
+  source 'https://rubygems.org'
+  gem 'themoviedb'
+end
+
 require 'optparse'
 require 'find'
+require 'themoviedb'
+require 'date'
 
 class TmdbNameFiller
   def initialize
@@ -9,6 +19,14 @@ class TmdbNameFiller
     @dry_run = false
     @only_check = false
     @directory = nil
+
+    # Configure TMDB API
+    api_key = ENV['TMDB_API_KEY'].strip
+    unless api_key
+      puts "Error: TMDB_API_KEY environment variable is required"
+      exit 1
+    end
+    Tmdb::Api.key(api_key)
   end
 
   def run
@@ -81,7 +99,7 @@ class TmdbNameFiller
           if @dry_run
             puts "DRY RUN: Would rename '#{filename}' to '#{new_filename}'"
           else
-            # File.rename(file_path, new_path)
+            File.rename(file_path, new_path)
             puts "Renamed: #{filename} -> #{new_filename}"
           end
         else
@@ -91,6 +109,13 @@ class TmdbNameFiller
         puts "No TMDB match found for: #{filename}"
       end
     end
+  end
+
+  def year_from_release_date(release_date)
+    return nil if release_date.nil?
+    Date.parse(release_date).year
+  rescue Date::Error
+    nil
   end
 
   def find_video_files(directory)
@@ -112,14 +137,49 @@ class TmdbNameFiller
   end
 
   def find_movie_in_tmdb(filename)
-    # TODO: Implement TMDB API search
-    # For now, return nil (no match found)
-    nil
+    obfuscated_title = obfuscate_title(filename)
+    puts "Searching TMDB for: #{obfuscated_title}"
+
+    begin
+      results = Tmdb::Movie.search(obfuscated_title)
+
+      # binding.irb
+      if results && results.any?
+        best_result = results.first
+        puts "Best result: #{best_result.title} (#{year_from_release_date(best_result.release_date)})"
+        # Return the ID of the first (best) match
+        return results.first.id
+      else
+        return nil
+      end
+    rescue => e
+      binding.irb
+      puts "Error searching TMDB: #{e.message}"
+      return nil
+    end
+  end
+
+  def obfuscate_title(filename)
+    # Remove file extension
+    title = File.basename(filename, File.extname(filename))
+
+    # Remove common movie/tv show patterns
+    title = title.gsub(/\b\d{4}\b/, '') # Remove years
+    title = title.gsub(/\b(720p|1080p|2160p|4k|BluRay|WEBRip|DVDRip|HDTV|WEB-DL)\b/i, '') # Remove quality tags
+    title = title.gsub(/\b(x264|x265|HEVC|H264|H265|h\.264)\b/i, '') # Remove codec info
+    title = title.gsub(/\b(AAC|AC3|DTS|MP3)\b/i, '') # Remove audio codec info
+    title = title.gsub(/\b(dsite|remastered|multi|PLSUB|EXTENDED|theatrical|denda|dts|5\.1|bdrip|MR|apex|rarbg|maryjane|6CH|kiko|amzn)\b/i, '') # Remove other common keywords
+    title = title.gsub(/[-._]/, ' ') # Replace separators with spaces
+    title = title.gsub(/\s+/, ' ') # Collapse multiple spaces
+    title = title.strip # Remove leading/trailing whitespace
+
+    title
   end
 
   def add_tmdb_tag(filename, tmdb_id)
-    name, ext = filename.split('.', 2)
-    "#{name} {tmdb-#{tmdb_id}}.#{ext}"
+    ext = File.extname(filename)
+    name = File.basename(filename, ext)
+    "#{name} {tmdb-#{tmdb_id}}#{ext}"
   end
 
   def check_files_for_tags(video_files)
@@ -138,11 +198,11 @@ class TmdbNameFiller
 
   def find_items_needing_tags(video_files)
     items_needing_tags = []
-    
+
     video_files.each do |file_path|
       parent_dir = File.dirname(file_path)
       parent_dir_name = File.basename(parent_dir)
-      
+
       if parent_dir_name.start_with?("Season ")
         # It's a TV show - add the show directory (parent of parent)
         show_dir = File.dirname(parent_dir)
@@ -152,7 +212,7 @@ class TmdbNameFiller
         items_needing_tags << file_path
       end
     end
-    
+
     items_needing_tags
   end
 
@@ -165,7 +225,7 @@ class TmdbNameFiller
 
   def confirm_rename(old_name, new_name)
     print "Rename '#{old_name}' to '#{new_name}'? (y/n): "
-    response = gets.chomp.downcase
+    response = STDIN.gets.chomp.downcase
     response == 'y'
   end
 end
