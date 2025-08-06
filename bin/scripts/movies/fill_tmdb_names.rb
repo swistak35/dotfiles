@@ -7,20 +7,14 @@ class TmdbNameFiller
   def initialize
     @options = {}
     @dry_run = false
-    @mode = nil
+    @only_check = false
     @directory = nil
   end
 
   def run
     parse_arguments
     validate_arguments
-
-    case @mode
-    when :movies
-      process_movies_mode
-    when :shows
-      puts "Shows mode not implemented yet"
-    end
+    process_movies_mode
   end
 
   private
@@ -33,21 +27,10 @@ class TmdbNameFiller
         @dry_run = true
       end
 
-      opts.on("--movies-mode", "Process movies") do
-        if @mode
-          puts "Error: Cannot specify both --movies-mode and --shows-mode"
-          exit 1
-        end
-        @mode = :movies
+      opts.on("--only-check", "Only check files for missing tags, don't process") do
+        @only_check = true
       end
 
-      opts.on("--shows-mode", "Process TV shows") do
-        if @mode
-          puts "Error: Cannot specify both --movies-mode and --shows-mode"
-          exit 1
-        end
-        @mode = :shows
-      end
 
       opts.on("-h", "--help", "Show this help message") do
         puts opts
@@ -59,11 +42,6 @@ class TmdbNameFiller
   end
 
   def validate_arguments
-    unless @mode
-      puts "Error: Must specify either --movies-mode or --shows-mode"
-      exit 1
-    end
-
     unless @directory
       puts "Error: Directory argument required"
       exit 1
@@ -77,6 +55,11 @@ class TmdbNameFiller
 
   def process_movies_mode
     video_files = find_video_files(@directory)
+
+    if @only_check
+      check_files_for_tags(video_files)
+      return
+    end
 
     video_files.each do |file_path|
       filename = File.basename(file_path)
@@ -137,6 +120,47 @@ class TmdbNameFiller
   def add_tmdb_tag(filename, tmdb_id)
     name, ext = filename.split('.', 2)
     "#{name} {tmdb-#{tmdb_id}}.#{ext}"
+  end
+
+  def check_files_for_tags(video_files)
+    items_needing_tags = find_items_needing_tags(video_files)
+    items_without_tags = filter_items_without_tags(items_needing_tags)
+
+    if items_without_tags.empty?
+      puts "All items have tags!"
+    else
+      puts "Items without tags:"
+      items_without_tags.each do |item_path|
+        puts "  #{item_path}"
+      end
+    end
+  end
+
+  def find_items_needing_tags(video_files)
+    items_needing_tags = []
+    
+    video_files.each do |file_path|
+      parent_dir = File.dirname(file_path)
+      parent_dir_name = File.basename(parent_dir)
+      
+      if parent_dir_name.start_with?("Season ")
+        # It's a TV show - add the show directory (parent of parent)
+        show_dir = File.dirname(parent_dir)
+        items_needing_tags << show_dir unless items_needing_tags.include?(show_dir)
+      else
+        # It's a movie - add the video file itself
+        items_needing_tags << file_path
+      end
+    end
+    
+    items_needing_tags
+  end
+
+  def filter_items_without_tags(items)
+    items.reject do |item_path|
+      name = File.basename(item_path)
+      has_tmdb_or_tvdb_tag?(name)
+    end
   end
 
   def confirm_rename(old_name, new_name)
