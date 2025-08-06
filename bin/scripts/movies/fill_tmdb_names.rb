@@ -13,11 +13,14 @@ require 'find'
 require 'themoviedb'
 require 'date'
 
+LJUST_SIZE = 20
+
 class TmdbNameFiller
   def initialize
     @options = {}
     @dry_run = false
     @only_check = false
+    @no_confirm = false
     @directory = nil
 
     # Configure TMDB API
@@ -49,6 +52,9 @@ class TmdbNameFiller
         @only_check = true
       end
 
+      opts.on("--no-confirm", "Skip confirmation and automatically rename files") do
+        @no_confirm = true
+      end
 
       opts.on("-h", "--help", "Show this help message") do
         puts opts
@@ -83,11 +89,11 @@ class TmdbNameFiller
       filename = File.basename(file_path)
 
       if has_tmdb_or_tvdb_tag?(filename)
-        puts "Skipping #{filename} (already has tag)" if @dry_run
+        puts "\nSkipping #{filename} (already has tag)" if @dry_run
         next
       end
 
-      puts "Processing: #{filename}"
+      puts "\n#{"Processing:".ljust(LJUST_SIZE)} #{filename}"
 
       tmdb_id = find_movie_in_tmdb(filename)
 
@@ -95,18 +101,18 @@ class TmdbNameFiller
         new_filename = add_tmdb_tag(filename, tmdb_id)
         new_path = File.join(File.dirname(file_path), new_filename)
 
-        if confirm_rename(filename, new_filename)
+        if @no_confirm || confirm_rename(filename, new_filename)
           if @dry_run
-            puts "DRY RUN: Would rename '#{filename}' to '#{new_filename}'"
+            puts "#{"DRY RUN Would rename:".ljust(LJUST_SIZE)} '#{filename}' to '#{new_filename}'"
           else
             File.rename(file_path, new_path)
-            puts "Renamed: #{filename} -> #{new_filename}"
+            puts "#{"Renamed:".ljust(LJUST_SIZE)} '#{filename}' to '#{new_filename}'"
           end
         else
-          puts "Skipped: #{filename}"
+          puts "Skipped."
         end
       else
-        puts "No TMDB match found for: #{filename}"
+        puts "#{"No TMDB match found for:".ljust(LJUST_SIZE)} #{filename}"
       end
     end
   end
@@ -138,7 +144,7 @@ class TmdbNameFiller
 
   def find_movie_in_tmdb(filename)
     obfuscated_title = obfuscate_title(filename)
-    puts "Searching TMDB for: #{obfuscated_title}"
+    puts "#{"Searching TMDB for:".ljust(LJUST_SIZE)} #{obfuscated_title}"
 
     begin
       results = Tmdb::Movie.search(obfuscated_title)
@@ -146,7 +152,7 @@ class TmdbNameFiller
       # binding.irb
       if results && results.any?
         best_result = results.first
-        puts "Best result: #{best_result.title} (#{year_from_release_date(best_result.release_date)})"
+        puts "#{"Best result:".ljust(LJUST_SIZE)} #{best_result.title} (#{year_from_release_date(best_result.release_date)})"
         # Return the ID of the first (best) match
         return results.first.id
       else
@@ -165,11 +171,12 @@ class TmdbNameFiller
 
     # Remove common movie/tv show patterns
     title = title.gsub(/\b\d{4}\b/, '') # Remove years
-    title = title.gsub(/\b(720p|1080p|2160p|4k|BluRay|WEBRip|DVDRip|HDTV|WEB-DL)\b/i, '') # Remove quality tags
-    title = title.gsub(/\b(x264|x265|HEVC|H264|H265|h\.264)\b/i, '') # Remove codec info
-    title = title.gsub(/\b(AAC|AC3|DTS|MP3)\b/i, '') # Remove audio codec info
-    title = title.gsub(/\b(dsite|remastered|multi|PLSUB|EXTENDED|theatrical|denda|dts|5\.1|bdrip|MR|apex|rarbg|maryjane|6CH|kiko|amzn)\b/i, '') # Remove other common keywords
-    title = title.gsub(/[-._]/, ' ') # Replace separators with spaces
+    title = title.gsub(/\b(720p|1080p|1080i|1080pl|2160p|4k|BluRay|WEBRip|DVDRip|BDRip|BRRip|HDTV|WEB-DL)\b/i, '') # Remove quality tags
+    title = title.gsub(/\b(x264|x263-drp|x265|HEVC|H264|H265|h\.264|mpeg-2|mpeg2|NF|MA)\b/i, '') # Remove codec info
+    title = title.gsub(/\b(AAC|2\.0|AC3|6CH|DTS|HD|DDP|MP3|DTS-HD|atmos|DD-1\.0|DD2\.0|DD5\.1|DD-5\.1|AVC|VC-1|DTS-HD|DDP2\.0|DDP5\.1|6\.1|AAC5\.1|DSNP|TrueHD|5\.1)\b/i, '') # Remove audio codec info
+    title = title.gsub(/\b(remastered|remux|multi|PLSUB|EXTENDED|theatrical|amzn|NF|PL|POLISH|PLDUB|repack)\b/i, '') # Remove other common keywords
+    title = title.gsub(/\b(dsite|shaanig|drp|smurf|veto|lts|denda|apex|rarbg|maryjane|kiko|kit|etrg|vppv|yify|ozw|dream|ltn|tpx|rexsio|MR|EMiS|Ralf|B89|K12|playSD|RBG|\[YTS\.MX\])\b/i, '') # Remove ripper
+    title = title.gsub(/[-._\(\)]/, ' ') # Replace separators with spaces
     title = title.gsub(/\s+/, ' ') # Collapse multiple spaces
     title = title.strip # Remove leading/trailing whitespace
 
@@ -224,7 +231,7 @@ class TmdbNameFiller
   end
 
   def confirm_rename(old_name, new_name)
-    print "Rename '#{old_name}' to '#{new_name}'? (y/n): "
+    print "#{"Rename:".ljust(LJUST_SIZE)} '#{old_name}' to '#{new_name}'? (y/n): "
     response = STDIN.gets.chomp.downcase
     response == 'y'
   end
