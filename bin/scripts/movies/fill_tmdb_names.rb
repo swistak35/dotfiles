@@ -12,6 +12,7 @@ require 'optparse'
 require 'find'
 require 'themoviedb'
 require 'date'
+require 'cgi'
 
 LJUST_SIZE = 20
 
@@ -98,23 +99,32 @@ class TmdbNameFiller
       tmdb_results = find_movie_in_tmdb(filename)
 
       if tmdb_results
-        selected_tmdb_id = select_movie_result(filename, tmdb_results)
-
-        if selected_tmdb_id
-          new_filename = add_tmdb_tag(filename, selected_tmdb_id)
-          new_path = File.join(File.dirname(file_path), new_filename)
-
-          if @dry_run
-            puts "#{"DRY RUN Would rename:".ljust(LJUST_SIZE)} '#{filename}' to '#{new_filename}'"
-          else
-            File.rename(file_path, new_path)
-            puts "#{"Renamed:".ljust(LJUST_SIZE)} '#{filename}' to '#{new_filename}'"
-          end
+        selected_tmdb_id = select_movie_result(filename, tmdb_results, obfuscate_title(filename))
+      else
+        # No results found, offer manual search
+        puts "#{"No TMDB match found for:".ljust(LJUST_SIZE)} #{filename}"
+        if @no_confirm
+          puts "Skipping (no-confirm mode)."
+          selected_tmdb_id = nil
         else
-          puts "Skipped."
+          print "#{"Try manual search?".ljust(LJUST_SIZE)} (m/n): "
+          response = STDIN.gets.chomp.downcase
+          selected_tmdb_id = response == 'm' ? handle_manual_search(obfuscate_title(filename)) : nil
+        end
+      end
+
+      if selected_tmdb_id
+        new_filename = add_tmdb_tag(filename, selected_tmdb_id)
+        new_path = File.join(File.dirname(file_path), new_filename)
+
+        if @dry_run
+          puts "#{"DRY RUN Would rename:".ljust(LJUST_SIZE)} '#{filename}' to '#{new_filename}'"
+        else
+          File.rename(file_path, new_path)
+          puts "#{"Renamed:".ljust(LJUST_SIZE)} '#{filename}' to '#{new_filename}'"
         end
       else
-        puts "#{"No TMDB match found for:".ljust(LJUST_SIZE)} #{filename}"
+        puts "Skipped."
       end
     end
   end
@@ -185,8 +195,8 @@ class TmdbNameFiller
     title = title.gsub(/\b(720p|1080p|1080i|1080pl|2160p|4k|BluRay|WEBRip|DVDRip|BDRip|BRRip|HDTV|WEB-DL)\b/i, '') # Remove quality tags
     title = title.gsub(/\b(x264|x263-drp|x265|HEVC|H264|H265|h\.264|mpeg-2|mpeg2|NF|MA)\b/i, '') # Remove codec info
     title = title.gsub(/\b(AAC|2\.0|AC3|6CH|DTS|HD|DDP|MP3|DTS-HD|atmos|DD-1\.0|DD1\.0|DD2\.0|DD5\.1|DD-5\.1|AVC|VC-1|DTS-HD|DDP2\.0|DDP5\.1|6\.1|AAC5\.1|DSNP|TrueHD|5\.1)\b/i, '') # Remove audio codec info
-    title = title.gsub(/\b(remastered|remux|multi|PLSUB|EXTENDED|theatrical|amzn|NF|PL|POLISH|PLDUB|repack|V2)\b/i, '') # Remove other common keywords
-    title = title.gsub(/\b(dsite|shaanig|drp|smurf|veto|lts|denda|apex|rarbg|maryjane|kiko|kit|etrg|vppv|yify|ozw|dream|ltn|tpx|rexsio|MR|EMiS|Ralf|B89|K12|playSD|RBG|\[YTS\.MX\])\b/i, '') # Remove ripper
+    title = title.gsub(/\b(remastered|remux|multi|PLSUB|EXTENDED|theatrical|amzn|HDR|NF|PL|POLISH|PLDUB|repack|V2)\b/i, '') # Remove other common keywords
+    title = title.gsub(/\b(dsite|shaanig|drp|smurf|veto|lts|denda|apex|rarbg|solar|maryjane|kiko|kit|etrg|vppv|yify|ozw|dream|ltn|tpx|rexsio|MR|EMiS|Ralf|B89|K12|playSD|RBG|\[YTS\.MX\])\b/i, '') # Remove ripper
     title = title.gsub(/[-._\(\)]/, ' ') # Replace separators with spaces
     title = title.gsub(/\s+/, ' ') # Collapse multiple spaces
     title = title.strip # Remove leading/trailing whitespace
@@ -241,20 +251,22 @@ class TmdbNameFiller
     end
   end
 
-  def select_movie_result(filename, results)
+  def select_movie_result(filename, results, search_query)
     if @no_confirm
       # Auto-select first result when no-confirm is enabled
       return results.first.id
     end
 
     print "#{"Select option:".ljust(LJUST_SIZE)} "
-    valid_options = (1..results.length).map(&:to_s) + ['n']
-    print "(#{valid_options.join('/')}) or 'n' to skip: "
+    valid_options = (1..results.length).map(&:to_s) + ['m', 'n']
+    print "(#{valid_options.join('/')}) 'm' for manual, or 'n' to skip: "
 
     response = STDIN.gets.chomp.downcase
 
     if response == 'n'
       return nil
+    elsif response == 'm'
+      return handle_manual_search(search_query)
     elsif response.match?(/^[1-3]$/) && response.to_i <= results.length
       selected_index = response.to_i - 1
       selected_result = results[selected_index]
@@ -262,6 +274,43 @@ class TmdbNameFiller
       return selected_result.id
     else
       puts "Invalid option. Skipping."
+      return nil
+    end
+  end
+
+  def handle_manual_search(search_query)
+    # Open browser with TMDB search
+    search_url = "https://www.themoviedb.org/search?query=#{CGI.escape(search_query)}"
+    puts "#{"Opening browser:".ljust(LJUST_SIZE)} #{search_url}"
+
+    system("xdg-open '#{search_url}'") || system("open '#{search_url}'") || system("start '#{search_url}'")
+
+    print "#{"Enter TMDB ID:".ljust(LJUST_SIZE)} (or 'n' to skip): "
+    manual_id = STDIN.gets.chomp
+
+    if manual_id.downcase == 'n'
+      return nil
+    elsif manual_id.match?(/^\d+$/)
+      return confirm_manual_selection(manual_id.to_i)
+    else
+      puts "Invalid ID format. Skipping."
+      return nil
+    end
+  end
+
+  def confirm_manual_selection(tmdb_id)
+    begin
+      movie = Tmdb::Movie.new(Tmdb::Movie.detail(tmdb_id))
+
+      puts "#{"Manual selection:".ljust(LJUST_SIZE)}"
+      puts format_result(movie)
+
+      print "#{"Confirm selection:".ljust(LJUST_SIZE)} (y/n): "
+      response = STDIN.gets.chomp.downcase
+
+      return response == 'y' ? tmdb_id : nil
+    rescue => e
+      puts "Error fetching movie details: #{e.message}"
       return nil
     end
   end
