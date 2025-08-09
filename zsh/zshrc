@@ -1,5 +1,5 @@
 
-zmodload zsh/zprof
+# zmodload zsh/zprof
 
 #########
 # ZINIT #
@@ -343,4 +343,4 @@ if [[ -a ~/.zsh/secrets.zsh ]]; then
   source ~/.zsh/secrets.zsh
 fi
 
-zprof
+# zprof
