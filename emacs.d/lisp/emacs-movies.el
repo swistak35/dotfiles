@@ -281,6 +281,11 @@ Sets TMDB_URL property to the first search result's TMDB URL."
                     (org-set-property "YEAR" year)
                     (org-set-property "ORIGINAL_LANGUAGE" (or original-language ""))
 
+                    ;; Try to find downloaded file
+                    (condition-case err
+                        (emacs-movies-find-downloaded-file)
+                      (error (message "Could not find downloaded file: %s" (error-message-string err))))
+
                     ;; Update the heading based on the new properties
                     (emacs-movies-update-heading-from-properties)
 
@@ -321,6 +326,91 @@ Preserves existing tags. Rules:
             (re-search-forward org-heading-regexp)
             (replace-match (concat stars todo-part new-heading tags-part) t t)
             (message "Updated heading to: %s" new-heading)))))))
+
+(defun emacs-movies-backfill-tmdb-data ()
+  "Backfill TMDB data for all entries with TODO states that don't have TMDB_URL property.
+Calls `emacs-movies-set-tmdb-url-from-heading' for each matching entry."
+  (interactive)
+  (let ((processed-count 0)
+        (skipped-count 0)
+        (entries-to-process '()))
+
+    (message "Starting backfill process...")
+
+    ;; First pass: collect entries that need processing
+    (org-map-entries
+     (lambda ()
+       (let* ((todo-state (org-get-todo-state))
+              (has-todo-state (not (null todo-state)))
+              (has-tmdb-url (org-entry-get nil "TMDB_URL"))
+              (heading (org-get-heading t t t t)))
+
+         (message "Found entry: %s (todo: %s)" heading (or todo-state "none"))
+
+         (cond
+          ((not has-todo-state)
+           (message "  -> Skipping (no TODO state)")
+           (setq skipped-count (1+ skipped-count)))
+
+          (has-tmdb-url
+           (message "  -> Skipping (has TMDB_URL: %s)" has-tmdb-url)
+           (setq skipped-count (1+ skipped-count)))
+
+          (t
+           (message "  -> Will process: %s" heading)
+           (push (point) entries-to-process))))))
+
+    ;; Second pass: process the entries
+    (dolist (entry-point entries-to-process)
+      (goto-char entry-point)
+      (let ((heading (org-get-heading t t t t)))
+        (message "Processing: %s" heading)
+        (emacs-movies-set-tmdb-url-from-heading)
+        (setq processed-count (1+ processed-count))))
+
+    (message "Backfill complete: %d processed, %d skipped" processed-count skipped-count)))
+
+(defun emacs-movies-find-orphaned-files ()
+  "Find video files with TMDB IDs that don't have corresponding org entries.
+Lists files that exist on disk but are missing from org-mode tracking."
+  (interactive)
+  (message "Searching for orphaned movie files...")
+  
+  (let* ((all-files (emacs-movies-all-video-files))
+         (files-with-tmdb (filter-files-with-tmdb-tag all-files))
+         (file-tmdb-ids (mapcar #'car files-with-tmdb))
+         (org-tmdb-ids '())
+         (orphaned-files '()))
+    
+    ;; Collect TMDB IDs from org entries
+    (org-map-entries
+     (lambda ()
+       (let ((tmdb-url (org-entry-get nil "TMDB_URL")))
+         (when tmdb-url
+           (let* ((tmdb-info (extract-tmdb-id tmdb-url))
+                  (tmdb-id (car tmdb-info)))
+             (when tmdb-id
+               (push tmdb-id org-tmdb-ids)))))))
+    
+    (message "Found %d files with TMDB IDs" (length file-tmdb-ids))
+    (message "Found %d org entries with TMDB URLs" (length org-tmdb-ids))
+    
+    ;; Find files whose TMDB IDs are not in org entries
+    (dolist (file-tmdb-id file-tmdb-ids)
+      (unless (member file-tmdb-id org-tmdb-ids)
+        (let ((files-for-id (find-files-with-tmdb-id file-tmdb-id all-files)))
+          (dolist (file files-for-id)
+            (push (cons file-tmdb-id file) orphaned-files)))))
+    
+    ;; Report results
+    (if orphaned-files
+        (progn
+          (message "Found %d orphaned files:" (length orphaned-files))
+          (dolist (orphan orphaned-files)
+            (message "  TMDB ID %s: %s" (car orphan) (file-name-nondirectory (cdr orphan)))))
+      (message "No orphaned files found - all files have corresponding org entries"))
+    
+    orphaned-files))
 
 (defun extract-tmdb-id (url)
   "Extract TMDB ID and type from a TMDB URL.
