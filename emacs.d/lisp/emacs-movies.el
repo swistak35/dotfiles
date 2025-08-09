@@ -23,6 +23,15 @@
 (defvar emacs-movies-video-extensions '("mkv" "mp4" "avi")
   "List of video file extensions to search for.")
 
+(defvar emacs-movies-tmdb-api-key nil
+  "API key for The Movie Database (TMDB). Set this to use TMDB API functions.")
+
+(defvar emacs-movies-tmdb-base-url "https://api.themoviedb.org/3"
+  "Base URL for The Movie Database API.")
+
+(defvar emacs-movies-tmdb-language "pl-PL"
+  "Language code for TMDB API requests (e.g., 'pl-PL' for Polish, 'en-US' for English).")
+
 (defun emacs-movies-all-video-files ()
   "Return a list of all video files in `emacs-movies-directory'.
 Raises an error if the variable is not set or directory does not exist."
@@ -159,7 +168,7 @@ If confirmed, stores the filepath in DOWNLOADED_FILEPATH property."
              (matching-files (find-files-with-tmdb-id tmdb-id all-files)))
 
         (if matching-files
-            (let ((file-list (mapconcat (lambda (file) 
+            (let ((file-list (mapconcat (lambda (file)
                                           (format "  %s" file))
                                         matching-files "\n")))
               (when (yes-or-no-p (format "Found files:\n%s\n\nAre these the correct files for this entry? " file-list))
@@ -171,6 +180,147 @@ If confirmed, stores the filepath in DOWNLOADED_FILEPATH property."
                   (org-set-property "DOWNLOADED_FILEPATH" org-link)
                   (message "Set DOWNLOADED_FILEPATH to: %s" org-link))))
           (message "No downloaded files found with TMDB ID %s" tmdb-id))))))
+
+(defun emacs-movies-search-tmdb (query)
+  "Search for movies on TMDB using QUERY string.
+Returns top 5 results with id, title, original_title, and overview.
+Requires `emacs-movies-tmdb-api-key' to be set."
+  (unless emacs-movies-tmdb-api-key
+    (error "TMDB API key not set. Please set emacs-movies-tmdb-api-key"))
+
+  (let* ((encoded-query (url-hexify-string query))
+         (url (format "%s/search/movie?api_key=%s&query=%s&language=%s"
+                      emacs-movies-tmdb-base-url
+                      emacs-movies-tmdb-api-key
+                      encoded-query
+                      emacs-movies-tmdb-language))
+         (response-buffer (url-retrieve-synchronously url)))
+
+    (if response-buffer
+        (with-current-buffer response-buffer
+          (goto-char (point-min))
+          (re-search-forward "\n\n" nil t) ; Skip headers
+          (let* ((json-data (json-parse-buffer :object-type 'alist))
+                 (results (alist-get 'results json-data))
+                 (top-results (seq-take results 5)))
+            (kill-buffer response-buffer)
+            (mapcar (lambda (movie)
+                      (list :id (alist-get 'id movie)
+                            :title (alist-get 'title movie)
+                            :original-title (alist-get 'original_title movie)
+                            :overview (alist-get 'overview movie)
+                            :release_date (alist-get 'release_date movie)
+                            :original_language (alist-get 'original_language movie)))
+                    top-results)))
+      (error "Failed to retrieve data from TMDB API"))))
+
+(defun emacs-movies-set-tmdb-url-from-heading ()
+  "Set TMDB_URL property for current org entry based on heading.
+Uses heading text before slash (/) as search query for TMDB.
+Sets TMDB_URL property to the first search result's TMDB URL."
+  (interactive)
+  (let* ((heading (org-get-heading t t t t))
+         (query (if (string-match "\\(.*?\\)\\s-*/" heading)
+                    (match-string 1 heading)
+                  heading))
+         (clean-query (string-trim query)))
+
+    (if (string-empty-p clean-query)
+        (error "No valid query found in heading")
+
+      (message "Searching TMDB for: %s" clean-query)
+      (let ((results (emacs-movies-search-tmdb clean-query)))
+        (if results
+            (let* ((choices (mapcar (lambda (result)
+                                      (let* ((id (plist-get result :id))
+                                             (title (plist-get result :title))
+                                             (original-title (plist-get result :original-title))
+                                             (overview (plist-get result :overview))
+                                             (release-date (plist-get result :release_date))
+                                             (year (if (and release-date
+                                                           (stringp release-date)
+                                                           (>= (length release-date) 4))
+                                                       (substring release-date 0 4)
+                                                     "Unknown"))
+                                             (full-overview (if (and overview (> (length overview) 0))
+                                                                overview
+                                                              "No overview")))
+                                        (format "%s / %s (%s) [ID: %d] - %s"
+                                                title
+                                                (or original-title title)
+                                                year
+                                                id
+                                                full-overview)))
+                                    results))
+                   (choices-with-none (append choices (list "None of these"))))
+
+              (message "Found movies:")
+              (dolist (choice choices)
+                (message "  %s" choice))
+
+              (let ((selected (completing-read (format "Select movie for \"%s\": " (string-trim heading)) choices-with-none)))
+                (unless (string= selected "None of these")
+                  (let* ((selected-index (cl-position selected choices :test #'string=))
+                         (selected-result (nth selected-index results))
+                         (tmdb-id (plist-get selected-result :id))
+                         (title (plist-get selected-result :title))
+                         (original-title (plist-get selected-result :original-title))
+                         (release-date (plist-get selected-result :release_date))
+                         (original-language (plist-get selected-result :original_language))
+                         (year (if (and release-date
+                                       (stringp release-date)
+                                       (>= (length release-date) 4))
+                                   (substring release-date 0 4)
+                                 ""))
+                         (tmdb-url (format "https://www.themoviedb.org/movie/%d" tmdb-id)))
+
+                    ;; Set all the properties
+                    (org-set-property "TMDB_URL" tmdb-url)
+                    (org-set-property "TITLE" (or title ""))
+                    (org-set-property "ORIGINAL_TITLE" (or original-title ""))
+                    (org-set-property "YEAR" year)
+                    (org-set-property "ORIGINAL_LANGUAGE" (or original-language ""))
+
+                    ;; Update the heading based on the new properties
+                    (emacs-movies-update-heading-from-properties)
+
+                    (message "Set TMDB properties: %s (%s)" title tmdb-url)))))
+          (message "No results found for query: %s" clean-query))))))
+
+(defun emacs-movies-update-heading-from-properties ()
+  "Update org heading based on TITLE, ORIGINAL_TITLE, and YEAR properties.
+Preserves existing tags. Rules:
+- If TITLE and ORIGINAL_TITLE are same: 'TITLE (YEAR)'
+- If different: 'ORIGINAL_TITLE / TITLE (YEAR)'
+- If no TITLE or empty: don't change heading"
+  (interactive)
+  (let* ((title (org-entry-get nil "TITLE"))
+         (original-title (org-entry-get nil "ORIGINAL_TITLE"))
+         (year (org-entry-get nil "YEAR"))
+         (current-tags (org-get-tags nil t)))
+
+    (when (and title (not (string-empty-p title)))
+      (let* ((year-part (if (and year (not (string-empty-p year)))
+                            (format " (%s)" year)
+                          ""))
+             (new-heading (if (and original-title
+                                   (not (string-empty-p original-title))
+                                   (not (string= title original-title)))
+                              (format "%s / %s%s" original-title title year-part)
+                            (format "%s%s" title year-part))))
+
+        (save-excursion
+          (org-back-to-heading t)
+          (looking-at org-outline-regexp)
+          (let* ((stars (match-string 0))
+                 (todo-state (org-get-todo-state))
+                 (todo-part (if todo-state (concat todo-state " ") ""))
+                 (tags-part (if current-tags
+                                (concat " :" (mapconcat 'identity current-tags ":") ":")
+                              "")))
+            (re-search-forward org-heading-regexp)
+            (replace-match (concat stars todo-part new-heading tags-part) t t)
+            (message "Updated heading to: %s" new-heading)))))))
 
 (defun extract-tmdb-id (url)
   "Extract TMDB ID and type from a TMDB URL.
