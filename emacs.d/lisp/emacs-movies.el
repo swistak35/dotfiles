@@ -183,7 +183,8 @@ If confirmed, stores the filepath in DOWNLOADED_FILEPATH property."
 
 (defun emacs-movies-search-tmdb (query)
   "Search for movies on TMDB using QUERY string.
-Returns top 5 results with id, title, original_title, and overview.
+Returns all search results with id, title, original_title, and overview.
+Entries with corresponding files in the movies directory are marked with '(file on disk)' prefix.
 Requires `emacs-movies-tmdb-api-key' to be set."
   (unless emacs-movies-tmdb-api-key
     (error "TMDB API key not set. Please set emacs-movies-tmdb-api-key"))
@@ -202,16 +203,25 @@ Requires `emacs-movies-tmdb-api-key' to be set."
           (re-search-forward "\n\n" nil t) ; Skip headers
           (let* ((json-data (json-parse-buffer :object-type 'alist))
                  (results (alist-get 'results json-data))
-                 (top-results (seq-take results 5)))
+                 (video-files (condition-case nil
+                                  (emacs-movies-all-video-files)
+                                (error '())))
+                 (tmdb-file-mapping (filter-files-with-tmdb-tag video-files)))
             (kill-buffer response-buffer)
             (mapcar (lambda (movie)
-                      (list :id (alist-get 'id movie)
-                            :title (alist-get 'title movie)
-                            :original-title (alist-get 'original_title movie)
-                            :overview (alist-get 'overview movie)
-                            :release_date (alist-get 'release_date movie)
-                            :original_language (alist-get 'original_language movie)))
-                    top-results)))
+                      (let* ((movie-id (number-to-string (alist-get 'id movie)))
+                             (has-file (assoc movie-id tmdb-file-mapping))
+                             (title (alist-get 'title movie))
+                             (marked-title (if has-file
+                                               (concat "(file on disk) " title)
+                                             title)))
+                        (list :id (alist-get 'id movie)
+                              :title marked-title
+                              :original-title (alist-get 'original_title movie)
+                              :overview (alist-get 'overview movie)
+                              :release_date (alist-get 'release_date movie)
+                              :original_language (alist-get 'original_language movie))))
+                    results)))
       (error "Failed to retrieve data from TMDB API"))))
 
 (defun emacs-movies-set-tmdb-url-from-heading ()
