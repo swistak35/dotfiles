@@ -49,6 +49,48 @@ Raises an error if the variable is not set or directory does not exist."
         (push file video-files)))
     (nreverse video-files)))
 
+(defun emacs-movies-all-tvshows-directories ()
+  "Return a list of all directories in `emacs-movies-directory' that contain TMDB tags.
+Raises an error if the variable is not set or directory does not exist."
+  (unless emacs-movies-directory
+    (error "emacs-movies-directory is not set"))
+  (unless (file-exists-p emacs-movies-directory)
+    (error "Directory does not exist: %s" emacs-movies-directory))
+  (unless (file-directory-p emacs-movies-directory)
+    (error "Path is not a directory: %s" emacs-movies-directory))
+
+  (let ((tvshow-directories '()))
+    (dolist (file (directory-files-recursively emacs-movies-directory ".*" t))
+      (when (and (file-directory-p file)
+                 (string-match "{tmdb-\\([0-9]+\\)}" (file-name-nondirectory file)))
+        (push file tvshow-directories)))
+    (nreverse tvshow-directories)))
+
+(defun emacs-movies-parse-tags (tags)
+  "Parse org tags list to handle both string and text property tags.
+Returns a list of tag strings, handling inherited tags that may have text properties."
+  (mapcar (lambda (tag)
+            (if (stringp tag)
+                (substring-no-properties tag)
+              tag))
+          tags))
+
+(defun emacs-movies-has-tag-p (tag-name)
+  "Check if current entry has TAG-NAME, including inherited tags."
+  (let ((all-tags (emacs-movies-parse-tags (org-get-tags))))
+    (member tag-name all-tags)))
+
+(defun emacs-movies-tvshows-directories-alist ()
+  "Return an alist mapping TMDB_ID to TV show directories.
+Returns an alist where each element is (TMDB_ID . DIRECTORY_PATH).
+Uses `emacs-movies-all-tvshows-directories' to find directories with TMDB tags."
+  (let ((tmdb-map '()))
+    (dolist (directory (emacs-movies-all-tvshows-directories))
+      (let ((tmdb-id (extract-tmdb-id-from-filepath directory)))
+        (when tmdb-id
+          (push (cons tmdb-id directory) tmdb-map))))
+    (nreverse tmdb-map)))
+
 (defun extract-tmdb-id-from-filepath (filepath)
   "Extract TMDB ID from filepath if it contains a tmdb tag.
 The tmdb tag format is {tmdb-TMDB_ID} where TMDB_ID are only numbers.
@@ -151,7 +193,8 @@ Uses `filter-files-with-tmdb-tag' to group files by TMDB ID."
 
 (defun emacs-movies-find-downloaded-file ()
   "Find downloaded file for current org entry using TMDB_URL.
-Searches for files with matching TMDB ID and asks user for confirmation.
+For movies, searches for files with matching TMDB ID.
+For TV shows, searches for directories with matching TMDB ID.
 If confirmed, stores the filepath in DOWNLOADED_FILEPATH property."
   (interactive)
   (let ((tmdb-url (org-entry-get nil "TMDB_URL")))
@@ -159,27 +202,38 @@ If confirmed, stores the filepath in DOWNLOADED_FILEPATH property."
       (error "No TMDB_URL property found for this entry"))
 
     (let* ((tmdb-info (extract-tmdb-id tmdb-url))
-           (tmdb-id (car tmdb-info)))
+           (tmdb-id (car tmdb-info))
+           (is-tvshow (emacs-movies-has-tag-p "tvshow"))
+           (is-movie (emacs-movies-has-tag-p "movie")))
       (unless tmdb-id
         (error "Could not extract TMDB ID from URL: %s" tmdb-url))
 
-      (let* ((all-files (emacs-movies-all-video-files))
-             (files-with-tmdb (filter-files-with-tmdb-tag all-files))
-             (matching-files (find-files-with-tmdb-id tmdb-id all-files)))
+      (let* ((matching-items (if is-tvshow
+                                 (let ((tvshow-dirs (emacs-movies-tvshows-directories-alist)))
+                                   (when-let ((dir-entry (assoc tmdb-id tvshow-dirs)))
+                                     (list (cdr dir-entry))))
+                               (let ((all-files (emacs-movies-all-video-files)))
+                                 (find-files-with-tmdb-id tmdb-id all-files)))))
 
-        (if matching-files
-            (let ((file-list (mapconcat (lambda (file)
-                                          (format "  %s" file))
-                                        matching-files "\n")))
-              (when (yes-or-no-p (format "Found files:\n%s\n\nAre these the correct files for this entry? " file-list))
-                (let* ((filepath (if (= (length matching-files) 1)
-                                     (car matching-files)
-                                   (completing-read "Select file: " matching-files)))
+        (if matching-items
+            (let ((item-list (mapconcat (lambda (item)
+                                          (format "  %s" item))
+                                        matching-items "\n"))
+                  (item-type (if is-tvshow "directory" "file")))
+              (when (yes-or-no-p (format "Found %s:\n%s\n\nAre these the correct %ss for this entry? " 
+                                         (if (= (length matching-items) 1) item-type (concat item-type "s"))
+                                         item-list 
+                                         item-type))
+                (let* ((filepath (if (= (length matching-items) 1)
+                                     (car matching-items)
+                                   (completing-read (format "Select %s: " item-type) matching-items)))
                        (filename (file-name-nondirectory filepath))
                        (org-link (format "[[file:%s][%s]]" filepath filename)))
                   (org-set-property "DOWNLOADED_FILEPATH" org-link)
                   (message "Set DOWNLOADED_FILEPATH to: %s" org-link))))
-          (message "No downloaded files found with TMDB ID %s" tmdb-id))))))
+          (message "No downloaded %ss found with TMDB ID %s" 
+                   (if is-tvshow "directories" "files") 
+                   tmdb-id))))))
 
 (defun emacs-movies-search-tmdb (query)
   "Search for movies on TMDB using QUERY string.
@@ -224,33 +278,274 @@ Requires `emacs-movies-tmdb-api-key' to be set."
                     results)))
       (error "Failed to retrieve data from TMDB API"))))
 
+(defun emacs-movies-search-tmdb-tv (query)
+  "Search for TV shows on TMDB using QUERY string.
+Returns all search results with id, name, original_name, and overview.
+Entries with corresponding directories in the movies directory are marked with '(file on disk)' prefix.
+Requires `emacs-movies-tmdb-api-key' to be set."
+  (unless emacs-movies-tmdb-api-key
+    (error "TMDB API key not set. Please set emacs-movies-tmdb-api-key"))
+
+  (let* ((encoded-query (url-hexify-string query))
+         (url (format "%s/search/tv?api_key=%s&query=%s&language=%s"
+                      emacs-movies-tmdb-base-url
+                      emacs-movies-tmdb-api-key
+                      encoded-query
+                      emacs-movies-tmdb-language))
+         (response-buffer (url-retrieve-synchronously url)))
+
+    (if response-buffer
+        (with-current-buffer response-buffer
+          (goto-char (point-min))
+          (re-search-forward "\n\n" nil t) ; Skip headers
+          (let* ((json-data (json-parse-buffer :object-type 'alist))
+                 (results (alist-get 'results json-data))
+                 (tvshow-dirs (condition-case nil
+                                  (emacs-movies-tvshows-directories-alist)
+                                (error '()))))
+            (kill-buffer response-buffer)
+            (mapcar (lambda (tvshow)
+                      (let* ((tvshow-id (number-to-string (alist-get 'id tvshow)))
+                             (has-dir (assoc tvshow-id tvshow-dirs))
+                             (name (alist-get 'name tvshow))
+                             (marked-name (if has-dir
+                                              (concat "(file on disk) " name)
+                                            name)))
+                        (list :id (alist-get 'id tvshow)
+                              :name marked-name
+                              :original-name (alist-get 'original_name tvshow)
+                              :overview (alist-get 'overview tvshow)
+                              :first_air_date (alist-get 'first_air_date tvshow)
+                              :original_language (alist-get 'original_language tvshow))))
+                    results)))
+      (error "Failed to retrieve data from TMDB API"))))
+
+(defun emacs-movies-get-tmdb-movie-by-id (tmdb-id)
+  "Get movie details from TMDB by ID.
+Returns movie details with id, title, original_title, overview, etc.
+Requires `emacs-movies-tmdb-api-key' to be set."
+  (unless emacs-movies-tmdb-api-key
+    (error "TMDB API key not set. Please set emacs-movies-tmdb-api-key"))
+
+  (let* ((url (format "%s/movie/%s?api_key=%s&language=%s"
+                      emacs-movies-tmdb-base-url
+                      tmdb-id
+                      emacs-movies-tmdb-api-key
+                      emacs-movies-tmdb-language))
+         (response-buffer (url-retrieve-synchronously url)))
+
+    (if response-buffer
+        (with-current-buffer response-buffer
+          (goto-char (point-min))
+          (re-search-forward "\n\n" nil t) ; Skip headers
+          (let ((json-data (json-parse-buffer :object-type 'alist)))
+            (kill-buffer response-buffer)
+            (list :id (alist-get 'id json-data)
+                  :title (alist-get 'title json-data)
+                  :original-title (alist-get 'original_title json-data)
+                  :overview (alist-get 'overview json-data)
+                  :release_date (alist-get 'release_date json-data)
+                  :original_language (alist-get 'original_language json-data))))
+      (error "Failed to retrieve data from TMDB API"))))
+
+(defun emacs-movies-get-tmdb-tv-by-id (tmdb-id)
+  "Get TV show details from TMDB by ID.
+Returns TV show details with id, name, original_name, overview, etc.
+Requires `emacs-movies-tmdb-api-key' to be set."
+  (unless emacs-movies-tmdb-api-key
+    (error "TMDB API key not set. Please set emacs-movies-tmdb-api-key"))
+
+  (let* ((url (format "%s/tv/%s?api_key=%s&language=%s"
+                      emacs-movies-tmdb-base-url
+                      tmdb-id
+                      emacs-movies-tmdb-api-key
+                      emacs-movies-tmdb-language))
+         (response-buffer (url-retrieve-synchronously url)))
+
+    (if response-buffer
+        (with-current-buffer response-buffer
+          (goto-char (point-min))
+          (re-search-forward "\n\n" nil t) ; Skip headers
+          (let ((json-data (json-parse-buffer :object-type 'alist)))
+            (kill-buffer response-buffer)
+            (list :id (alist-get 'id json-data)
+                  :name (alist-get 'name json-data)
+                  :original-name (alist-get 'original_name json-data)
+                  :overview (alist-get 'overview json-data)
+                  :first_air_date (alist-get 'first_air_date json-data)
+                  :original_language (alist-get 'original_language json-data))))
+      (error "Failed to retrieve data from TMDB API"))))
+
+(defun emacs-movies-set-tmdb-by-id ()
+  "Interactively set TMDB_URL by prompting for TMDB ID.
+Detects if current entry is a movie or TV show, gets details from TMDB,
+asks for user confirmation, and sets properties if confirmed."
+  (interactive)
+  (let* ((is-tvshow (emacs-movies-has-tag-p "tvshow"))
+         (is-movie (emacs-movies-has-tag-p "movie"))
+         (content-type (cond (is-tvshow "TV show")
+                            (is-movie "movie")
+                            (t (error "Current entry must have either 'movie' or 'tvshow' tag"))))
+         (tmdb-id (read-string (format "Enter TMDB ID for this %s: " content-type))))
+
+    (when (string-empty-p tmdb-id)
+      (error "TMDB ID cannot be empty"))
+
+    (unless (string-match-p "^[0-9]+$" tmdb-id)
+      (error "TMDB ID must contain only numbers"))
+
+    (message "Looking up %s with TMDB ID %s..." content-type tmdb-id)
+    
+    (condition-case err
+        (let* ((details (if is-tvshow
+                            (emacs-movies-get-tmdb-tv-by-id tmdb-id)
+                          (emacs-movies-get-tmdb-movie-by-id tmdb-id)))
+               (title (if is-tvshow
+                          (plist-get details :name)
+                        (plist-get details :title)))
+               (original-title (if is-tvshow
+                                   (plist-get details :original-name)
+                                 (plist-get details :original-title)))
+               (overview (plist-get details :overview))
+               (date-field (if is-tvshow
+                               (plist-get details :first_air_date)
+                             (plist-get details :release_date)))
+               (year (if (and date-field
+                             (stringp date-field)
+                             (>= (length date-field) 4))
+                         (substring date-field 0 4)
+                       "Unknown"))
+               (original-language (plist-get details :original_language))
+               (tmdb-url (format "https://www.themoviedb.org/%s/%s" 
+                                 (if is-tvshow "tv" "movie") 
+                                 tmdb-id)))
+
+          (message "Found %s:" content-type)
+          (message "  Title: %s" title)
+          (message "  Original Title: %s" (or original-title "N/A"))
+          (message "  Year: %s" year)
+          (message "  Language: %s" (or original-language "N/A"))
+          (message "  Overview: %s" (if (and overview (> (length overview) 0))
+                                        (if (> (length overview) 100)
+                                            (concat (substring overview 0 97) "...")
+                                          overview)
+                                      "No overview"))
+
+          (when (yes-or-no-p (format "Is this the correct %s? " content-type))
+            ;; Set all the properties
+            (org-set-property "TMDB_URL" tmdb-url)
+            (org-set-property "TITLE" (or title ""))
+            (org-set-property "ORIGINAL_TITLE" (or original-title ""))
+            (org-set-property "YEAR" year)
+            (org-set-property "ORIGINAL_LANGUAGE" (or original-language ""))
+
+            ;; Try to find downloaded file
+            (condition-case err
+                (emacs-movies-find-downloaded-file)
+              (error (message "Could not find downloaded file: %s" (error-message-string err))))
+
+            ;; Update the heading based on the new properties
+            (emacs-movies-update-heading-from-properties)
+
+            (message "Set TMDB properties: %s (%s)" title tmdb-url)))
+      (error (error "Failed to get %s details: %s" content-type (error-message-string err))))))
+
+(defun emacs-movies-refresh-tmdb-data ()
+  "Refresh TMDB data for current entry based on existing TMDB_URL property.
+Fetches current data from TMDB API and updates TITLE, ORIGINAL_TITLE, 
+ORIGINAL_LANGUAGE, and YEAR properties, then updates the heading."
+  (interactive)
+  (let ((tmdb-url (org-entry-get nil "TMDB_URL")))
+    (unless tmdb-url
+      (error "No TMDB_URL property found for this entry"))
+
+    (let* ((tmdb-info (extract-tmdb-id tmdb-url))
+           (tmdb-id (car tmdb-info))
+           (content-type (cadr tmdb-info)))
+      (unless tmdb-id
+        (error "Could not extract TMDB ID from URL: %s" tmdb-url))
+
+      (unless (memq content-type '(movie tvshow))
+        (error "Unknown content type from URL: %s" tmdb-url))
+
+      (message "Refreshing %s data for TMDB ID %s..." 
+               (if (eq content-type 'tvshow) "TV show" "movie") 
+               tmdb-id)
+      
+      (condition-case err
+          (let* ((details (if (eq content-type 'tvshow)
+                              (emacs-movies-get-tmdb-tv-by-id tmdb-id)
+                            (emacs-movies-get-tmdb-movie-by-id tmdb-id)))
+                 (title (if (eq content-type 'tvshow)
+                            (plist-get details :name)
+                          (plist-get details :title)))
+                 (original-title (if (eq content-type 'tvshow)
+                                     (plist-get details :original-name)
+                                   (plist-get details :original-title)))
+                 (date-field (if (eq content-type 'tvshow)
+                                 (plist-get details :first_air_date)
+                               (plist-get details :release_date)))
+                 (year (if (and date-field
+                               (stringp date-field)
+                               (>= (length date-field) 4))
+                           (substring date-field 0 4)
+                         ""))
+                 (original-language (plist-get details :original_language)))
+
+            ;; Set the properties
+            (org-set-property "TITLE" (or title ""))
+            (org-set-property "ORIGINAL_TITLE" (or original-title ""))
+            (org-set-property "YEAR" year)
+            (org-set-property "ORIGINAL_LANGUAGE" (or original-language ""))
+
+            ;; Update the heading based on the new properties
+            (emacs-movies-update-heading-from-properties)
+
+            (message "Refreshed TMDB data: %s (%s)" title year))
+        (error (error "Failed to refresh %s data: %s" 
+                      (if (eq content-type 'tvshow) "TV show" "movie")
+                      (error-message-string err)))))))
+
 (defun emacs-movies-set-tmdb-url-from-heading ()
   "Set TMDB_URL property for current org entry based on heading.
 Uses heading text before slash (/) as search query for TMDB.
-Sets TMDB_URL property to the first search result's TMDB URL."
+For movies, searches TMDB movies API. For TV shows, searches TMDB TV API.
+Sets TMDB_URL property to the selected search result's TMDB URL."
   (interactive)
   (let* ((heading (org-get-heading t t t t))
          (query (if (string-match "\\(.*?\\)\\s-*/" heading)
                     (match-string 1 heading)
                   heading))
-         (clean-query (string-trim query)))
+         (query-without-year (if (string-match "\\(.*?\\)\\s-*(\\([0-9]\\{4\\}\\))\\s-*$" query)
+                                 (string-trim (match-string 1 query))
+                               query))
+         (clean-query (string-trim query-without-year))
+         (is-tvshow (emacs-movies-has-tag-p "tvshow")))
 
     (if (string-empty-p clean-query)
         (error "No valid query found in heading")
 
       (message "Searching TMDB for: %s" clean-query)
-      (let ((results (emacs-movies-search-tmdb clean-query)))
+      (let ((results (if is-tvshow
+                         (emacs-movies-search-tmdb-tv clean-query)
+                       (emacs-movies-search-tmdb clean-query))))
         (if results
             (let* ((choices (mapcar (lambda (result)
                                       (let* ((id (plist-get result :id))
-                                             (title (plist-get result :title))
-                                             (original-title (plist-get result :original-title))
+                                             (title (if is-tvshow
+                                                        (plist-get result :name)
+                                                      (plist-get result :title)))
+                                             (original-title (if is-tvshow
+                                                                 (plist-get result :original-name)
+                                                               (plist-get result :original-title)))
                                              (overview (plist-get result :overview))
-                                             (release-date (plist-get result :release_date))
-                                             (year (if (and release-date
-                                                           (stringp release-date)
-                                                           (>= (length release-date) 4))
-                                                       (substring release-date 0 4)
+                                             (date-field (if is-tvshow
+                                                             (plist-get result :first_air_date)
+                                                           (plist-get result :release_date)))
+                                             (year (if (and date-field
+                                                           (stringp date-field)
+                                                           (>= (length date-field) 4))
+                                                       (substring date-field 0 4)
                                                      "Unknown"))
                                              (full-overview (if (and overview (> (length overview) 0))
                                                                 overview
@@ -262,27 +557,36 @@ Sets TMDB_URL property to the first search result's TMDB URL."
                                                 id
                                                 full-overview)))
                                     results))
-                   (choices-with-none (append choices (list "None of these"))))
+                   (choices-with-none (append choices (list "None of these")))
+                   (content-type (if is-tvshow "TV show" "movie")))
 
-              (message "Found movies:")
+              (message "Found %ss:" content-type)
               (dolist (choice choices)
                 (message "  %s" choice))
 
-              (let ((selected (completing-read (format "Select movie for \"%s\": " (string-trim heading)) choices-with-none)))
+              (let ((selected (completing-read (format "Select %s for \"%s\": " content-type (string-trim heading)) choices-with-none)))
                 (unless (string= selected "None of these")
                   (let* ((selected-index (cl-position selected choices :test #'string=))
                          (selected-result (nth selected-index results))
                          (tmdb-id (plist-get selected-result :id))
-                         (title (plist-get selected-result :title))
-                         (original-title (plist-get selected-result :original-title))
-                         (release-date (plist-get selected-result :release_date))
+                         (title (if is-tvshow
+                                    (plist-get selected-result :name)
+                                  (plist-get selected-result :title)))
+                         (original-title (if is-tvshow
+                                             (plist-get selected-result :original-name)
+                                           (plist-get selected-result :original-title)))
+                         (date-field (if is-tvshow
+                                         (plist-get selected-result :first_air_date)
+                                       (plist-get selected-result :release_date)))
                          (original-language (plist-get selected-result :original_language))
-                         (year (if (and release-date
-                                       (stringp release-date)
-                                       (>= (length release-date) 4))
-                                   (substring release-date 0 4)
+                         (year (if (and date-field
+                                       (stringp date-field)
+                                       (>= (length date-field) 4))
+                                   (substring date-field 0 4)
                                  ""))
-                         (tmdb-url (format "https://www.themoviedb.org/movie/%d" tmdb-id)))
+                         (tmdb-url (format "https://www.themoviedb.org/%s/%d" 
+                                           (if is-tvshow "tv" "movie") 
+                                           tmdb-id)))
 
                     ;; Set all the properties
                     (org-set-property "TMDB_URL" tmdb-url)
@@ -338,7 +642,7 @@ Preserves existing tags. Rules:
             (message "Updated heading to: %s" new-heading)))))))
 
 (defun emacs-movies-backfill-tmdb-data ()
-  "Backfill TMDB data for all entries with TODO states that don't have TMDB_URL property.
+  "Backfill TMDB data for entries with TODO states, movie/tvshow tags, but no TMDB_URL property.
 Calls `emacs-movies-set-tmdb-url-from-heading' for each matching entry."
   (interactive)
   (let ((processed-count 0)
@@ -353,6 +657,7 @@ Calls `emacs-movies-set-tmdb-url-from-heading' for each matching entry."
        (let* ((todo-state (org-get-todo-state))
               (has-todo-state (not (null todo-state)))
               (has-tmdb-url (org-entry-get nil "TMDB_URL"))
+              (has-movie-or-tvshow-tag (or (emacs-movies-has-tag-p "movie") (emacs-movies-has-tag-p "tvshow")))
               (heading (org-get-heading t t t t)))
 
          (message "Found entry: %s (todo: %s)" heading (or todo-state "none"))
@@ -360,6 +665,10 @@ Calls `emacs-movies-set-tmdb-url-from-heading' for each matching entry."
          (cond
           ((not has-todo-state)
            (message "  -> Skipping (no TODO state)")
+           (setq skipped-count (1+ skipped-count)))
+
+          ((not has-movie-or-tvshow-tag)
+           (message "  -> Skipping (no movie or tvshow tag)")
            (setq skipped-count (1+ skipped-count)))
 
           (has-tmdb-url
@@ -381,16 +690,21 @@ Calls `emacs-movies-set-tmdb-url-from-heading' for each matching entry."
     (message "Backfill complete: %d processed, %d skipped" processed-count skipped-count)))
 
 (defun emacs-movies-find-orphaned-files ()
-  "Find video files with TMDB IDs that don't have corresponding org entries.
-Lists files that exist on disk but are missing from org-mode tracking."
+  "Find video files and TV show directories with TMDB IDs that don't have corresponding org entries.
+Lists movies (files) and TV shows (directories) that exist on disk but are missing from org-mode tracking."
   (interactive)
-  (message "Searching for orphaned movie files...")
+  (message "Searching for orphaned movie files and TV show directories...")
   
   (let* ((all-files (emacs-movies-all-video-files))
          (files-with-tmdb (filter-files-with-tmdb-tag all-files))
          (file-tmdb-ids (mapcar #'car files-with-tmdb))
+         (tvshow-dirs (condition-case nil
+                          (emacs-movies-tvshows-directories-alist)
+                        (error '())))
+         (tvshow-tmdb-ids (mapcar #'car tvshow-dirs))
+         (all-disk-tmdb-ids (append file-tmdb-ids tvshow-tmdb-ids))
          (org-tmdb-ids '())
-         (orphaned-files '()))
+         (orphaned-items '()))
     
     ;; Collect TMDB IDs from org entries
     (org-map-entries
@@ -402,25 +716,39 @@ Lists files that exist on disk but are missing from org-mode tracking."
              (when tmdb-id
                (push tmdb-id org-tmdb-ids)))))))
     
-    (message "Found %d files with TMDB IDs" (length file-tmdb-ids))
+    (message "Found %d movie files with TMDB IDs" (length file-tmdb-ids))
+    (message "Found %d TV show directories with TMDB IDs" (length tvshow-tmdb-ids))
     (message "Found %d org entries with TMDB URLs" (length org-tmdb-ids))
     
-    ;; Find files whose TMDB IDs are not in org entries
+    ;; Find movie files whose TMDB IDs are not in org entries
     (dolist (file-tmdb-id file-tmdb-ids)
       (unless (member file-tmdb-id org-tmdb-ids)
         (let ((files-for-id (find-files-with-tmdb-id file-tmdb-id all-files)))
           (dolist (file files-for-id)
-            (push (cons file-tmdb-id file) orphaned-files)))))
+            (push (list file-tmdb-id 'movie file) orphaned-items)))))
+    
+    ;; Find TV show directories whose TMDB IDs are not in org entries
+    (dolist (tvshow-tmdb-id tvshow-tmdb-ids)
+      (unless (member tvshow-tmdb-id org-tmdb-ids)
+        (let ((dir-path (cdr (assoc tvshow-tmdb-id tvshow-dirs))))
+          (when dir-path
+            (push (list tvshow-tmdb-id 'tvshow dir-path) orphaned-items)))))
     
     ;; Report results
-    (if orphaned-files
+    (if orphaned-items
         (progn
-          (message "Found %d orphaned files:" (length orphaned-files))
-          (dolist (orphan orphaned-files)
-            (message "  TMDB ID %s: %s" (car orphan) (file-name-nondirectory (cdr orphan)))))
-      (message "No orphaned files found - all files have corresponding org entries"))
+          (message "Found %d orphaned items:" (length orphaned-items))
+          (dolist (orphan orphaned-items)
+            (let ((tmdb-id (nth 0 orphan))
+                  (type (nth 1 orphan))
+                  (path (nth 2 orphan)))
+              (message "  TMDB ID %s (%s): %s" 
+                       tmdb-id 
+                       (if (eq type 'movie) "movie" "TV show")
+                       (file-name-nondirectory path)))))
+      (message "No orphaned items found - all files and directories have corresponding org entries"))
     
-    orphaned-files))
+    orphaned-items))
 
 (defun extract-tmdb-id (url)
   "Extract TMDB ID and type from a TMDB URL.
