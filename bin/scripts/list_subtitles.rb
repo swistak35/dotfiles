@@ -67,7 +67,7 @@ def process_directory(directory)
   end
 
   # Find all MKV files in the directory
-  mkv_files = Dir.glob("#{directory}/**/*.mp4")
+  mkv_files = Dir.glob("#{directory}/**/*.mkv")
 
   if mkv_files.empty?
     puts "No MKV files found in #{directory}"
