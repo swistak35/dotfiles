@@ -485,7 +485,7 @@
                       "** %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
 		      :create-id t
 		      :prepend t)
-                     ("wt" "Task" entry (file+headline "~/notes/inbox.org" "Inbox")
+                     ("wt" "Task" entry (file "~/notes/inbox.org")
                       "** TODO %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
                       :prepend t
 		      :create-id t)
@@ -504,7 +504,7 @@
 		     ("wz" "Test" entry (file+headline "~/notes/bookmarks.org" "Test")
 		      "** READ %:description\n%i\n"
                       :prepend t)
-                     ("t" "Task" entry (file+headline "~/notes/inbox.org" "Inbox")
+                     ("t" "Task" entry (file "~/notes/inbox.org")
                       "** TODO %?\n"
                       :prepend t)
                      ("e" "Exercise log")
@@ -639,7 +639,8 @@
 					  ;;      (ts :on today))
 					  )
 				     ((org-ql-block-header "Zrobione dzisiaj")))
-		       (org-ql-block '(tags "inbox")
+		       (org-ql-block '(and (tags "inbox")
+    				           (not (tags "work")))
 				     ((org-ql-block-header "Inbox")))
 
 		       ; Random Quote block
