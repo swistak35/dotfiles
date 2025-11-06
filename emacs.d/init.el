@@ -1201,6 +1201,19 @@
   (setq org-contacts-files (list (file-truename "~/notes/contacts.org")))
   )
 
+(use-package org-attach-screenshot
+  :straight t
+  :bind ("<f6> s" . org-attach-screenshot)
+  :config
+  (setq org-attach-screenshot-dirfunction
+		(lambda ()
+		  (progn (cl-assert (buffer-file-name))
+			 (concat (file-name-sans-extension (buffer-file-name))
+				 "-att"))))
+  (setq org-attach-screenshot-command-line "spectacle -o %f")
+  )
+
+
 ;; Themes
 (use-package solarized-theme
              :straight t

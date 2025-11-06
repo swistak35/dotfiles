@@ -57,6 +57,7 @@
  ("org-ql" . "98c62ab0a6c084ae4132110e24d9fe1ace91d363")
  ("org-roam" . "5c06471c3a11348342719fd9011486455adeb701")
  ("org-roam-ui" . "5ac74960231db0bf7783c2ba7a19a60f582e91ab")
+ ("org-screenshot" . "55fa23e69c8ac4c40f8600300301a9cdc5c6732f")
  ("org-super-agenda" . "c07e35416ce749b42cbb70ff8d4e814362111bb5")
  ("ov" . "e2971ad986b6ac441e9849031d34c56c980cf40b")
  ("peg" . "c9155d5586909953861421ce05a341d59b53fa73")
