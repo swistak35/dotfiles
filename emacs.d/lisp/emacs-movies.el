@@ -420,34 +420,33 @@ asks for user confirmation, and sets properties if confirmed."
                                  (if is-tvshow "tv" "movie") 
                                  tmdb-id)))
 
-          (message "Found %s:" content-type)
-          (message "  Title: %s" title)
-          (message "  Original Title: %s" (or original-title "N/A"))
-          (message "  Year: %s" year)
-          (message "  Language: %s" (or original-language "N/A"))
-          (message "  Overview: %s" (if (and overview (> (length overview) 0))
-                                        (if (> (length overview) 100)
-                                            (concat (substring overview 0 97) "...")
-                                          overview)
-                                      "No overview"))
+          (let ((info-text (format "%s:\nTitle: %s\nOriginal Title: %s\nYear: %s\nLanguage: %s\nOverview: %s\n\nIs this the correct %s? "
+                                   content-type
+                                   title
+                                   (or original-title "N/A")
+                                   year
+                                   (or original-language "N/A")
+                                   (if (and overview (> (length overview) 0))
+                                       overview
+                                     "No overview")
+                                   content-type)))
+            (when (yes-or-no-p info-text)
+              ;; Set all the properties
+              (org-set-property "TMDB_URL" tmdb-url)
+              (org-set-property "TITLE" (or title ""))
+              (org-set-property "ORIGINAL_TITLE" (or original-title ""))
+              (org-set-property "YEAR" year)
+              (org-set-property "ORIGINAL_LANGUAGE" (or original-language ""))
 
-          (when (yes-or-no-p (format "Is this the correct %s? " content-type))
-            ;; Set all the properties
-            (org-set-property "TMDB_URL" tmdb-url)
-            (org-set-property "TITLE" (or title ""))
-            (org-set-property "ORIGINAL_TITLE" (or original-title ""))
-            (org-set-property "YEAR" year)
-            (org-set-property "ORIGINAL_LANGUAGE" (or original-language ""))
+              ;; Try to find downloaded file
+              (condition-case err
+                  (emacs-movies-find-downloaded-file)
+                (error (message "Could not find downloaded file: %s" (error-message-string err))))
 
-            ;; Try to find downloaded file
-            (condition-case err
-                (emacs-movies-find-downloaded-file)
-              (error (message "Could not find downloaded file: %s" (error-message-string err))))
+              ;; Update the heading based on the new properties
+              (emacs-movies-update-heading-from-properties)
 
-            ;; Update the heading based on the new properties
-            (emacs-movies-update-heading-from-properties)
-
-            (message "Set TMDB properties: %s (%s)" title tmdb-url)))
+              (message "Set TMDB properties: %s (%s)" title tmdb-url))))
       (error (error "Failed to get %s details: %s" content-type (error-message-string err))))))
 
 (defun emacs-movies-refresh-tmdb-data ()
@@ -689,66 +688,279 @@ Calls `emacs-movies-set-tmdb-url-from-heading' for each matching entry."
 
     (message "Backfill complete: %d processed, %d skipped" processed-count skipped-count)))
 
+(defun emacs-movies-get-orphaned-movie-files ()
+  "Get list of orphaned movie files (files with TMDB IDs not in movie org entries).
+Returns list of (TMDB_ID . FILEPATH) pairs for orphaned movie files."
+  (let* ((all-files (emacs-movies-all-video-files))
+         (files-with-tmdb (filter-files-with-tmdb-tag all-files))
+         (file-tmdb-ids (mapcar #'car files-with-tmdb))
+         (org-tmdb-ids '())
+         (orphaned-files '()))
+    
+    ;; Collect TMDB IDs from movie org entries only
+    (org-map-entries
+     (lambda ()
+       (when (emacs-movies-has-tag-p "movie")
+         (let ((tmdb-url (org-entry-get nil "TMDB_URL")))
+           (when tmdb-url
+             (let* ((tmdb-info (extract-tmdb-id tmdb-url))
+                    (tmdb-id (car tmdb-info)))
+               (when tmdb-id
+                 (push tmdb-id org-tmdb-ids))))))))
+    
+    ;; Find movie files whose TMDB IDs are not in movie org entries
+    (dolist (file-tmdb-id file-tmdb-ids)
+      (unless (member file-tmdb-id org-tmdb-ids)
+        (let ((files-for-id (find-files-with-tmdb-id file-tmdb-id all-files)))
+          (dolist (file files-for-id)
+            (push (cons file-tmdb-id file) orphaned-files)))))
+    
+    orphaned-files))
+
+(defun emacs-movies-get-orphaned-tvshow-directories ()
+  "Get list of orphaned TV show directories (directories with TMDB IDs not in tvshow org entries).
+Returns list of (TMDB_ID . DIRECTORY_PATH) pairs for orphaned TV show directories."
+  (let* ((tvshow-dirs (condition-case nil
+                          (emacs-movies-tvshows-directories-alist)
+                        (error '())))
+         (tvshow-tmdb-ids (mapcar #'car tvshow-dirs))
+         (org-tmdb-ids '())
+         (orphaned-dirs '()))
+    
+    ;; Collect TMDB IDs from tvshow org entries only
+    (org-map-entries
+     (lambda ()
+       (when (emacs-movies-has-tag-p "tvshow")
+         (let ((tmdb-url (org-entry-get nil "TMDB_URL")))
+           (when tmdb-url
+             (let* ((tmdb-info (extract-tmdb-id tmdb-url))
+                    (tmdb-id (car tmdb-info)))
+               (when tmdb-id
+                 (push tmdb-id org-tmdb-ids))))))))
+    
+    ;; Find TV show directories whose TMDB IDs are not in tvshow org entries
+    (dolist (tvshow-tmdb-id tvshow-tmdb-ids)
+      (unless (member tvshow-tmdb-id org-tmdb-ids)
+        (let ((dir-path (cdr (assoc tvshow-tmdb-id tvshow-dirs))))
+          (when dir-path
+            (push (cons tvshow-tmdb-id dir-path) orphaned-dirs)))))
+    
+    orphaned-dirs))
+
+(defun emacs-movies-create-org-entries-for-orphaned-items ()
+  "Create org entries for orphaned movies and TV shows under the Inbox node.
+Creates TOWATCH entries with appropriate tags and TMDB_URL properties,
+then refreshes TMDB data and updates headings."
+  (interactive)
+  
+  (let ((orphaned-movies (emacs-movies-get-orphaned-movie-files))
+        (orphaned-tvshows (emacs-movies-get-orphaned-tvshow-directories)))
+    
+    (message "Creating org entries for orphaned items...")
+    
+    ;; Find or create Inbox heading
+    (save-excursion
+      (goto-char (point-min))
+      (unless (re-search-forward "^\\*+ Inbox" nil t)
+        ;; Create Inbox heading if it doesn't exist
+        (goto-char (point-max))
+        (unless (bolp) (insert "\n"))
+        (insert "* Inbox\n"))
+      
+      ;; Go to the end of the Inbox section
+      (org-end-of-subtree)
+      
+      ;; Create entries for orphaned movies
+      (dolist (movie orphaned-movies)
+        (let* ((tmdb-id (car movie))
+               (filepath (cdr movie))
+               (filename (file-name-nondirectory filepath))
+               (tmdb-url (format "https://www.themoviedb.org/movie/%s" tmdb-id)))
+          
+          (insert (format "** TOWATCH %s :movie:\n" filename))
+          (org-set-property "TMDB_URL" tmdb-url)
+          
+          ;; Refresh TMDB data and update heading
+          (condition-case err
+              (emacs-movies-refresh-tmdb-data)
+            (error 
+             (message "Warning: Could not refresh TMDB data for movie %s: %s" 
+                     filename (error-message-string err))))))
+      
+      ;; Create entries for orphaned TV shows
+      (dolist (tvshow orphaned-tvshows)
+        (let* ((tmdb-id (car tvshow))
+               (dirpath (cdr tvshow))
+               (dirname (file-name-nondirectory dirpath))
+               (tmdb-url (format "https://www.themoviedb.org/tv/%s" tmdb-id)))
+          
+          (insert (format "** TOWATCH %s :tvshow:\n" dirname))
+          (org-set-property "TMDB_URL" tmdb-url)
+          
+          ;; Refresh TMDB data and update heading
+          (condition-case err
+              (emacs-movies-refresh-tmdb-data)
+            (error 
+             (message "Warning: Could not refresh TMDB data for TV show %s: %s" 
+                     dirname (error-message-string err)))))))
+    
+    (message "Finished creating org entries for orphaned items")))
+
+(defun emacs-movies-sort-entries-under-heading (heading)
+  "Sort all entries alphabetically under the specified HEADING.
+Prompts for heading name if called interactively."
+  (interactive "sHeading name: ")
+  (save-excursion
+    (goto-char (point-min))
+    (if (re-search-forward (concat "^\\*+ " (regexp-quote heading)) nil t)
+        (progn
+          (org-back-to-heading)
+          (let ((start-pos (point))
+                (level (org-current-level))
+                entries)
+            
+            ;; Collect all direct child entries
+            (org-goto-first-child)
+            (while (and (org-at-heading-p) 
+                       (> (org-current-level) level))
+              (if (= (org-current-level) (1+ level))
+                  ;; This is a direct child - collect it
+                  (let* ((entry-start (point))
+                         (entry-end (save-excursion (org-end-of-subtree t t) (point)))
+                         (entry-text (buffer-substring entry-start entry-end))
+                         (heading-text (org-get-heading t t t t)))
+                    (push (cons heading-text entry-text) entries)
+                    (goto-char entry-end))
+                ;; Skip over deeper nested entries
+                (org-end-of-subtree t t)))
+            
+            (if entries
+                (progn
+                  ;; Sort entries alphabetically by heading text
+                  (setq entries (sort entries (lambda (a b) (string< (car a) (car b)))))
+                  
+                  ;; Delete all child entries
+                  (goto-char start-pos)
+                  (org-goto-first-child)
+                  (let ((child-start (point)))
+                    (goto-char start-pos)
+                    (org-end-of-subtree)
+                    (delete-region child-start (point)))
+                  
+                  ;; Insert sorted entries
+                  (goto-char start-pos)
+                  (org-end-of-line)
+                  (insert "\n")
+                  (dolist (entry entries)
+                    (insert (cdr entry)))
+                  
+                  (message "Sorted %d entries under '%s'" (length entries) heading))
+              (message "No child entries found under '%s'" heading))))
+      (error "Heading '%s' not found" heading))))
+
 (defun emacs-movies-find-orphaned-files ()
   "Find video files and TV show directories with TMDB IDs that don't have corresponding org entries.
 Lists movies (files) and TV shows (directories) that exist on disk but are missing from org-mode tracking."
   (interactive)
   (message "Searching for orphaned movie files and TV show directories...")
-  
-  (let* ((all-files (emacs-movies-all-video-files))
-         (files-with-tmdb (filter-files-with-tmdb-tag all-files))
-         (file-tmdb-ids (mapcar #'car files-with-tmdb))
-         (tvshow-dirs (condition-case nil
-                          (emacs-movies-tvshows-directories-alist)
-                        (error '())))
-         (tvshow-tmdb-ids (mapcar #'car tvshow-dirs))
-         (all-disk-tmdb-ids (append file-tmdb-ids tvshow-tmdb-ids))
-         (org-tmdb-ids '())
-         (orphaned-items '()))
-    
-    ;; Collect TMDB IDs from org entries
-    (org-map-entries
-     (lambda ()
-       (let ((tmdb-url (org-entry-get nil "TMDB_URL")))
-         (when tmdb-url
-           (let* ((tmdb-info (extract-tmdb-id tmdb-url))
-                  (tmdb-id (car tmdb-info)))
-             (when tmdb-id
-               (push tmdb-id org-tmdb-ids)))))))
-    
-    (message "Found %d movie files with TMDB IDs" (length file-tmdb-ids))
-    (message "Found %d TV show directories with TMDB IDs" (length tvshow-tmdb-ids))
-    (message "Found %d org entries with TMDB URLs" (length org-tmdb-ids))
-    
-    ;; Find movie files whose TMDB IDs are not in org entries
-    (dolist (file-tmdb-id file-tmdb-ids)
-      (unless (member file-tmdb-id org-tmdb-ids)
-        (let ((files-for-id (find-files-with-tmdb-id file-tmdb-id all-files)))
-          (dolist (file files-for-id)
-            (push (list file-tmdb-id 'movie file) orphaned-items)))))
-    
-    ;; Find TV show directories whose TMDB IDs are not in org entries
-    (dolist (tvshow-tmdb-id tvshow-tmdb-ids)
-      (unless (member tvshow-tmdb-id org-tmdb-ids)
-        (let ((dir-path (cdr (assoc tvshow-tmdb-id tvshow-dirs))))
-          (when dir-path
-            (push (list tvshow-tmdb-id 'tvshow dir-path) orphaned-items)))))
-    
+
+  (let* ((orphaned-movies (emacs-movies-get-orphaned-movie-files))
+         (orphaned-tvshows (emacs-movies-get-orphaned-tvshow-directories))
+         (total-orphaned (+ (length orphaned-movies) (length orphaned-tvshows))))
+
+    ;; Report summary statistics
+    (message "Found %d orphaned movie files" (length orphaned-movies))
+    (message "Found %d orphaned TV show directories" (length orphaned-tvshows))
+
     ;; Report results
-    (if orphaned-items
+    (if (> total-orphaned 0)
         (progn
-          (message "Found %d orphaned items:" (length orphaned-items))
-          (dolist (orphan orphaned-items)
-            (let ((tmdb-id (nth 0 orphan))
-                  (type (nth 1 orphan))
-                  (path (nth 2 orphan)))
-              (message "  TMDB ID %s (%s): %s" 
-                       tmdb-id 
-                       (if (eq type 'movie) "movie" "TV show")
+          (message "Found %d orphaned items:" total-orphaned)
+
+          ;; Display orphaned movies
+          (dolist (orphan orphaned-movies)
+            (let ((tmdb-id (car orphan))
+                  (path (cdr orphan)))
+              (message "  TMDB ID %s (movie): %s"
+                       tmdb-id
+                       (file-name-nondirectory path))))
+
+          ;; Display orphaned TV shows
+          (dolist (orphan orphaned-tvshows)
+            (let ((tmdb-id (car orphan))
+                  (path (cdr orphan)))
+              (message "  TMDB ID %s (TV show): %s"
+                       tmdb-id
                        (file-name-nondirectory path)))))
       (message "No orphaned items found - all files and directories have corresponding org entries"))
-    
-    orphaned-items))
+
+    ;; Return combined results in the original format for backward compatibility
+    (append (mapcar (lambda (movie) (list (car movie) 'movie (cdr movie))) orphaned-movies)
+            (mapcar (lambda (tvshow) (list (car tvshow) 'tvshow (cdr tvshow))) orphaned-tvshows))))
+
+(defun emacs-movies-find-unreferenced-files ()
+  "Find video files and TV show directories not mentioned in any DOWNLOADED_FILEPATH property.
+Only considers files/directories with TMDB tags.
+Lists movies (files with TMDB tags) and TV shows (directories with TMDB tags) that exist
+on disk but are not referenced in any org entry's DOWNLOADED_FILEPATH property."
+  (interactive)
+  (message "Searching for unreferenced movie files and TV show directories...")
+
+  (let* ((all-video-files (emacs-movies-all-video-files))
+         (files-with-tmdb (filter-files-with-tmdb-tag all-video-files))
+         (tvshow-dirs (emacs-movies-tvshows-directories-alist))
+         (referenced-paths '())
+         (unreferenced-files '())
+         (unreferenced-dirs '()))
+
+    ;; Collect all DOWNLOADED_FILEPATH values from org entries
+    (org-map-entries
+     (lambda ()
+       (let ((downloaded-filepath (org-entry-get nil "DOWNLOADED_FILEPATH")))
+         (when downloaded-filepath
+           ;; Extract actual file path from org link format [[file:PATH][NAME]]
+           (when (string-match "\\[\\[file:\\([^]]+\\)\\]\\[.*\\]\\]" downloaded-filepath)
+             (let ((path (match-string 1 downloaded-filepath)))
+               (push path referenced-paths)))))))
+
+    ;; Find movie files (with TMDB tags) that are not referenced
+    (dolist (tmdb-entry files-with-tmdb)
+      (let ((tmdb-id (car tmdb-entry))
+            (files (cdr tmdb-entry)))
+        (dolist (file files)
+          (unless (member file referenced-paths)
+            (push file unreferenced-files)))))
+
+    ;; Find TV show directories (with TMDB tags) that are not referenced
+    (dolist (tvshow-entry tvshow-dirs)
+      (let ((tmdb-id (car tvshow-entry))
+            (dir-path (cdr tvshow-entry)))
+        (unless (member dir-path referenced-paths)
+          (push dir-path unreferenced-dirs))))
+
+    (let ((total-unreferenced (+ (length unreferenced-files) (length unreferenced-dirs))))
+
+      ;; Report summary statistics
+      (message "Found %d unreferenced movie files" (length unreferenced-files))
+      (message "Found %d unreferenced TV show directories" (length unreferenced-dirs))
+
+      ;; Report results
+      (if (> total-unreferenced 0)
+          (progn
+            (message "Found %d unreferenced items:" total-unreferenced)
+
+            ;; Display unreferenced movies
+            (dolist (file unreferenced-files)
+              (message "  Movie: %s" (file-name-nondirectory file)))
+
+            ;; Display unreferenced TV shows
+            (dolist (dir unreferenced-dirs)
+              (message "  TV show: %s" (file-name-nondirectory dir))))
+        (message "No unreferenced items found - all files and directories are referenced in DOWNLOADED_FILEPATH properties"))
+
+      ;; Return combined results
+      (append (mapcar (lambda (file) (list 'movie file)) unreferenced-files)
+              (mapcar (lambda (dir) (list 'tvshow dir)) unreferenced-dirs)))))
 
 (defun extract-tmdb-id (url)
   "Extract TMDB ID and type from a TMDB URL.

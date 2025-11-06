@@ -432,7 +432,7 @@
              :config
              (require 'org-protocol)
              (unless (server-running-p) (server-start)) ; Required for org-protocol to receive information
-             (setq org-agenda-files '("~/notes" "~/pnotes/sf" "~/pnotes/res"))
+             (setq org-agenda-files '("~/notes" "~/pnotes/sf" "~/pnotes/res" "~/gnotes"))
              (setq org-default-notes-file "~/notes/inbox.org")
              (setq org-log-done t)
 	     (setq org-log-into-drawer t) ; Causes to log the CLOSED timestamps into the LOGBOOK property, instead of the entry content
@@ -469,6 +469,8 @@
                       "** TOWATCH \n:PROPERTIES:\n:UPFLIX_LINK: %^{Please enter upflix link}\n:CREATED_AT: %U\n:END:%i\n")
                      ("mf" "Movie from Filmweb" entry (file+headline "~/notes/movies.org" "Inbox")
                       "** TOWATCH \n:PROPERTIES:\n:FILMWEB_LINK: %^{Please enter filmweb link}\n:CREATED_AT: %U\n:END:%i\n")
+                     ("mm" "Movie from The Movie DB" entry (file+headline "~/gnotes/movies.org" "Inbox")
+                      "** TOWATCH \n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n")
                      ("w" "Web")
 		     ("wa" "Archive" entry (file+headline "~/notes/bookmarks.org" "Archive")
 		      "** READ %:description\n%i\n"
@@ -891,7 +893,7 @@
 		     (message "Disabled org html export on save for current buffer..."))
 		 (add-hook 'after-save-hook 'org-html-export-to-html nil t)
 		 (message "Enabled org html export on save for current buffer...")))
-	     
+
 	     ;; Load movie database management functions when org-mode is loaded
 	     (eval-after-load 'org
 	       '(require 'emacs-movies nil t)))
