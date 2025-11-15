@@ -25,6 +25,7 @@ install-other:
 	rm -f ~/.irbrc
 	ln -s `pwd`/other/irbrc ~/.irbrc
 	rm -f ~/.config/autostart-scripts/ssh-add.sh
+	mkdir -p ~/.config/autostart-scripts
 	ln -s `pwd`/other/ssh-add.sh ~/.config/autostart-scripts/ssh-add.sh
 	rm -f ~/.config/redshift.conf
 	ln -s `pwd`/other/redshift.conf ~/.config/redshift.conf

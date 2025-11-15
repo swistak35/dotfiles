@@ -324,6 +324,18 @@ source ~/.zsh/keybindings.zsh
 # 	add-zsh-hook precmd switch_term_colors
 # fi
 
+# SSH Agent - auto-load SSH keys with GUI password prompt
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    eval "$(ssh-agent -s)" > /dev/null
+fi
+
+# Add SSH keys if not already loaded, using GUI password prompt
+ssh-add -l > /dev/null 2>&1
+if [ $? = 2 ]; then
+    SSH_ASKPASS=ksshaskpass ssh-add ~/.ssh/id_rsa < /dev/null 2>/dev/null || true
+    SSH_ASKPASS=ksshaskpass ssh-add ~/.ssh/id_ed25519 < /dev/null 2>/dev/null || true
+fi
+
 # rbenv
 eval "$(rbenv init -)"
 
