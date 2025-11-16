@@ -7,6 +7,11 @@ install-vim:
 	vim +PlugInstall +qall
 	# [ -d ~/.eclim ] && ln -s ~/.eclim ~/.vim/eclim
 
+install-nvim:
+	rm -rf ~/.config/nvim
+	ln -s `pwd`/nvim ~/.config/nvim
+	nvim +PlugInstall +qall
+
 install-bin:
 	rm -rf ~/.bin
 	ln -s `pwd`/bin ~/.bin
