@@ -25,8 +25,6 @@ install-other:
 	ln -s `pwd`/other/Xmodmap ~/.Xmodmap
 	rm -f ~/.taskrc
 	ln -s `pwd`/other/taskrc ~/.taskrc
-	rm -f ~/.config/redshift.conf
-	ln -s `pwd`/other/redshift.conf ~/.config/redshift.conf
 
 install-git:
 	rm -f ~/.gitconfig
