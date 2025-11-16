@@ -20,9 +20,6 @@ install-other:
 	ln -s `pwd`/other/Xmodmap ~/.Xmodmap
 	rm -f ~/.taskrc
 	ln -s `pwd`/other/taskrc ~/.taskrc
-	rm -f ~/.config/autostart-scripts/ssh-add.sh
-	mkdir -p ~/.config/autostart-scripts
-	ln -s `pwd`/other/ssh-add.sh ~/.config/autostart-scripts/ssh-add.sh
 	rm -f ~/.config/redshift.conf
 	ln -s `pwd`/other/redshift.conf ~/.config/redshift.conf
 
