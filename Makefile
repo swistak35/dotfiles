@@ -26,11 +26,6 @@ install-other:
 	rm -f ~/.config/redshift.conf
 	ln -s `pwd`/other/redshift.conf ~/.config/redshift.conf
 
-install-xfce:
-	rm ~/.config/Thunar/uca.xml
-	ln -s `pwd`/thunar/uca.xml ~/.config/Thunar/uca.xml
-	rm ~/.config/Thunar/renamerrc
-	ln -s `pwd`/thunar/renamerrc ~/.config/Thunar/renamerrc
 
 install-vifm:
 	rm -rf ~/.vifm
@@ -41,28 +36,9 @@ install-vimperator:
 	ln -s `pwd`/vimperator ~/.vimperator
 	ln -s ~/.vimperator/vimperatorrc ~/.vimperatorrc
 
-install-awesome:
-	rm -rf ~/.config/awesome
-	ln -s `pwd`/awesome ~/.config/awesome
-
 install-weechat:
 	rm -rf ~/.weechat
 	[ -d "$$HOME/.weechat-logs" ] || mkdir ~/.weechat-logs
 	ln -s `pwd`/weechat ~/.weechat
 	[ -e "$$HOME/.weechat/logs" ] || ln -s ~/.weechat-logs ~/.weechat/logs
 	[ -f "$$HOME/.weechat/sec.conf" ] || cp ~/.weechat/sec.conf.example ~/.weechat/sec.conf
-
-install-dropbox:
-	ln -s /media/magazyn/Dropbox/Dokumenty ~/Dokumenty
-	ln -s /media/magazyn/Dropbox/Obrazy ~/Obrazy
-
-install-qnapi:
-	mkdir -p ~/.kde/share/apps/dolphin/servicemenus/
-	rm -f ~/.kde/share/apps/dolphin/servicemenus/qnapi-download.desktop
-	ln -s /usr/share/doc/qnapi/qnapi-download.desktop ~/.kde/share/apps/dolphin/servicemenus/qnapi-download.desktop
-	mkdir -p ~/.kde/share/apps/d3lphin/servicemenus/
-	rm -f ~/.kde/share/apps/d3lphin/servicemenus/qnapi-download.desktop
-	ln -s /usr/share/doc/qnapi/qnapi-download.desktop ~/.kde/share/apps/d3lphin/servicemenus/qnapi-download.desktop
-	mkdir -p ~/.kde/share/apps/konqueror/servicemenus/
-	rm -f ~/.kde/share/apps/konqueror/servicemenus/qnapi-download.desktop
-	ln -s /usr/share/doc/qnapi/qnapi-download.desktop ~/.kde/share/apps/konqueror/servicemenus/qnapi-download.desktop
