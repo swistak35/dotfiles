@@ -16,14 +16,10 @@ install-other:
 	ln -s `pwd`/other/ghci ~/.ghci
 	rm -f ~/.ocamlinit
 	ln -s `pwd`/other/ocamlinit ~/.ocamlinit
-	rm -f ~/.gemrc
-	ln -s `pwd`/other/gemrc ~/.gemrc
 	rm -f ~/.Xmodmap
 	ln -s `pwd`/other/Xmodmap ~/.Xmodmap
 	rm -f ~/.taskrc
 	ln -s `pwd`/other/taskrc ~/.taskrc
-	rm -f ~/.irbrc
-	ln -s `pwd`/other/irbrc ~/.irbrc
 	rm -f ~/.config/autostart-scripts/ssh-add.sh
 	mkdir -p ~/.config/autostart-scripts
 	ln -s `pwd`/other/ssh-add.sh ~/.config/autostart-scripts/ssh-add.sh
