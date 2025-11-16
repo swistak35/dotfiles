@@ -28,6 +28,13 @@ install-other:
 	rm -f ~/.config/redshift.conf
 	ln -s `pwd`/other/redshift.conf ~/.config/redshift.conf
 
+install-git:
+	rm -f ~/.gitconfig
+	ln -s `pwd`/git/gitconfig ~/.gitconfig
+	rm -f ~/.global_gitattributes
+	ln -s `pwd`/git/global_gitattributes ~/.global_gitattributes
+	rm -f ~/.global_gitignore
+	ln -s `pwd`/git/global_gitignore ~/.global_gitignore
 
 install-vifm:
 	rm -rf ~/.vifm
