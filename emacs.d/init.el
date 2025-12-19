@@ -433,7 +433,7 @@
              :config
              (require 'org-protocol)
              (unless (server-running-p) (server-start)) ; Required for org-protocol to receive information
-             (setq org-agenda-files '("~/notes" "~/pnotes/sf" "~/pnotes/res" "~/gnotes"))
+             (setq org-agenda-files '("~/notes" "~/pnotes/sf" "~/pnotes/res" "~/gnotes" "~/projs/silverfin/people_management/notes"))
              (setq org-default-notes-file "~/notes/inbox.org")
              (setq org-log-done t)
 	     (setq org-log-into-drawer t) ; Causes to log the CLOSED timestamps into the LOGBOOK property, instead of the entry content
@@ -471,7 +471,9 @@
                      ("mf" "Movie from Filmweb" entry (file+headline "~/gnotes/movies.org" "Inbox")
                       "** TOWATCH \n:PROPERTIES:\n:FILMWEB_LINK: %^{Please enter filmweb link}\n:CREATED_AT: %U\n:END:%i\n")
                      ("mm" "Movie from The Movie DB" entry (file+headline "~/gnotes/movies.org" "Inbox")
-                      "** TOWATCH \n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n")
+                      "** TOWATCH :movie:new:\n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n")
+                     ("mt" "TV Show from The Movie DB" entry (file+headline "~/gnotes/movies.org" "Inbox")
+                      "** TOWATCH :tvshow:new:\n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n")
                      ("w" "Web")
 		     ("wa" "Archive" entry (file+headline "~/notes/bookmarks.org" "Archive")
 		      "** READ %:description\n%i\n"
