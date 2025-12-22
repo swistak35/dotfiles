@@ -9,6 +9,7 @@
 (require 'org)
 (require 'json)
 (require 'url)
+(require 'cl-lib)
 
 (defvar rl-movies-upflix-replace-hostname "http://localhost:9393"
   "Hostname to replace in Upflix URLs for API calls.")
@@ -17,8 +18,10 @@
   '("netflix" "disney" "viaplay" "skyshowtime" "canalplus" "cineman" "appletv" "hbomax" "cdapremium" "amazon" "tvpvod")
   "List of supported streaming service subscriptions.")
 
-(defvar emacs-movies-directory "/media/plex/Wideo"
-  "Directory containing video files.")
+(defvar emacs-movies-directory '("/media/plex/Wideo")
+  "List of directories containing video files.
+Each element should be an absolute path to a directory containing movies or TV shows.
+Multiple directories allow managing video collections across different locations.")
 
 (defvar emacs-movies-video-extensions '("mkv" "mp4" "avi")
   "List of video file extensions to search for.")
@@ -32,39 +35,70 @@
 (defvar emacs-movies-tmdb-language "pl-PL"
   "Language code for TMDB API requests (e.g., 'pl-PL' for Polish, 'en-US' for English).")
 
-(defun emacs-movies-all-video-files ()
-  "Return a list of all video files in `emacs-movies-directory'.
-Raises an error if the variable is not set or directory does not exist."
-  (unless emacs-movies-directory
-    (error "emacs-movies-directory is not set"))
-  (unless (file-exists-p emacs-movies-directory)
-    (error "Directory does not exist: %s" emacs-movies-directory))
-  (unless (file-directory-p emacs-movies-directory)
-    (error "Path is not a directory: %s" emacs-movies-directory))
+(defun emacs-movies-validate-directories ()
+  "Validate that `emacs-movies-directory' is properly configured.
+Checks that the variable is a list and that all directories exist and are valid.
+Raises an error with details if validation fails, returns nil on success."
+  ;; Check if configuration is a list (not a string)
+  (unless (listp emacs-movies-directory)
+    (error "emacs-movies-directory must be a list of directories.
+Current value is a string. Please update your configuration:
+  Old: (setq emacs-movies-directory \"/path/to/videos\")
+  New: (setq emacs-movies-directory '(\"/path/to/videos\"))"))
 
-  (let ((video-files '())
+  ;; Collect all validation errors
+  (let ((errors '()))
+    (dolist (dir emacs-movies-directory)
+      (cond
+       ((or (null dir) (string-empty-p dir))
+        (push (format "  - Empty or nil directory in list") errors))
+       ((not (file-exists-p dir))
+        (push (format "  - %s: Directory does not exist" dir) errors))
+       ((not (file-directory-p dir))
+        (push (format "  - %s: Path is not a directory" dir) errors))))
+
+    ;; Report all errors together if any were found
+    (when errors
+      (error "Invalid directories in emacs-movies-directory:\n%s"
+             (string-join (nreverse errors) "\n")))))
+
+(defun emacs-movies-all-video-files ()
+  "Return a list of all video files in all directories in `emacs-movies-directory'.
+Scans each directory in the list and aggregates results.
+Files are returned in the order they appear, processing directories in configuration order.
+Raises an error if the variable is not set properly or directories are invalid."
+  ;; Validate all directories before scanning
+  (emacs-movies-validate-directories)
+
+  ;; Aggregate video files from all configured directories
+  (let ((all-video-files '())
         (extensions-regex (concat "\\." (regexp-opt emacs-movies-video-extensions) "$")))
-    (dolist (file (directory-files-recursively emacs-movies-directory extensions-regex))
-      (when (file-regular-p file)
-        (push file video-files)))
-    (nreverse video-files)))
+    ;; Iterate over each directory in configuration order
+    (dolist (base-dir emacs-movies-directory)
+      (dolist (file (directory-files-recursively base-dir extensions-regex))
+        (when (file-regular-p file)
+          (push file all-video-files))))
+    ;; Return files in the order they were discovered
+    (nreverse all-video-files)))
 
 (defun emacs-movies-all-tvshows-directories ()
-  "Return a list of all directories in `emacs-movies-directory' that contain TMDB tags.
-Raises an error if the variable is not set or directory does not exist."
-  (unless emacs-movies-directory
-    (error "emacs-movies-directory is not set"))
-  (unless (file-exists-p emacs-movies-directory)
-    (error "Directory does not exist: %s" emacs-movies-directory))
-  (unless (file-directory-p emacs-movies-directory)
-    (error "Path is not a directory: %s" emacs-movies-directory))
+  "Return a list of all directories with TMDB tags from all directories in `emacs-movies-directory'.
+Scans each directory in the list and aggregates results.
+Directories are returned in the order they appear, processing base directories in configuration order.
+Raises an error if the variable is not set properly or directories are invalid."
+  ;; Validate all directories before scanning
+  (emacs-movies-validate-directories)
 
-  (let ((tvshow-directories '()))
-    (dolist (file (directory-files-recursively emacs-movies-directory ".*" t))
-      (when (and (file-directory-p file)
-                 (string-match "{tmdb-\\([0-9]+\\)}" (file-name-nondirectory file)))
-        (push file tvshow-directories)))
-    (nreverse tvshow-directories)))
+  ;; Aggregate TV show directories from all configured directories
+  (let ((all-tvshow-directories '()))
+    ;; Iterate over each base directory in configuration order
+    (dolist (base-dir emacs-movies-directory)
+      (dolist (file (directory-files-recursively base-dir ".*" t))
+        (when (and (file-directory-p file)
+                   (string-match "{tmdb-\\([0-9]+\\)}" (file-name-nondirectory file)))
+          (push file all-tvshow-directories))))
+    ;; Return directories in the order they were discovered
+    (nreverse all-tvshow-directories)))
 
 (defun emacs-movies-parse-tags (tags)
   "Parse org tags list to handle both string and text property tags.
@@ -1149,6 +1183,101 @@ returns '(1972 tvshow)'."
   (should (equal (extract-tmdb-id "not-a-url") nil))
   (should (equal (extract-tmdb-id nil) nil))
   (should (equal (extract-tmdb-id "") nil)))
+
+;;; Multi-directory support tests
+
+(ert-deftest test-validate-directories-string-error ()
+  "Test that string configuration raises helpful error."
+  (let ((emacs-movies-directory "/some/path"))
+    (should-error (emacs-movies-validate-directories)
+                  :type 'error)))
+
+(ert-deftest test-validate-directories-empty-list ()
+  "Test that empty list passes validation."
+  (let ((emacs-movies-directory '()))
+    (should-not (emacs-movies-validate-directories))))
+
+(ert-deftest test-validate-directories-nonexistent ()
+  "Test validation error for non-existent directory."
+  (let ((emacs-movies-directory '("/nonexistent/path/12345")))
+    (should-error (emacs-movies-validate-directories)
+                  :type 'error)))
+
+(ert-deftest test-all-video-files-single-directory ()
+  "Test video file discovery with single directory."
+  (let* ((temp-dir (make-temp-file "emacs-movies-test-" t))
+         (emacs-movies-directory (list temp-dir)))
+    (unwind-protect
+        (progn
+          ;; Create test files
+          (write-region "" nil (expand-file-name "movie1.mkv" temp-dir))
+          (write-region "" nil (expand-file-name "movie2.mp4" temp-dir))
+          (write-region "" nil (expand-file-name "readme.txt" temp-dir))
+
+          ;; Test discovery
+          (let ((files (emacs-movies-all-video-files)))
+            (should (= (length files) 2))
+            (should (cl-some (lambda (f) (string-match-p "movie1\\.mkv" f)) files))
+            (should (cl-some (lambda (f) (string-match-p "movie2\\.mp4" f)) files))
+            (should-not (cl-some (lambda (f) (string-match-p "readme\\.txt" f)) files))))
+      ;; Cleanup
+      (delete-directory temp-dir t))))
+
+(ert-deftest test-all-video-files-multiple-directories ()
+  "Test video file discovery with multiple directories."
+  (let* ((temp-dir1 (make-temp-file "emacs-movies-test1-" t))
+         (temp-dir2 (make-temp-file "emacs-movies-test2-" t))
+         (emacs-movies-directory (list temp-dir1 temp-dir2)))
+    (unwind-protect
+        (progn
+          ;; Create test files in both directories
+          (write-region "" nil (expand-file-name "movie1.mkv" temp-dir1))
+          (write-region "" nil (expand-file-name "movie2.mp4" temp-dir2))
+
+          ;; Test discovery aggregates from both
+          (let ((files (emacs-movies-all-video-files)))
+            (should (= (length files) 2))
+            (should (cl-some (lambda (f) (string-match-p "movie1\\.mkv" f)) files))
+            (should (cl-some (lambda (f) (string-match-p "movie2\\.mp4" f)) files))))
+      ;; Cleanup
+      (delete-directory temp-dir1 t)
+      (delete-directory temp-dir2 t))))
+
+(ert-deftest test-all-video-files-empty-directories ()
+  "Test video file discovery with empty directories."
+  (let* ((temp-dir1 (make-temp-file "emacs-movies-test1-" t))
+         (temp-dir2 (make-temp-file "emacs-movies-test2-" t))
+         (emacs-movies-directory (list temp-dir1 temp-dir2)))
+    (unwind-protect
+        (progn
+          ;; Don't create any video files
+          (let ((files (emacs-movies-all-video-files)))
+            (should (= (length files) 0))))
+      ;; Cleanup
+      (delete-directory temp-dir1 t)
+      (delete-directory temp-dir2 t))))
+
+(ert-deftest test-all-tvshows-directories-multiple ()
+  "Test TV show directory discovery with multiple base directories."
+  (let* ((temp-dir1 (make-temp-file "emacs-movies-test1-" t))
+         (temp-dir2 (make-temp-file "emacs-movies-test2-" t))
+         (emacs-movies-directory (list temp-dir1 temp-dir2)))
+    (unwind-protect
+        (progn
+          ;; Create TV show directories with TMDB tags
+          (make-directory (expand-file-name "Show A {tmdb-12345}" temp-dir1))
+          (make-directory (expand-file-name "Show B {tmdb-67890}" temp-dir2))
+          (make-directory (expand-file-name "No Tag Show" temp-dir1))
+
+          ;; Test discovery
+          (let ((dirs (emacs-movies-all-tvshows-directories)))
+            (should (= (length dirs) 2))
+            (should (cl-some (lambda (d) (string-match-p "Show A {tmdb-12345}" d)) dirs))
+            (should (cl-some (lambda (d) (string-match-p "Show B {tmdb-67890}" d)) dirs))
+            (should-not (cl-some (lambda (d) (string-match-p "No Tag Show" d)) dirs))))
+      ;; Cleanup
+      (delete-directory temp-dir1 t)
+      (delete-directory temp-dir2 t))))
 
 (provide 'emacs-movies)
 
