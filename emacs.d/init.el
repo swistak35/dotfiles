@@ -2,7 +2,7 @@
 ;; M-: (load user-init-file)
 
 ;; Add lisp subdirectory to load path
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "lisp/emacs-movies" user-emacs-directory))
 
 ;;; Packaging
 
