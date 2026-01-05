@@ -33,6 +33,10 @@ Multiple directories allow managing video collections across different locations
 (defvar emacs-movies-tmdb-base-url "https://api.themoviedb.org/3"
   "Base URL for The Movie Database API.")
 
+(defvar emacs-movies-upflix-request-delay 2
+  "Number of seconds to wait between Upflix requests during bulk refresh.
+This helps avoid triggering rate limiting. Set to 0 to disable delay.")
+
 (defvar emacs-movies-tmdb-language "pl-PL"
   "Language code for TMDB API requests (e.g., 'pl-PL' for Polish, 'en-US' for English).")
 
@@ -1076,6 +1080,17 @@ Returns nil if fetch fails or URL is invalid."
                 (kill-buffer)
                 dom))))))))
 
+(defun emacs-movies-detect-rate-limiting (dom)
+  "Check if DOM represents a rate limiting response from Upflix.
+Upflix returns a prepared page about 'Miss Christmas' when rate limiting.
+Returns t if rate limited, nil otherwise."
+  (when dom
+    (let* ((h2-elements (dom-by-tag dom 'h2))
+           (english-title (when h2-elements
+                           (string-trim (dom-text (car h2-elements))))))
+      (and english-title
+           (string= english-title "Miss Christmas")))))
+
 (defun emacs-movies-follow-redirect (url)
   "Follow HTTP redirect for URL and return final destination.
 Returns original URL if redirect fails or URL is empty/nil."
@@ -1269,6 +1284,10 @@ Also updates subscription tags (on_netflix, on_disney, etc.)."
           (unless dom
             (error "Failed to fetch or parse HTML from Upflix"))
 
+          ;; Check for rate limiting
+          (when (emacs-movies-detect-rate-limiting dom)
+            (error "Rate limited by Upflix (detected 'Miss Christmas' page). Please wait 10 minutes before retrying"))
+
           ;; Extract data from DOM
           (let* ((subscriptions (emacs-movies-extract-subscriptions-from-dom dom))
                  (rents (emacs-movies-extract-rents-from-dom dom))
@@ -1312,6 +1331,89 @@ Also updates subscription tags (on_netflix, on_disney, etc.)."
       ;; Error handler
       (error (error "Failed to refresh Upflix data: %s"
                    (error-message-string err))))))
+
+(defun emacs-movies-refresh-all-upflix-by-timestamp ()
+  "Refresh all entries with UPFLIX_LINK, processing those without timestamps first, then by timestamp order.
+Iterates over all org headlines in the current buffer, skipping entries without UPFLIX_LINK property.
+For entries with UPFLIX_LINK, refreshes them in order: entries without LAST_REFRESHED timestamp first,
+then entries with timestamps from oldest to newest.
+Adds a delay between requests to avoid rate limiting. Stops processing if rate limited."
+  (interactive)
+  (let ((headlines-with-timestamps '())
+        (headlines-without-timestamps '())
+        (processed 0)
+        (total 0)
+        (rate-limited nil))
+    ;; Step 1: Iterate over all headlines
+    (org-map-entries
+     (lambda ()
+       (let* ((timestamp (org-entry-get nil "LAST_REFRESHED"))
+             (props (org-entry-properties))
+             (upflix-url (assoc "UPFLIX_LINK" props)))
+         (when (and upflix-url (not (string-empty-p (cdr upflix-url))))
+           (setq total (1+ total))
+           (if timestamp
+               ;; Add entry with timestamp to the list
+               (push (cons (org-read-date t t timestamp) (point)) headlines-with-timestamps)
+               ;; Add entry without timestamp to the list
+               (push (point) headlines-without-timestamps))))))
+
+    (message "Found %d entries to refresh" total)
+
+    ;; Step 2: Sort entries with timestamps
+    (setq headlines-with-timestamps (sort headlines-with-timestamps (lambda (a b) (time-less-p (car a) (car b)))))
+
+    ;; Step 3: Process entries without timestamp first
+    (catch 'rate-limited
+      (dolist (headline headlines-without-timestamps)
+        (goto-char headline)
+        (setq processed (1+ processed))
+        (message "[%d/%d] Processing entry without timestamp: %s" processed total (org-get-heading t t t t))
+        (condition-case err
+            (progn
+              (emacs-movies-refresh-upflix-data)
+              ;; Add delay between requests (but not after the last one)
+              (when (and (> emacs-movies-upflix-request-delay 0)
+                        (< processed total))
+                (message "Waiting %d seconds before next request..." emacs-movies-upflix-request-delay)
+                (sleep-for emacs-movies-upflix-request-delay)))
+          (error
+           (let ((err-msg (error-message-string err)))
+             (if (string-match-p "Rate limited" err-msg)
+                 (progn
+                   (message "Rate limiting detected! Stopping bulk refresh. Processed %d/%d entries." processed total)
+                   (setq rate-limited t)
+                   (throw 'rate-limited nil))
+               ;; Re-signal non-rate-limit errors
+               (message "Error refreshing entry: %s" err-msg))))))
+
+      ;; Step 4: Process entries with timestamps (only if not rate limited)
+      (unless rate-limited
+        (dolist (headline headlines-with-timestamps)
+          (goto-char (cdr headline))
+          (setq processed (1+ processed))
+          (message "[%d/%d] Processing entry with timestamp: %s" processed total (org-get-heading t t t t))
+          (condition-case err
+              (progn
+                (emacs-movies-refresh-upflix-data)
+                ;; Add delay between requests (but not after the last one)
+                (when (and (> emacs-movies-upflix-request-delay 0)
+                          (< processed total))
+                  (message "Waiting %d seconds before next request..." emacs-movies-upflix-request-delay)
+                  (sleep-for emacs-movies-upflix-request-delay)))
+            (error
+             (let ((err-msg (error-message-string err)))
+               (if (string-match-p "Rate limited" err-msg)
+                   (progn
+                     (message "Rate limiting detected! Stopping bulk refresh. Processed %d/%d entries." processed total)
+                     (setq rate-limited t)
+                     (throw 'rate-limited nil))
+                 ;; Re-signal non-rate-limit errors
+                 (message "Error refreshing entry: %s" err-msg))))))))
+
+    (if rate-limited
+        (message "Bulk refresh stopped due to rate limiting. Successfully processed %d/%d entries." processed total)
+      (message "Bulk refresh completed! Successfully processed %d/%d entries." processed total))))
 
 (defun rl-movies-refresh-entry ()
   "Refresh movie information for the current entry using Upflix API."
@@ -1592,11 +1694,84 @@ Tests with The Godfather (1972) page."
     (let ((subscriptions (emacs-movies-extract-subscriptions-from-dom mock-dom)))
       (should (= (length subscriptions) 0)))))
 
+(ert-deftest test-rate-limiting-detection-miss-christmas ()
+  "Test that rate limiting is detected when page shows 'Miss Christmas' (unit test)."
+  ;; Create a mock DOM with "Miss Christmas" as the English title (h2)
+  (let* ((mock-h2 '(h2 () "Miss Christmas"))
+         (mock-dom (list 'html nil mock-h2)))
+    (should (emacs-movies-detect-rate-limiting mock-dom))))
+
+(ert-deftest test-rate-limiting-detection-normal-page ()
+  "Test that rate limiting is not detected for normal movie pages (unit test)."
+  ;; Create a mock DOM with a normal movie title
+  (let* ((mock-h2 '(h2 () "The Godfather"))
+         (mock-dom (list 'html nil mock-h2)))
+    (should-not (emacs-movies-detect-rate-limiting mock-dom))))
+
+(ert-deftest test-rate-limiting-detection-no-title ()
+  "Test that rate limiting detection handles missing h2 gracefully (unit test)."
+  ;; Create a mock DOM without h2 element
+  (let ((mock-dom '(html () (div () "Some content"))))
+    (should-not (emacs-movies-detect-rate-limiting mock-dom))))
+
+(ert-deftest test-rate-limiting-detection-nil-dom ()
+  "Test that rate limiting detection handles nil DOM gracefully (unit test)."
+  (should-not (emacs-movies-detect-rate-limiting nil)))
+
 (ert-deftest test-update-subscription-tags ()
   "Test subscription tag management (unit test)."
   ;; This test would need an org buffer setup, so keeping it simple
   ;; Just verify the function exists and is callable
   (should (fboundp 'emacs-movies-update-subscription-tags)))
+
+(ert-deftest test-bulk-refresh-ordering ()
+  "Test that bulk refresh processes entries in correct order (unit test)."
+  (with-temp-buffer
+    (org-mode)
+    ;; Create test entries
+    (insert "* Entry without timestamp\n")
+    (insert ":PROPERTIES:\n")
+    (insert ":UPFLIX_LINK: https://upflix.pl/test1\n")
+    (insert ":END:\n\n")
+
+    (insert "* Entry with old timestamp\n")
+    (insert ":PROPERTIES:\n")
+    (insert ":UPFLIX_LINK: https://upflix.pl/test2\n")
+    (insert ":LAST_REFRESHED: [2020-01-01 Wed 12:00]\n")
+    (insert ":END:\n\n")
+
+    (insert "* Entry with newer timestamp\n")
+    (insert ":PROPERTIES:\n")
+    (insert ":UPFLIX_LINK: https://upflix.pl/test3\n")
+    (insert ":LAST_REFRESHED: [2023-01-01 Sun 12:00]\n")
+    (insert ":END:\n\n")
+
+    (insert "* Entry without UPFLIX_LINK\n")
+    (insert ":PROPERTIES:\n")
+    (insert ":OTHER: value\n")
+    (insert ":END:\n\n")
+
+    ;; Track which entries were visited in what order
+    (let ((visited-order '())
+          (original-refresh-fn (symbol-function 'emacs-movies-refresh-upflix-data))
+          (emacs-movies-upflix-request-delay 0))  ; Disable delay for test
+
+      ;; Mock the refresh function to track calls without making HTTP requests
+      (cl-letf (((symbol-function 'emacs-movies-refresh-upflix-data)
+                 (lambda ()
+                   (push (org-entry-get nil "UPFLIX_LINK") visited-order))))
+
+        ;; Run the bulk refresh
+        (goto-char (point-min))
+        (emacs-movies-refresh-all-upflix-by-timestamp)
+
+        ;; Verify correct order: entry without timestamp first, then old timestamp, then newer
+        (setq visited-order (reverse visited-order))
+        (should (= (length visited-order) 3))
+        (should (string= (nth 0 visited-order) "https://upflix.pl/test1"))  ; no timestamp
+        (should (string= (nth 1 visited-order) "https://upflix.pl/test2"))  ; 2020 timestamp
+        (should (string= (nth 2 visited-order) "https://upflix.pl/test3"))  ; 2023 timestamp
+        ))))
 
 (provide 'emacs-movies)
 
