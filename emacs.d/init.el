@@ -466,9 +466,9 @@
              (setq org-capture-templates
                    '(
 		     ("m" "Movie")
-                     ("mu" "Movie from Upflix" entry (file+headline "~/notes/movies.org" "Inbox")
+                     ("mu" "Movie from Upflix" entry (file+headline "~/gnotes/movies.org" "Inbox")
                       "** TOWATCH \n:PROPERTIES:\n:UPFLIX_LINK: %^{Please enter upflix link}\n:CREATED_AT: %U\n:END:%i\n")
-                     ("mf" "Movie from Filmweb" entry (file+headline "~/notes/movies.org" "Inbox")
+                     ("mf" "Movie from Filmweb" entry (file+headline "~/gnotes/movies.org" "Inbox")
                       "** TOWATCH \n:PROPERTIES:\n:FILMWEB_LINK: %^{Please enter filmweb link}\n:CREATED_AT: %U\n:END:%i\n")
                      ("mm" "Movie from The Movie DB" entry (file+headline "~/gnotes/movies.org" "Inbox")
                       "** TOWATCH \n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n")
@@ -939,7 +939,7 @@
 							(:discard (:scheduled t))
 							(:auto-outline-path))))
 			    (cons "Movies on Netflix"
-				  (list :buffers-files "~/notes/movies.org"
+				  (list :buffers-files "~/gnotes/movies.org"
 					:query '(and (tags "on_netflix"))
 					:title "Movies on Netflix"
 					:sort nil
