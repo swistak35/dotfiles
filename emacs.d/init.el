@@ -1217,6 +1217,9 @@
   (setq org-attach-screenshot-command-line "spectacle -o %f")
   )
 
+(use-package vue-ts-mode
+  :straight (:host github :repo "8uff3r/vue-ts-mode" :branch "main"))
+
 
 ;; Themes
 (use-package solarized-theme
