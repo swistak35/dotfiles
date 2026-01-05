@@ -1,0 +1,14 @@
+[Desktop Entry]
+Categories=Qt;KDE;System;TerminalEmulator;
+Comment[pl_PL]=Emulator rozwijanego terminala oparty o technologię KDE Konsole.
+Comment=A drop-down terminal emulator based on KDE Konsole technology.
+DBusActivatable=true
+Exec=yakuake
+GenericName[pl_PL]=Rozwijany terminal
+GenericName=Drop-down Terminal
+Icon=yakuake
+Name[pl_PL]=Yakuake
+Name=Yakuake
+StartupNotify=false
+Terminal=false
+Type=Application
