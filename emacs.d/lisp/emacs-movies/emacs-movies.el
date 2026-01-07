@@ -1191,16 +1191,52 @@ Returns final URL or nil if not found."
   "Update subscription tags based on SUBSCRIPTIONS list.
 Adds on_SERVICE tags for services in list, removes tags for services not in list.
 Modifies current entry's tags."
-  (let ((current-local-tags (org-get-tags nil t)))
-    (dolist (subscription-name rl-movies-supported-subscriptions)
-      (let ((subscription-tag (concat "on_" subscription-name)))
-        (if (member subscription-name subscriptions)
-            ;; Add tag if subscription is present
-            (unless (member subscription-tag current-local-tags)
-              (push subscription-tag current-local-tags))
-          ;; Remove tag if subscription is not present
-          (setq current-local-tags (delete subscription-tag current-local-tags)))))
-    (org-set-tags (delete-dups current-local-tags))))
+  (save-excursion
+    (org-back-to-heading t)
+    (let ((current-local-tags (org-get-tags nil t)))
+      (dolist (subscription-name rl-movies-supported-subscriptions)
+        (let ((subscription-tag (concat "on_" subscription-name)))
+          (if (member subscription-name subscriptions)
+              ;; Add tag if subscription is present
+              (unless (member subscription-tag current-local-tags)
+                (push subscription-tag current-local-tags))
+            ;; Remove tag if subscription is not present
+            (setq current-local-tags (delete subscription-tag current-local-tags)))))
+      (org-set-tags (delete-dups current-local-tags)))))
+
+(defun emacs-movies-sync-all-subscription-tags ()
+  "Sync subscription tags for all entries that have SUBSCRIPTIONS property.
+Iterates over all org entries in the current buffer and updates on_SERVICE tags
+based on the SUBSCRIPTIONS property value."
+  (interactive)
+  (let ((processed 0)
+        (updated 0))
+    (org-map-entries
+     (lambda ()
+       (let ((subscriptions-prop (org-entry-get nil "SUBSCRIPTIONS")))
+         (when (and subscriptions-prop (not (string-empty-p subscriptions-prop)))
+           (setq processed (1+ processed))
+           (let ((subscriptions-list (split-string subscriptions-prop)))
+             (message "[%d] Syncing tags for: %s (subscriptions: %s)"
+                      processed
+                      (org-get-heading t t t t)
+                      subscriptions-prop)
+             (emacs-movies-update-subscription-tags subscriptions-list)
+             (setq updated (1+ updated)))))))
+    (message "Processed %d entries, updated %d entries with subscription tags" processed updated)))
+
+(defun emacs-movies-set-upflix-link ()
+  "Set UPFLIX_LINK property for current entry.
+Prompts for the Upflix URL (pre-filled with clipboard contents) and sets it as a property on the current org entry."
+  (interactive)
+  (let* ((clipboard-value (condition-case nil
+                              (current-kill 0 t)
+                            (error nil)))
+         (upflix-url (read-string "Upflix URL: " clipboard-value)))
+    (save-excursion
+      (org-back-to-heading t)
+      (org-set-property "UPFLIX_LINK" upflix-url)
+      (message "Set UPFLIX_LINK to: %s" upflix-url))))
 
 (defun rl-movies-refresh-all-by-timestamp ()
   "Refresh all movie entries, processing those without timestamps first, then by timestamp order."
