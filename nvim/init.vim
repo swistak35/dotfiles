@@ -238,10 +238,10 @@ set autowriteall
 set background=dark
 set backspace=indent,eol,start
 set backup
-set backupdir=~/.vim/tmp,.
+set backupdir=~/.cache/nvim/tmp,.
 set clipboard=unnamed,unnamedplus           "save to system clipboard by default
 set nocompatible
-set directory=~/.vim/swp,.
+set directory=~/.cache/nvim/swp,.
 set expandtab                   "expand tabs to spaces
 set exrc                        "per directory vimrc
 set gdefault                    "let's make global changing default
@@ -275,7 +275,7 @@ set colorcolumn=80
 set t_Co=256                    "256colors support. Required by airline
 " set t_AB=^[[48;5;%dm
 " set t_AF=^[[38;5;%dm
-set undodir=~/.vim/undo,.
+set undodir=~/.cache/nvim/undo,.
 set undofile
 set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.pyc,*.class,.svn,*.gem
 set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
