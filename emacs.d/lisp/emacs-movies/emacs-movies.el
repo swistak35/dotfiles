@@ -1001,6 +1001,62 @@ on disk but are not referenced in any org entry's DOWNLOADED_FILEPATH property."
       (append (mapcar (lambda (file) (list 'movie file)) unreferenced-files)
               (mapcar (lambda (dir) (list 'tvshow dir)) unreferenced-dirs)))))
 
+(defun emacs-movies-find-duplicate-tmdb-entries ()
+  "Find and list org entries with duplicate TMDB IDs."
+  (interactive)
+  (let ((tmdb-map (make-hash-table :test 'equal))
+        (duplicates '()))
+
+    ;; Collect all entries grouped by TMDB ID and type
+    (org-map-entries
+     (lambda ()
+       (let* ((tmdb-url (org-entry-get nil "TMDB_URL"))
+              (heading (org-get-heading t t t t)))
+         (when tmdb-url
+           (let ((tmdb-data (extract-tmdb-id tmdb-url)))
+             (when tmdb-data
+               (let* ((tmdb-id (car tmdb-data))
+                      (content-type (cadr tmdb-data))
+                      (key (format "%s-%s" tmdb-id content-type))
+                      (line-num (line-number-at-pos))
+                      (existing (gethash key tmdb-map)))
+                 (puthash key
+                          (cons (list heading line-num) existing)
+                          tmdb-map)))))))
+     nil 'file)
+
+    ;; Find duplicates (TMDB IDs with multiple entries)
+    (maphash
+     (lambda (key entries)
+       (when (> (length entries) 1)
+         (push (cons key entries) duplicates)))
+     tmdb-map)
+
+    ;; Display results
+    (if duplicates
+        (with-current-buffer (get-buffer-create "*TMDB Duplicates*")
+          (erase-buffer)
+          (insert (format "Found %d duplicate TMDB ID(s):\n\n" (length duplicates)))
+          (dolist (dup (sort duplicates (lambda (a b)
+                                          (let* ((a-parts (split-string (car a) "-"))
+                                                 (b-parts (split-string (car b) "-"))
+                                                 (a-id (string-to-number (car a-parts)))
+                                                 (b-id (string-to-number (car b-parts))))
+                                            (< a-id b-id)))))
+            (let* ((key (car dup))
+                   (parts (split-string key "-"))
+                   (tmdb-id (car parts))
+                   (content-type (cadr parts)))
+              (insert (format "TMDB ID: %s (%s) - %d entries\n" tmdb-id content-type (length (cdr dup))))
+              (dolist (entry (cdr dup))
+                (insert (format "  - %s (line %s)\n"
+                                (car entry)
+                                (cadr entry))))
+              (insert "\n")))
+          (display-buffer (current-buffer))
+          (message "Found %d duplicate TMDB ID(s)" (length duplicates)))
+      (message "No duplicate TMDB IDs found"))))
+
 (defun extract-tmdb-id (url)
   "Extract TMDB ID and type from a TMDB URL.
 For movies like 'https://www.themoviedb.org/movie/69315-battlestar-galactica-razor'
