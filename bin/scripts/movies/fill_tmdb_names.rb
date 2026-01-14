@@ -195,7 +195,7 @@ class TmdbNameFiller
     title = title.gsub(/\b(720p|1080p|1080i|1080pl|2160p|4k|BluRay|WEBRip|DVDRip|BDRip|BRRip|HDTV|WEB-DL)\b/i, '') # Remove quality tags
     title = title.gsub(/\b(x264|x263-drp|x265|HEVC|H264|H265|h\.264|mpeg-2|mpeg2|NF|MA)\b/i, '') # Remove codec info
     title = title.gsub(/\b(DD|AAC|2\.0|AC3|6CH|DTS|HD|DDP|MP3|DTS-HD|atmos|EAC3|DD-1\.0|DD1\.0|DD2\.0|DD5\.1|DD-5\.1|AVC|VC-1|DTS-HD|DDP2\.0|DDP5\.1|6\.1|AAC5\.1|DSNP|TrueHD|5\.1)\b/i, '') # Remove audio codec info
-    title = title.gsub(/\b(remastered|remux|multi|PLSUB|EXTENDED|theatrical|amzn|HDR|SDR|NF|Amazon|DL|PL|POLISH|PLDUB|repack|V2)\b/i, '') # Remove other common keywords
+    title = title.gsub(/\b(remastered|remux|multi|PLSUB|EXTENDED|theatrical|amzn|HDR|SDR|NF|Amazon|HBO Max|DL|PL|POLISH|PLDUB|repack|V2)\b/i, '') # Remove other common keywords
     title = title.gsub(/\b(dsite|shaanig|drp|smurf|veto|lts|denda|apex|rarbg|solar|maryjane|Swistak|kiko|kit|etrg|vppv|yify|ozw|dream|ltn|tpx|rexsio|MR|EMiS|Ralf|B89|K12|playSD|RBG|\[YTS\.MX\])\b/i, '') # Remove ripper
     title = title.gsub(/[-._\(\)]/, ' ') # Replace separators with spaces
     title = title.gsub(/\s+/, ' ') # Collapse multiple spaces
