@@ -470,10 +470,15 @@
                       "** TOWATCH \n:PROPERTIES:\n:UPFLIX_LINK: %^{Please enter upflix link}\n:CREATED_AT: %U\n:END:%i\n")
                      ("mf" "Movie from Filmweb" entry (file+headline "~/gnotes/movies.org" "Inbox")
                       "** TOWATCH \n:PROPERTIES:\n:FILMWEB_LINK: %^{Please enter filmweb link}\n:CREATED_AT: %U\n:END:%i\n")
-                     ("mm" "Movie from The Movie DB" entry (file+headline "~/gnotes/movies.org" "Inbox")
-                      "** TOWATCH :movie:new:\n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n")
-                     ("mt" "TV Show from The Movie DB" entry (file+headline "~/gnotes/movies.org" "Inbox")
-                      "** TOWATCH :tvshow:new:\n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n")
+                     ("mi" "Inbox" entry (file+headline "~/gnotes/movies.org" "Inbox")
+                      "** TOWATCH :movie:new:\n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n"
+		      :before-finalize (emacs-movies-refresh-tmdb-data emacs-movies-search-upflix-and-set-link))
+                     ("mm" "Movie from The Movie DB" entry (file+headline "~/gnotes/movies.org" "Filmy")
+                      "** TOWATCH :movie:new:\n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n"
+		      :before-finalize (emacs-movies-refresh-tmdb-data emacs-movies-search-upflix-and-set-link))
+                     ("mt" "TV Show from The Movie DB" entry (file+headline "~/gnotes/movies.org" "Seriale")
+                      "** TOWATCH :tvshow:new:\n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n"
+		      :before-finalize (emacs-movies-refresh-tmdb-data emacs-movies-search-upflix-and-set-link))
                      ("w" "Web")
 		     ("wa" "Archive" entry (file+headline "~/notes/bookmarks.org" "Archive")
 		      "** READ %:description\n%i\n"
@@ -940,13 +945,6 @@
 							(:priority "C")
 							(:discard (:scheduled t))
 							(:auto-outline-path))))
-			    (cons "Movies on Netflix"
-				  (list :buffers-files "~/gnotes/movies.org"
-					:query '(and (tags "on_netflix"))
-					:title "Movies on Netflix"
-					:sort nil
-					:narrow nil
-					:super-groups nil))
 			    (cons "Cooking plans"
 				  (list :buffers-files "~/notes/cooking.org"
 					:query '(and (tags "@cooking"))
