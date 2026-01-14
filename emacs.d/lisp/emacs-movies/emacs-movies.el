@@ -1136,6 +1136,53 @@ Returns nil if fetch fails or URL is invalid."
                 (kill-buffer)
                 dom))))))))
 
+(defun emacs-movies-fetch-json-from-url (url)
+  "Fetch JSON from URL and return parsed data structure.
+Returns nil if fetch fails or URL is invalid."
+  (when (and url (not (string-empty-p url)))
+    (let ((response-buffer (url-retrieve-synchronously url)))
+      (when response-buffer
+        (with-current-buffer response-buffer
+          (url-http-parse-response)
+          (when (eq url-http-response-status 200)
+            (goto-char (point-min))
+            (when (re-search-forward "\n\n" nil t)
+              (condition-case err
+                  (let ((json-data (json-parse-buffer :object-type 'alist)))
+                    (kill-buffer)
+                    json-data)
+                ((json-error error)
+                 (kill-buffer)
+                 (message "Invalid JSON response from URL: %s" url)
+                 nil)))))))))
+
+(defun emacs-movies-search-upflix (query)
+  "Search Upflix for QUERY and return list of results.
+Returns list of plists with :title, :year, :type, :url, :title-alt fields.
+Returns nil if search fails or no results found."
+  (let* ((encoded-query (url-hexify-string query))
+         ;; Replace %20 with + for Upflix API format
+         (query-with-plus (replace-regexp-in-string "%20" "+" encoded-query))
+         (api-url (format "https://upflix.pl/api/video/index?search=%s" query-with-plus)))
+    (condition-case err
+        (let ((json-response (emacs-movies-fetch-json-from-url api-url)))
+          (when json-response
+            (let* ((results-array (alist-get 'models json-response))
+                   (count (alist-get 'count json-response)))
+              (when (and results-array (> count 0))
+                ;; Convert JSON results to plist format
+                (mapcar (lambda (result)
+                          (list :title (alist-get 'title result)
+                                :title-alt (alist-get 'title_alt result)
+                                :year (alist-get 'year result)
+                                :type (alist-get 'type result)
+                                :url (concat "https://upflix.pl" (alist-get 'url result))
+                                :score (alist-get 'score result)))
+                        (append results-array nil))))))
+      (error
+       (message "Upflix search failed: %s" (error-message-string err))
+       nil))))
+
 (defun emacs-movies-detect-rate-limiting (dom)
   "Check if DOM represents a rate limiting response from Upflix.
 Upflix returns a prepared page about 'Miss Christmas' when rate limiting.
@@ -1293,6 +1340,59 @@ Prompts for the Upflix URL (pre-filled with clipboard contents) and sets it as a
       (org-back-to-heading t)
       (org-set-property "UPFLIX_LINK" upflix-url)
       (message "Set UPFLIX_LINK to: %s" upflix-url))))
+
+(defun emacs-movies-search-upflix-and-set-link ()
+  "Search Upflix using ORIGINAL_TITLE and let user select best match.
+Takes ORIGINAL_TITLE property, searches Upflix API, displays first 3 results,
+and sets UPFLIX_LINK property on selection. Handles case of no results."
+  (interactive)
+  (let ((original-title (org-entry-get nil "ORIGINAL_TITLE")))
+    ;; Validate ORIGINAL_TITLE exists
+    (unless original-title
+      (error "No ORIGINAL_TITLE property found for this entry"))
+
+    (when (string-empty-p original-title)
+      (error "ORIGINAL_TITLE is empty"))
+
+    (message "Searching Upflix for: %s" original-title)
+
+    (condition-case err
+        (let* ((all-results (emacs-movies-search-upflix original-title))
+               ;; Take only first 3 results
+               (top-results (seq-take all-results 3)))
+
+          (if (null top-results)
+              ;; No results case
+              (message "No results found on Upflix for: %s" original-title)
+
+            ;; Format choices for display
+            (let* ((choices (mapcar (lambda (result)
+                                      (let ((alt (plist-get result :title-alt)))
+                                        (format "%s [%s] (%s)%s"
+                                               (plist-get result :title)
+                                               (plist-get result :type)
+                                               (or (plist-get result :year) "N/A")
+                                               (if (and alt (not (string-empty-p alt)))
+                                                   (format " - %s" alt)
+                                                 ""))))
+                                    top-results))
+                   (choices-with-none (append choices '("None of these")))
+                   (selected (completing-read
+                             (format "Select Upflix match for \"%s\": " original-title)
+                             choices-with-none)))
+
+              ;; Handle selection
+              (unless (string= selected "None of these")
+                (let* ((selected-index (cl-position selected choices :test #'string=))
+                       (selected-result (nth selected-index top-results))
+                       (upflix-url (plist-get selected-result :url)))
+                  (save-excursion
+                    (org-back-to-heading t)
+                    (org-set-property "UPFLIX_LINK" upflix-url)
+                    (message "Set UPFLIX_LINK to: %s" upflix-url)))))))
+
+      (error
+       (message "Failed to search Upflix: %s" (error-message-string err))))))
 
 (defun rl-movies-refresh-all-by-timestamp ()
   "Refresh all movie entries, processing those without timestamps first, then by timestamp order."
