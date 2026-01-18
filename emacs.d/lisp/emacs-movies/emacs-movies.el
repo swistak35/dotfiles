@@ -1466,7 +1466,7 @@ Also updates subscription tags (on_netflix, on_disney, etc.)."
     (when (string-empty-p upflix-url)
       (error "UPFLIX_LINK is empty"))
 
-    (message "Fetching Upflix data from %s..." upflix-url)
+    (message "Fetching Upflix data from %s... (heading: %s)" upflix-url (org-get-heading t t t t))
 
     ;; Wrap in condition-case for error handling
     (condition-case err
@@ -1489,6 +1489,7 @@ Also updates subscription tags (on_netflix, on_disney, etc.)."
             ;; Update org properties
             (save-excursion
               (org-back-to-heading)
+              (message "After org-back-to-heading, heading: %s" (org-get-heading t t t t))
 
               ;; Always set SUBSCRIPTIONS and RENTS (even if empty)
               (org-set-property "SUBSCRIPTIONS"
@@ -1555,12 +1556,36 @@ Adds a delay between requests to avoid rate limiting. Stops processing if rate l
     ;; Step 2: Sort entries with timestamps
     (setq headlines-with-timestamps (sort headlines-with-timestamps (lambda (a b) (time-less-p (car a) (car b)))))
 
+    ;; DEBUG: Print first 100 entries with their timestamps
+    (message "\n=== DEBUG: First 100 entries to be processed (sorted order) ===")
+    (let ((count 0))
+      ;; First, entries without timestamp
+      (dolist (headline headlines-without-timestamps)
+        (when (< count 100)
+          (save-excursion
+            (goto-char headline)
+            (message "[%d] NO TIMESTAMP - %s" (1+ count) (org-get-heading t t t t)))
+          (setq count (1+ count))))
+      ;; Then, entries with timestamp
+      (dolist (headline headlines-with-timestamps)
+        (when (< count 100)
+          (save-excursion
+            (goto-char (cdr headline))
+            (let ((timestamp (org-entry-get nil "LAST_REFRESHED")))
+              (message "[%d] %s - %s" (1+ count) timestamp (org-get-heading t t t t))))
+          (setq count (1+ count)))))
+    (message "=== END DEBUG ===\n")
+
     ;; Step 3: Process entries without timestamp first
     (catch 'rate-limited
       (dolist (headline headlines-without-timestamps)
         (goto-char headline)
         (setq processed (1+ processed))
-        (message "[%d/%d] Processing entry without timestamp: %s" processed total (org-get-heading t t t t))
+        (let ((last-refreshed (org-entry-get nil "LAST_REFRESHED")))
+          (message "[%d/%d] Processing entry (LAST_REFRESHED: %s): %s"
+                   processed total
+                   (or last-refreshed "NO TIMESTAMP")
+                   (org-get-heading t t t t)))
         (condition-case err
             (progn
               (emacs-movies-refresh-upflix-data)
@@ -1584,7 +1609,11 @@ Adds a delay between requests to avoid rate limiting. Stops processing if rate l
         (dolist (headline headlines-with-timestamps)
           (goto-char (cdr headline))
           (setq processed (1+ processed))
-          (message "[%d/%d] Processing entry with timestamp: %s" processed total (org-get-heading t t t t))
+          (let ((last-refreshed (org-entry-get nil "LAST_REFRESHED")))
+            (message "[%d/%d] Processing entry (LAST_REFRESHED: %s): %s"
+                     processed total
+                     (or last-refreshed "NO TIMESTAMP")
+                     (org-get-heading t t t t)))
           (condition-case err
               (progn
                 (emacs-movies-refresh-upflix-data)
