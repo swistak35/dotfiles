@@ -118,21 +118,38 @@ class StreamFabFilenameFixer
 
     # Step 2: Replace spaces with dots in basename
     transformed = basename.gsub(' ', '.')
+    transformed = transformed.gsub('_', '.')
 
-    # Step 3: Remove non-allowed characters from basename
+    # Step 3: Replace Polish characters with their non-accented counterparts
+    polish_chars = {
+      'ą' => 'a', 'Ą' => 'A',
+      'ć' => 'c', 'Ć' => 'C',
+      'ę' => 'e', 'Ę' => 'E',
+      'ł' => 'l', 'Ł' => 'L',
+      'ń' => 'n', 'Ń' => 'N',
+      'ó' => 'o', 'Ó' => 'O',
+      'ś' => 's', 'Ś' => 'S',
+      'ź' => 'z', 'Ź' => 'Z',
+      'ż' => 'z', 'Ż' => 'Z'
+    }
+    polish_chars.each do |accented, plain|
+      transformed = transformed.gsub(accented, plain)
+    end
+
+    # Step 4: Remove non-allowed characters from basename
     # Keep only: a-z, A-Z, 0-9, dots, dashes
     transformed = transformed.gsub(/[^a-zA-Z0-9.\-]/, '')
 
-    # Step 4: Collapse multiple consecutive dots into single dot
+    # Step 5: Collapse multiple consecutive dots into single dot
     transformed = transformed.gsub(/\.+/, '.')
 
-    # Step 5: Remove leading/trailing dots from basename
+    # Step 6: Remove leading/trailing dots from basename
     transformed = transformed.gsub(/^\.+|\.+$/, '')
 
-    # Step 6: Handle empty filename case
+    # Step 7: Handle empty filename case
     return nil if transformed.empty?
 
-    # Step 7: Rejoin with extension (preserving original extension)
+    # Step 8: Rejoin with extension (preserving original extension)
     return transformed + ext
   end
 end
