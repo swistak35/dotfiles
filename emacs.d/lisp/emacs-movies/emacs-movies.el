@@ -259,9 +259,9 @@ If confirmed, stores the filepath in DOWNLOADED_FILEPATH property."
                                           (format "  %s" item))
                                         matching-items "\n"))
                   (item-type (if is-tvshow "directory" "file")))
-              (when (yes-or-no-p (format "Found %s:\n%s\n\nAre these the correct %ss for this entry? " 
+              (when (yes-or-no-p (format "Found %s:\n%s\n\nAre these the correct %ss for this entry? "
                                          (if (= (length matching-items) 1) item-type (concat item-type "s"))
-                                         item-list 
+                                         item-list
                                          item-type))
                 (let* ((filepath (if (= (length matching-items) 1)
                                      (car matching-items)
@@ -270,8 +270,8 @@ If confirmed, stores the filepath in DOWNLOADED_FILEPATH property."
                        (org-link (format "[[file:%s][%s]]" filepath filename)))
                   (org-set-property "DOWNLOADED_FILEPATH" org-link)
                   (message "Set DOWNLOADED_FILEPATH to: %s" org-link))))
-          (message "No downloaded %ss found with TMDB ID %s" 
-                   (if is-tvshow "directories" "files") 
+          (message "No downloaded %ss found with TMDB ID %s"
+                   (if is-tvshow "directories" "files")
                    tmdb-id))))))
 
 (defun emacs-movies-search-tmdb (query)
@@ -434,7 +434,7 @@ asks for user confirmation, and sets properties if confirmed."
       (error "TMDB ID must contain only numbers"))
 
     (message "Looking up %s with TMDB ID %s..." content-type tmdb-id)
-    
+
     (condition-case err
         (let* ((details (if is-tvshow
                             (emacs-movies-get-tmdb-tv-by-id tmdb-id)
@@ -455,8 +455,8 @@ asks for user confirmation, and sets properties if confirmed."
                          (substring date-field 0 4)
                        "Unknown"))
                (original-language (plist-get details :original_language))
-               (tmdb-url (format "https://www.themoviedb.org/%s/%s" 
-                                 (if is-tvshow "tv" "movie") 
+               (tmdb-url (format "https://www.themoviedb.org/%s/%s"
+                                 (if is-tvshow "tv" "movie")
                                  tmdb-id)))
 
           (let ((info-text (format "%s:\nTitle: %s\nOriginal Title: %s\nYear: %s\nLanguage: %s\nOverview: %s\n\nIs this the correct %s? "
@@ -490,7 +490,7 @@ asks for user confirmation, and sets properties if confirmed."
 
 (defun emacs-movies-refresh-tmdb-data ()
   "Refresh TMDB data for current entry based on existing TMDB_URL property.
-Fetches current data from TMDB API and updates TITLE, ORIGINAL_TITLE, 
+Fetches current data from TMDB API and updates TITLE, ORIGINAL_TITLE,
 ORIGINAL_LANGUAGE, and YEAR properties, then updates the heading."
   (interactive)
   (let ((tmdb-url (org-entry-get nil "TMDB_URL")))
@@ -506,10 +506,10 @@ ORIGINAL_LANGUAGE, and YEAR properties, then updates the heading."
       (unless (memq content-type '(movie tvshow))
         (error "Unknown content type from URL: %s" tmdb-url))
 
-      (message "Refreshing %s data for TMDB ID %s..." 
-               (if (eq content-type 'tvshow) "TV show" "movie") 
+      (message "Refreshing %s data for TMDB ID %s..."
+               (if (eq content-type 'tvshow) "TV show" "movie")
                tmdb-id)
-      
+
       (condition-case err
           (let* ((details (if (eq content-type 'tvshow)
                               (emacs-movies-get-tmdb-tv-by-id tmdb-id)
@@ -540,7 +540,7 @@ ORIGINAL_LANGUAGE, and YEAR properties, then updates the heading."
             (emacs-movies-update-heading-from-properties)
 
             (message "Refreshed TMDB data: %s (%s)" title year))
-        (error (error "Failed to refresh %s data: %s" 
+        (error (error "Failed to refresh %s data: %s"
                       (if (eq content-type 'tvshow) "TV show" "movie")
                       (error-message-string err)))))))
 
@@ -622,8 +622,8 @@ Sets TMDB_URL property to the selected search result's TMDB URL."
                                        (>= (length date-field) 4))
                                    (substring date-field 0 4)
                                  ""))
-                         (tmdb-url (format "https://www.themoviedb.org/%s/%d" 
-                                           (if is-tvshow "tv" "movie") 
+                         (tmdb-url (format "https://www.themoviedb.org/%s/%d"
+                                           (if is-tvshow "tv" "movie")
                                            tmdb-id)))
 
                     ;; Set all the properties
@@ -735,7 +735,7 @@ Returns list of (TMDB_ID . FILEPATH) pairs for orphaned movie files."
          (file-tmdb-ids (mapcar #'car files-with-tmdb))
          (org-tmdb-ids '())
          (orphaned-files '()))
-    
+
     ;; Collect TMDB IDs from movie org entries only
     (org-map-entries
      (lambda ()
@@ -746,14 +746,14 @@ Returns list of (TMDB_ID . FILEPATH) pairs for orphaned movie files."
                     (tmdb-id (car tmdb-info)))
                (when tmdb-id
                  (push tmdb-id org-tmdb-ids))))))))
-    
+
     ;; Find movie files whose TMDB IDs are not in movie org entries
     (dolist (file-tmdb-id file-tmdb-ids)
       (unless (member file-tmdb-id org-tmdb-ids)
         (let ((files-for-id (find-files-with-tmdb-id file-tmdb-id all-files)))
           (dolist (file files-for-id)
             (push (cons file-tmdb-id file) orphaned-files)))))
-    
+
     orphaned-files))
 
 (defun emacs-movies-get-orphaned-tvshow-directories ()
@@ -765,7 +765,7 @@ Returns list of (TMDB_ID . DIRECTORY_PATH) pairs for orphaned TV show directorie
          (tvshow-tmdb-ids (mapcar #'car tvshow-dirs))
          (org-tmdb-ids '())
          (orphaned-dirs '()))
-    
+
     ;; Collect TMDB IDs from tvshow org entries only
     (org-map-entries
      (lambda ()
@@ -776,14 +776,14 @@ Returns list of (TMDB_ID . DIRECTORY_PATH) pairs for orphaned TV show directorie
                     (tmdb-id (car tmdb-info)))
                (when tmdb-id
                  (push tmdb-id org-tmdb-ids))))))))
-    
+
     ;; Find TV show directories whose TMDB IDs are not in tvshow org entries
     (dolist (tvshow-tmdb-id tvshow-tmdb-ids)
       (unless (member tvshow-tmdb-id org-tmdb-ids)
         (let ((dir-path (cdr (assoc tvshow-tmdb-id tvshow-dirs))))
           (when dir-path
             (push (cons tvshow-tmdb-id dir-path) orphaned-dirs)))))
-    
+
     orphaned-dirs))
 
 (defun emacs-movies-create-org-entries-for-orphaned-items ()
@@ -791,12 +791,12 @@ Returns list of (TMDB_ID . DIRECTORY_PATH) pairs for orphaned TV show directorie
 Creates TOWATCH entries with appropriate tags and TMDB_URL properties,
 then refreshes TMDB data and updates headings."
   (interactive)
-  
+
   (let ((orphaned-movies (emacs-movies-get-orphaned-movie-files))
         (orphaned-tvshows (emacs-movies-get-orphaned-tvshow-directories)))
-    
+
     (message "Creating org entries for orphaned items...")
-    
+
     ;; Find or create Inbox heading
     (save-excursion
       (goto-char (point-min))
@@ -805,44 +805,44 @@ then refreshes TMDB data and updates headings."
         (goto-char (point-max))
         (unless (bolp) (insert "\n"))
         (insert "* Inbox\n"))
-      
+
       ;; Go to the end of the Inbox section
       (org-end-of-subtree)
-      
+
       ;; Create entries for orphaned movies
       (dolist (movie orphaned-movies)
         (let* ((tmdb-id (car movie))
                (filepath (cdr movie))
                (filename (file-name-nondirectory filepath))
                (tmdb-url (format "https://www.themoviedb.org/movie/%s" tmdb-id)))
-          
+
           (insert (format "** TOWATCH %s :movie:\n" filename))
           (org-set-property "TMDB_URL" tmdb-url)
-          
+
           ;; Refresh TMDB data and update heading
           (condition-case err
               (emacs-movies-refresh-tmdb-data)
-            (error 
-             (message "Warning: Could not refresh TMDB data for movie %s: %s" 
+            (error
+             (message "Warning: Could not refresh TMDB data for movie %s: %s"
                      filename (error-message-string err))))))
-      
+
       ;; Create entries for orphaned TV shows
       (dolist (tvshow orphaned-tvshows)
         (let* ((tmdb-id (car tvshow))
                (dirpath (cdr tvshow))
                (dirname (file-name-nondirectory dirpath))
                (tmdb-url (format "https://www.themoviedb.org/tv/%s" tmdb-id)))
-          
+
           (insert (format "** TOWATCH %s :tvshow:\n" dirname))
           (org-set-property "TMDB_URL" tmdb-url)
-          
+
           ;; Refresh TMDB data and update heading
           (condition-case err
               (emacs-movies-refresh-tmdb-data)
-            (error 
-             (message "Warning: Could not refresh TMDB data for TV show %s: %s" 
+            (error
+             (message "Warning: Could not refresh TMDB data for TV show %s: %s"
                      dirname (error-message-string err)))))))
-    
+
     (message "Finished creating org entries for orphaned items")))
 
 (defun emacs-movies-sort-entries-under-heading (heading)
@@ -857,10 +857,10 @@ Prompts for heading name if called interactively."
           (let ((start-pos (point))
                 (level (org-current-level))
                 entries)
-            
+
             ;; Collect all direct child entries
             (org-goto-first-child)
-            (while (and (org-at-heading-p) 
+            (while (and (org-at-heading-p)
                        (> (org-current-level) level))
               (if (= (org-current-level) (1+ level))
                   ;; This is a direct child - collect it
@@ -872,12 +872,12 @@ Prompts for heading name if called interactively."
                     (goto-char entry-end))
                 ;; Skip over deeper nested entries
                 (org-end-of-subtree t t)))
-            
+
             (if entries
                 (progn
                   ;; Sort entries alphabetically by heading text
                   (setq entries (sort entries (lambda (a b) (string< (car a) (car b)))))
-                  
+
                   ;; Delete all child entries
                   (goto-char start-pos)
                   (org-goto-first-child)
@@ -885,14 +885,14 @@ Prompts for heading name if called interactively."
                     (goto-char start-pos)
                     (org-end-of-subtree)
                     (delete-region child-start (point)))
-                  
+
                   ;; Insert sorted entries
                   (goto-char start-pos)
                   (org-end-of-line)
                   (insert "\n")
                   (dolist (entry entries)
                     (insert (cdr entry)))
-                  
+
                   (message "Sorted %d entries under '%s'" (length entries) heading))
               (message "No child entries found under '%s'" heading))))
       (error "Heading '%s' not found" heading))))
@@ -1328,6 +1328,28 @@ based on the SUBSCRIPTIONS property value."
              (setq updated (1+ updated)))))))
     (message "Processed %d entries, updated %d entries with subscription tags" processed updated)))
 
+(defun emacs-movies-tag-missing-files ()
+  "Tag all entries where DOWNLOADED_FILEPATH contains 'missing' or 'nie maja' with a 'missing' tag.
+Iterates over all org entries in the current buffer and adds 'missing' tag
+if the DOWNLOADED_FILEPATH property contains the word 'missing' or 'nie maja' in its path."
+  (interactive)
+  (let ((processed 0)
+        (tagged 0))
+    (org-map-entries
+     (lambda ()
+       (let ((filepath (org-entry-get nil "DOWNLOADED_FILEPATH")))
+         (when (and filepath
+                    (or (string-match-p "missing" filepath)
+                        (string-match-p "nie maja" filepath)))
+           (setq processed (1+ processed))
+           (let* ((current-local-tags (org-get-tags nil t)))
+             (unless (member "missing" current-local-tags)
+               (push "missing" current-local-tags)
+               (org-set-tags (delete-dups current-local-tags))
+               (setq tagged (1+ tagged))
+               (message "[%d] Tagged as missing: %s" processed (org-get-heading t t t t))))))))
+    (message "Processed %d entries with 'missing' or 'nie maja' in filepath, tagged %d entries" processed tagged)))
+
 (defun emacs-movies-set-upflix-link ()
   "Set UPFLIX_LINK property for current entry.
 Prompts for the Upflix URL (pre-filled with clipboard contents) and sets it as a property on the current org entry."
@@ -1343,7 +1365,7 @@ Prompts for the Upflix URL (pre-filled with clipboard contents) and sets it as a
 
 (defun emacs-movies-search-upflix-and-set-link ()
   "Search Upflix using ORIGINAL_TITLE and let user select best match.
-Takes ORIGINAL_TITLE property, searches Upflix API, displays first 3 results,
+Takes ORIGINAL_TITLE property, searches Upflix API, displays all results,
 and sets UPFLIX_LINK property on selection. Handles case of no results."
   (interactive)
   (let ((original-title (org-entry-get nil "ORIGINAL_TITLE")))
@@ -1358,8 +1380,8 @@ and sets UPFLIX_LINK property on selection. Handles case of no results."
 
     (condition-case err
         (let* ((all-results (emacs-movies-search-upflix original-title))
-               ;; Take only first 3 results
-               (top-results (seq-take all-results 3)))
+               ;; Use all results
+               (top-results all-results))
 
           (if (null top-results)
               ;; No results case
@@ -1488,8 +1510,10 @@ Also updates subscription tags (on_netflix, on_disney, etc.)."
 
             ;; Update org properties
             (save-excursion
-              (org-back-to-heading)
-              (message "After org-back-to-heading, heading: %s" (org-get-heading t t t t))
+              ;; Only move to heading if we're not already at one
+              (unless (org-at-heading-p)
+                (org-back-to-heading))
+              (message "After org-back-to-heading check, heading: %s" (org-get-heading t t t t))
 
               ;; Always set SUBSCRIPTIONS and RENTS (even if empty)
               (org-set-property "SUBSCRIPTIONS"
@@ -1525,6 +1549,23 @@ Also updates subscription tags (on_netflix, on_disney, etc.)."
       (error (error "Failed to refresh Upflix data: %s"
                    (error-message-string err))))))
 
+(defun emacs-movies-find-entry-by-upflix-link (upflix-link)
+  "Find and navigate to the org entry with the given UPFLIX_LINK.
+Returns t if found, nil otherwise."
+  (let ((found nil))
+    (save-excursion
+      (goto-char (point-min))
+      (while (and (not found)
+                  (re-search-forward org-property-start-re nil t))
+        (when (string= upflix-link (org-entry-get nil "UPFLIX_LINK"))
+          (setq found (point)))))
+    (when found
+      (goto-char found)
+      ;; Only move to heading if we're not already at one
+      (unless (org-at-heading-p)
+        (org-back-to-heading t))
+      t)))
+
 (defun emacs-movies-refresh-all-upflix-by-timestamp ()
   "Refresh all entries with UPFLIX_LINK, processing those without timestamps first, then by timestamp order.
 Iterates over all org headlines in the current buffer, skipping entries without UPFLIX_LINK property.
@@ -1537,7 +1578,7 @@ Adds a delay between requests to avoid rate limiting. Stops processing if rate l
         (processed 0)
         (total 0)
         (rate-limited nil))
-    ;; Step 1: Iterate over all headlines
+    ;; Step 1: Iterate over all headlines and store UPFLIX_LINK values
     (org-map-entries
      (lambda ()
        (let* ((timestamp (org-entry-get nil "LAST_REFRESHED"))
@@ -1546,10 +1587,10 @@ Adds a delay between requests to avoid rate limiting. Stops processing if rate l
          (when (and upflix-url (not (string-empty-p (cdr upflix-url))))
            (setq total (1+ total))
            (if timestamp
-               ;; Add entry with timestamp to the list
-               (push (cons (org-read-date t t timestamp) (point)) headlines-with-timestamps)
-               ;; Add entry without timestamp to the list
-               (push (point) headlines-without-timestamps))))))
+               ;; Store (timestamp . upflix-link)
+               (push (cons (org-read-date t t timestamp) (cdr upflix-url)) headlines-with-timestamps)
+               ;; Store just the upflix-link
+               (push (cdr upflix-url) headlines-without-timestamps))))))
 
     (message "Found %d entries to refresh" total)
 
@@ -1560,77 +1601,82 @@ Adds a delay between requests to avoid rate limiting. Stops processing if rate l
     (message "\n=== DEBUG: First 100 entries to be processed (sorted order) ===")
     (let ((count 0))
       ;; First, entries without timestamp
-      (dolist (headline headlines-without-timestamps)
+      (dolist (upflix-link headlines-without-timestamps)
         (when (< count 100)
           (save-excursion
-            (goto-char headline)
-            (message "[%d] NO TIMESTAMP - %s" (1+ count) (org-get-heading t t t t)))
+            (when (emacs-movies-find-entry-by-upflix-link upflix-link)
+              (message "[%d] NO TIMESTAMP - %s" (1+ count) (org-get-heading t t t t))))
           (setq count (1+ count))))
       ;; Then, entries with timestamp
       (dolist (headline headlines-with-timestamps)
         (when (< count 100)
           (save-excursion
-            (goto-char (cdr headline))
-            (let ((timestamp (org-entry-get nil "LAST_REFRESHED")))
-              (message "[%d] %s - %s" (1+ count) timestamp (org-get-heading t t t t))))
+            (when (emacs-movies-find-entry-by-upflix-link (cdr headline))
+              (let ((timestamp (org-entry-get nil "LAST_REFRESHED")))
+                (message "[%d] %s - %s" (1+ count) timestamp (org-get-heading t t t t)))))
           (setq count (1+ count)))))
     (message "=== END DEBUG ===\n")
 
     ;; Step 3: Process entries without timestamp first
     (catch 'rate-limited
-      (dolist (headline headlines-without-timestamps)
-        (goto-char headline)
-        (setq processed (1+ processed))
-        (let ((last-refreshed (org-entry-get nil "LAST_REFRESHED")))
-          (message "[%d/%d] Processing entry (LAST_REFRESHED: %s): %s"
-                   processed total
-                   (or last-refreshed "NO TIMESTAMP")
-                   (org-get-heading t t t t)))
-        (condition-case err
+      (dolist (upflix-link headlines-without-timestamps)
+        (if (emacs-movies-find-entry-by-upflix-link upflix-link)
             (progn
-              (emacs-movies-refresh-upflix-data)
-              ;; Add delay between requests (but not after the last one)
-              (when (and (> emacs-movies-upflix-request-delay 0)
-                        (< processed total))
-                (message "Waiting %d seconds before next request..." emacs-movies-upflix-request-delay)
-                (sleep-for emacs-movies-upflix-request-delay)))
-          (error
-           (let ((err-msg (error-message-string err)))
-             (if (string-match-p "Rate limited" err-msg)
-                 (progn
-                   (message "Rate limiting detected! Stopping bulk refresh. Processed %d/%d entries." processed total)
-                   (setq rate-limited t)
-                   (throw 'rate-limited nil))
-               ;; Re-signal non-rate-limit errors
-               (message "Error refreshing entry: %s" err-msg))))))
+              (setq processed (1+ processed))
+              (let ((last-refreshed (org-entry-get nil "LAST_REFRESHED")))
+                (message "[%d/%d] Processing entry (LAST_REFRESHED: %s): %s"
+                         processed total
+                         (or last-refreshed "NO TIMESTAMP")
+                         (org-get-heading t t t t)))
+              (condition-case err
+                  (progn
+                    (emacs-movies-refresh-upflix-data)
+                    ;; Add delay between requests (but not after the last one)
+                    (when (and (> emacs-movies-upflix-request-delay 0)
+                              (< processed total))
+                      (message "Waiting %d seconds before next request..." emacs-movies-upflix-request-delay)
+                      (sleep-for emacs-movies-upflix-request-delay)))
+                (error
+                 (let ((err-msg (error-message-string err)))
+                   (if (string-match-p "Rate limited" err-msg)
+                       (progn
+                         (message "Rate limiting detected! Stopping bulk refresh. Processed %d/%d entries." processed total)
+                         (setq rate-limited t)
+                         (throw 'rate-limited nil))
+                     ;; Re-signal non-rate-limit errors
+                     (message "Error refreshing entry: %s" err-msg))))))
+          (message "Warning: Could not find entry with UPFLIX_LINK: %s" upflix-link)))
 
       ;; Step 4: Process entries with timestamps (only if not rate limited)
       (unless rate-limited
         (dolist (headline headlines-with-timestamps)
-          (goto-char (cdr headline))
-          (setq processed (1+ processed))
-          (let ((last-refreshed (org-entry-get nil "LAST_REFRESHED")))
-            (message "[%d/%d] Processing entry (LAST_REFRESHED: %s): %s"
-                     processed total
-                     (or last-refreshed "NO TIMESTAMP")
-                     (org-get-heading t t t t)))
-          (condition-case err
-              (progn
-                (emacs-movies-refresh-upflix-data)
-                ;; Add delay between requests (but not after the last one)
-                (when (and (> emacs-movies-upflix-request-delay 0)
-                          (< processed total))
-                  (message "Waiting %d seconds before next request..." emacs-movies-upflix-request-delay)
-                  (sleep-for emacs-movies-upflix-request-delay)))
-            (error
-             (let ((err-msg (error-message-string err)))
-               (if (string-match-p "Rate limited" err-msg)
-                   (progn
-                     (message "Rate limiting detected! Stopping bulk refresh. Processed %d/%d entries." processed total)
-                     (setq rate-limited t)
-                     (throw 'rate-limited nil))
-                 ;; Re-signal non-rate-limit errors
-                 (message "Error refreshing entry: %s" err-msg))))))))
+          (let ((upflix-link (cdr headline)))
+            (if (emacs-movies-find-entry-by-upflix-link upflix-link)
+                (progn
+                  (setq processed (1+ processed))
+                  (let ((last-refreshed (org-entry-get nil "LAST_REFRESHED")))
+                    (message "[%d/%d] Processing entry (LAST_REFRESHED: %s): %s"
+                             processed total
+                             (or last-refreshed "NO TIMESTAMP")
+                             (org-get-heading t t t t)))
+                  (condition-case err
+                      (progn
+                        (emacs-movies-refresh-upflix-data)
+                        ;; Add delay between requests (but not after the last one)
+                        (when (and (> emacs-movies-upflix-request-delay 0)
+                                  (< processed total))
+                          (message "Waiting %d seconds before next request..." emacs-movies-upflix-request-delay)
+                          (sleep-for emacs-movies-upflix-request-delay)))
+                    (error
+                     (let ((err-msg (error-message-string err)))
+                       (if (string-match-p "Rate limited" err-msg)
+                           (progn
+                             (message "Rate limiting detected! Stopping bulk refresh. Processed %d/%d entries." processed total)
+                             (setq rate-limited t)
+                             (throw 'rate-limited nil))
+                         ;; Re-signal non-rate-limit errors
+                         (message "Error refreshing entry: %s" err-msg))))))
+              (message "Warning: Could not find entry with UPFLIX_LINK: %s" upflix-link))))))
 
     (if rate-limited
         (message "Bulk refresh stopped due to rate limiting. Successfully processed %d/%d entries." processed total)
