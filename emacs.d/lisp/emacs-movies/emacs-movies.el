@@ -28,10 +28,31 @@ Multiple directories allow managing video collections across different locations
   "List of video file extensions to search for.")
 
 (defvar emacs-movies-tmdb-api-key nil
-  "API key for The Movie Database (TMDB). Set this to use TMDB API functions.")
+  "API key for The Movie Database (TMDB).
+This variable is optional and serves as a fallback.
+The API key will be automatically retrieved from ~/.authinfo if not set here.")
 
 (defvar emacs-movies-tmdb-base-url "https://api.themoviedb.org/3"
   "Base URL for The Movie Database API.")
+
+(defun emacs-movies-get-tmdb-api-key ()
+  "Retrieve TMDB API key from authinfo or from the configured variable.
+First checks `emacs-movies-tmdb-api-key' variable, then searches ~/.authinfo
+for an entry with machine 'api.themoviedb.org' and login 'apikey'.
+Signals an error if no API key is found."
+  (require 'auth-source)
+  (or emacs-movies-tmdb-api-key
+      (when-let* ((auth-info (car (auth-source-search
+                                    :host "api.themoviedb.org"
+                                    :user "apikey"
+                                    :require '(:secret))))
+                  (secret (plist-get auth-info :secret)))
+        (if (functionp secret)
+            (funcall secret)
+          secret))
+      (error "TMDB API key not found. Please add it to ~/.authinfo with:
+machine api.themoviedb.org login apikey password YOUR_API_KEY
+Or set emacs-movies-tmdb-api-key variable")))
 
 (defvar emacs-movies-upflix-request-delay 2
   "Number of seconds to wait between Upflix requests during bulk refresh.
@@ -278,14 +299,12 @@ If confirmed, stores the filepath in DOWNLOADED_FILEPATH property."
   "Search for movies on TMDB using QUERY string.
 Returns all search results with id, title, original_title, and overview.
 Entries with corresponding files in the movies directory are marked with '(file on disk)' prefix.
-Requires `emacs-movies-tmdb-api-key' to be set."
-  (unless emacs-movies-tmdb-api-key
-    (error "TMDB API key not set. Please set emacs-movies-tmdb-api-key"))
-
-  (let* ((encoded-query (url-hexify-string query))
+Retrieves API key from ~/.authinfo or `emacs-movies-tmdb-api-key' variable."
+  (let* ((api-key (emacs-movies-get-tmdb-api-key))
+         (encoded-query (url-hexify-string query))
          (url (format "%s/search/movie?api_key=%s&query=%s&language=%s"
                       emacs-movies-tmdb-base-url
-                      emacs-movies-tmdb-api-key
+                      api-key
                       encoded-query
                       emacs-movies-tmdb-language))
          (response-buffer (url-retrieve-synchronously url)))
@@ -321,14 +340,12 @@ Requires `emacs-movies-tmdb-api-key' to be set."
   "Search for TV shows on TMDB using QUERY string.
 Returns all search results with id, name, original_name, and overview.
 Entries with corresponding directories in the movies directory are marked with '(file on disk)' prefix.
-Requires `emacs-movies-tmdb-api-key' to be set."
-  (unless emacs-movies-tmdb-api-key
-    (error "TMDB API key not set. Please set emacs-movies-tmdb-api-key"))
-
-  (let* ((encoded-query (url-hexify-string query))
+Retrieves API key from ~/.authinfo or `emacs-movies-tmdb-api-key' variable."
+  (let* ((api-key (emacs-movies-get-tmdb-api-key))
+         (encoded-query (url-hexify-string query))
          (url (format "%s/search/tv?api_key=%s&query=%s&language=%s"
                       emacs-movies-tmdb-base-url
-                      emacs-movies-tmdb-api-key
+                      api-key
                       encoded-query
                       emacs-movies-tmdb-language))
          (response-buffer (url-retrieve-synchronously url)))
@@ -362,14 +379,12 @@ Requires `emacs-movies-tmdb-api-key' to be set."
 (defun emacs-movies-get-tmdb-movie-by-id (tmdb-id)
   "Get movie details from TMDB by ID.
 Returns movie details with id, title, original_title, overview, etc.
-Requires `emacs-movies-tmdb-api-key' to be set."
-  (unless emacs-movies-tmdb-api-key
-    (error "TMDB API key not set. Please set emacs-movies-tmdb-api-key"))
-
-  (let* ((url (format "%s/movie/%s?api_key=%s&language=%s"
+Retrieves API key from ~/.authinfo or `emacs-movies-tmdb-api-key' variable."
+  (let* ((api-key (emacs-movies-get-tmdb-api-key))
+         (url (format "%s/movie/%s?api_key=%s&language=%s"
                       emacs-movies-tmdb-base-url
                       tmdb-id
-                      emacs-movies-tmdb-api-key
+                      api-key
                       emacs-movies-tmdb-language))
          (response-buffer (url-retrieve-synchronously url)))
 
@@ -390,14 +405,12 @@ Requires `emacs-movies-tmdb-api-key' to be set."
 (defun emacs-movies-get-tmdb-tv-by-id (tmdb-id)
   "Get TV show details from TMDB by ID.
 Returns TV show details with id, name, original_name, overview, etc.
-Requires `emacs-movies-tmdb-api-key' to be set."
-  (unless emacs-movies-tmdb-api-key
-    (error "TMDB API key not set. Please set emacs-movies-tmdb-api-key"))
-
-  (let* ((url (format "%s/tv/%s?api_key=%s&language=%s"
+Retrieves API key from ~/.authinfo or `emacs-movies-tmdb-api-key' variable."
+  (let* ((api-key (emacs-movies-get-tmdb-api-key))
+         (url (format "%s/tv/%s?api_key=%s&language=%s"
                       emacs-movies-tmdb-base-url
                       tmdb-id
-                      emacs-movies-tmdb-api-key
+                      api-key
                       emacs-movies-tmdb-language))
          (response-buffer (url-retrieve-synchronously url)))
 
