@@ -1342,26 +1342,74 @@ based on the SUBSCRIPTIONS property value."
     (message "Processed %d entries, updated %d entries with subscription tags" processed updated)))
 
 (defun emacs-movies-tag-missing-files ()
-  "Tag all entries where DOWNLOADED_FILEPATH contains 'missing' or 'nie maja' with a 'missing' tag.
-Iterates over all org entries in the current buffer and adds 'missing' tag
-if the DOWNLOADED_FILEPATH property contains the word 'missing' or 'nie maja' in its path."
+  "Sync 'missing' tags based on DOWNLOADED_FILEPATH content.
+First removes 'missing' tag from all entries, then adds it back to entries where
+DOWNLOADED_FILEPATH contains 'missing' or 'brakuje' in its path."
   (interactive)
-  (let ((processed 0)
+  (let ((total 0)
+        (removed 0)
         (tagged 0))
     (org-map-entries
      (lambda ()
-       (let ((filepath (org-entry-get nil "DOWNLOADED_FILEPATH")))
-         (when (and filepath
-                    (or (string-match-p "missing" filepath)
-                        (string-match-p "nie maja" filepath)))
-           (setq processed (1+ processed))
-           (let* ((current-local-tags (org-get-tags nil t)))
+       (setq total (1+ total))
+       (let ((filepath (org-entry-get nil "DOWNLOADED_FILEPATH"))
+             (current-local-tags (org-get-tags nil t)))
+
+         ;; Check if entry should have 'missing' tag
+         (if (and filepath
+                  (or (string-match-p "missing" filepath)
+                      (string-match-p "brakuje" filepath)))
+             ;; Should have missing tag - add it if not present
              (unless (member "missing" current-local-tags)
                (push "missing" current-local-tags)
                (org-set-tags (delete-dups current-local-tags))
                (setq tagged (1+ tagged))
-               (message "[%d] Tagged as missing: %s" processed (org-get-heading t t t t))))))))
-    (message "Processed %d entries with 'missing' or 'nie maja' in filepath, tagged %d entries" processed tagged)))
+               (message "[%d] Tagged as missing: %s" total (org-get-heading t t t t)))
+           ;; Should not have missing tag - remove it if present
+           (when (member "missing" current-local-tags)
+             (setq current-local-tags (delete "missing" current-local-tags))
+             (org-set-tags (delete-dups current-local-tags))
+             (setq removed (1+ removed))
+             (message "[%d] Removed missing tag: %s" total (org-get-heading t t t t)))))))
+    (message "Processed %d entries. Tagged %d, removed tag from %d entries" total tagged removed)))
+
+(defun emacs-movies-fix-missing-files ()
+  "Fix entries where DOWNLOADED_FILEPATH points to non-existent files or directories.
+Iterates over all org entries in the current buffer. For each entry with DOWNLOADED_FILEPATH:
+- If the path exists on disk, skips it
+- If the path doesn't exist, calls emacs-movies-find-downloaded-file to let user correct it"
+  (interactive)
+  (let ((processed 0)
+        (needs-fixing 0)
+        (fixed 0)
+        (skipped 0))
+
+    ;; Process all entries in one pass
+    (org-map-entries
+     (lambda ()
+       (let ((downloaded-filepath (org-entry-get nil "DOWNLOADED_FILEPATH")))
+         (when downloaded-filepath
+           (setq processed (1+ processed))
+           ;; Extract actual file path from org link format [[file:PATH][NAME]]
+           (when (string-match "\\[\\[file:\\([^]]+\\)\\]\\[.*\\]\\]" downloaded-filepath)
+             (let ((path (match-string 1 downloaded-filepath)))
+               (unless (file-exists-p path)
+                 (setq needs-fixing (1+ needs-fixing))
+                 (let ((heading (org-get-heading t t t t)))
+                   (message "[%d] Entry needs fixing: %s" needs-fixing heading)
+
+                   ;; Ask user if they want to fix this entry
+                   (when (yes-or-no-p (format "Fix DOWNLOADED_FILEPATH for: %s? " heading))
+                     (condition-case err
+                         (progn
+                           (emacs-movies-find-downloaded-file)
+                           (setq fixed (1+ fixed)))
+                       (error
+                        (message "Error fixing entry: %s" (error-message-string err))
+                        (setq skipped (1+ skipped)))))))))))))
+
+    (message "Processed %d entries with DOWNLOADED_FILEPATH. Found %d needing fixes, fixed %d, skipped %d"
+             processed needs-fixing fixed skipped)))
 
 (defun emacs-movies-set-upflix-link ()
   "Set UPFLIX_LINK property for current entry.
@@ -1377,11 +1425,13 @@ Prompts for the Upflix URL (pre-filled with clipboard contents) and sets it as a
       (message "Set UPFLIX_LINK to: %s" upflix-url))))
 
 (defun emacs-movies-search-upflix-and-set-link ()
-  "Search Upflix using ORIGINAL_TITLE and let user select best match.
-Takes ORIGINAL_TITLE property, searches Upflix API, displays all results,
-and sets UPFLIX_LINK property on selection. Handles case of no results."
+  "Search Upflix using ORIGINAL_TITLE and TITLE, let user select best match.
+Searches Upflix API using ORIGINAL_TITLE first, then TITLE (if different).
+Concatenates results and displays all, then sets UPFLIX_LINK property on selection.
+Handles case of no results."
   (interactive)
-  (let ((original-title (org-entry-get nil "ORIGINAL_TITLE")))
+  (let ((original-title (org-entry-get nil "ORIGINAL_TITLE"))
+        (title (org-entry-get nil "TITLE")))
     ;; Validate ORIGINAL_TITLE exists
     (unless original-title
       (error "No ORIGINAL_TITLE property found for this entry"))
@@ -1392,13 +1442,25 @@ and sets UPFLIX_LINK property on selection. Handles case of no results."
     (message "Searching Upflix for: %s" original-title)
 
     (condition-case err
-        (let* ((all-results (emacs-movies-search-upflix original-title))
-               ;; Use all results
-               (top-results all-results))
+        (let* ((original-results (emacs-movies-search-upflix original-title))
+               ;; Search for TITLE if it exists and is different from ORIGINAL_TITLE
+               (title-results (if (and title
+                                       (not (string-empty-p title))
+                                       (not (string= title original-title)))
+                                  (progn
+                                    (message "Also searching for: %s" title)
+                                    (emacs-movies-search-upflix title))
+                                '()))
+               ;; Concatenate results (ORIGINAL_TITLE results first, then TITLE results)
+               (top-results (append original-results title-results)))
 
           (if (null top-results)
               ;; No results case
-              (message "No results found on Upflix for: %s" original-title)
+              (message "No results found on Upflix for: %s%s"
+                       original-title
+                       (if (and title (not (string= title original-title)))
+                           (format " or %s" title)
+                         ""))
 
             ;; Format choices for display
             (let* ((choices (mapcar (lambda (result)
@@ -1412,8 +1474,11 @@ and sets UPFLIX_LINK property on selection. Handles case of no results."
                                                  ""))))
                                     top-results))
                    (choices-with-none (append choices '("None of these")))
+                   (prompt-title (if (and title (not (string= title original-title)))
+                                     (format "\"%s\" / \"%s\"" original-title title)
+                                   (format "\"%s\"" original-title)))
                    (selected (completing-read
-                             (format "Select Upflix match for \"%s\": " original-title)
+                             (format "Select Upflix match for %s: " prompt-title)
                              choices-with-none)))
 
               ;; Handle selection
