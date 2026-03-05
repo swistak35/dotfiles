@@ -558,28 +558,118 @@
              (setq org-refile-target-verify-function 'my-org-refile-target-verify-function)
              (setq org-agenda-custom-commands
                    '(
-                     ("X" "Super agenda"
+                     ("D" "Daily agenda"
                       (
-                       (org-ql-block '(and (todo "TODO")
-                                           (priority '= "A")
-					   (not (tags "work")))
-                                     ((org-ql-block-header "Najważniejsze")))
-                       ; (agenda "" ((org-agenda-span 'day)
-                       ;             (org-super-agenda-groups
-                       ;               '((:name "Today"
-                       ;                        :time-grid t
-                       ;                        :date today
-                       ;                        :todo "TODAY"
-                       ;                        :scheduled today
-                       ;                        :order 1)))))
+                       ;; (org-ql-block '(and (todo "TODO")
+                       ;;                     (priority '= "A")
+		       ;; 			   (not (tags "work")))
+                       ;;               ((org-ql-block-header "Najważniejsze")))
                        (agenda ""
                                (
                                 (org-agenda-span 'day)
                                 (org-super-agenda-groups
                                   '(
                                     (:discard (:priority "A"))
-                                    (:discard (:and (:priority<= "B" :tag ("@workbreak" "@zaudio" "@zfilmem"))))
-                                    (:discard (:and (:not (:priority) :tag ("@workbreak" "@zaudio" "@zfilmem"))))
+                                    (:discard (:and (:priority<= "B" :tag ("@zaudio" "@zfilmem"))))
+                                    (:discard (:and (:not (:priority) :tag ("@zaudio" "@zfilmem"))))
+                                    (:discard (:tag "work"))
+				    (:name "Ćwiczenia"
+					   :tag "@exercises"
+					   :order 101)
+                                    (:name "Poranek"
+                                           :tag "poranek")
+                                    (:name "During day"
+                                           :face (:append t)
+                                           :tag "@duringday")
+				    (:name "Popołudnie"
+					   :tag "popoludnie"
+					   :order 99)
+                                    (:name "Wieczór"
+                                           :tag "wieczor"
+					   :order 100)
+				    (:name "Codzienne"
+					   :tag "daily")
+                                    (:name "Dzisiejsze"
+                                           :scheduled today)
+                                    ;; (:name "Przypominajki"
+                                    ;;        :and (:scheduled past :priority<= "C")
+                                    ;;        :order 101)
+                                    (:discard (:tag "@emilka"))
+                                    (:discard (:todo "WAITING"))
+                                   ))
+                                  ))
+                       (org-ql-block '(and (todo "TODO")
+                                           (priority '= "B")
+                                           (not (tags "@emilka" "work"))
+                                           (not (scheduled)))
+                                     ((org-ql-block-header "Next to grab")))
+                       ;; (org-ql-block '(and (priority)
+                       ;;                     (tags "@cooking"))
+                       ;;               ((org-ql-block-header "Gotowanie")))
+                       (org-ql-block '(and (todo "WAITING")
+                                           (not (tags "@emilka" "work")))
+                                     ((org-ql-block-header "Zadania zablokowane")))
+                       (org-ql-block '(and (todo "TODO")
+                                           (priority '= "C")
+					   (not (tags "@emilka" "work"))
+                                           (not (scheduled)))
+                                     ((org-ql-block-header "Up next")))
+                       (org-ql-block '(and (todo "TODO")
+					   (not (tags "@emilka" "work"))
+                                           (or (not (scheduled))
+                                               (scheduled :to today))
+                                           (tags "@zaudio" "@zfilmem"))
+                                     ((org-super-agenda-groups
+                                        '(
+                                          (:name "Istotniejsze"
+                                                 :scheduled past
+                                                 :scheduled today)
+                                         ))
+                                      (org-ql-block-header "Zadania do zrobienia na audio")))
+                       (org-ql-block '(and (todo)
+                                           (not (scheduled))
+                                           (tags "@emilka"))
+                                     ((org-ql-block-header "Zadania dla Emilki")))
+		       (org-ql-block '(or (and (todo "TODO" "DONE")
+					       (closed :on today))
+					  ;; Not possible to implement correctly (looking at LAST_REPEAT being on today)
+					  ;; because of this: https://github.com/alphapapa/org-ql/issues/192
+					  ;; (and (todo "TODO")
+					  ;;      (property "LAST_REPEAT")
+					  ;;      (ts :on today))
+					  )
+				     ((org-ql-block-header "Zrobione dzisiaj")))
+		       (org-ql-block '(and (tags "inbox")
+    				           (not (tags "work")))
+				     ((org-ql-block-header "Inbox")))
+
+		       ; Random Quote block
+		       ; need to add :sort (random) but as of 0.8 still not implemented
+		       ; also need to add "pick 1", but also not implemented
+		       ;; (org-ql-block '(tags "quote")
+		       ;; 		     ((org-ql-block-header "Quote")))
+
+		       ; Random Rule to remember for yourself
+		       ; need to add :sort (random) but as of 0.8 still not implemented
+		       ; also need to add "pick 1", but also not implemented
+		       (org-ql-block '(tags "rule")
+		        		     ((org-ql-block-header "Random Rule of the day")))
+		       )
+                       )
+                     ("X" "Super agenda"
+                      (
+                       (org-ql-block '(and (todo "TODO")
+                                           (priority '= "A")
+					   (not (tags "work")))
+                                     ((org-ql-block-header "Najważniejsze")))
+                       (agenda ""
+                               (
+                                (org-agenda-span 'day)
+                                (org-super-agenda-groups
+                                  '(
+                                    (:discard (:priority "A"))
+                                    (:discard (:and (:priority<= "B" :tag ("@zaudio" "@zfilmem"))))
+                                    (:discard (:and (:not (:priority) :tag ("@zaudio" "@zfilmem"))))
                                     (:discard (:tag "work"))
 				    (:name "Ćwiczenia"
 					   :tag "@exercises"
@@ -678,6 +768,11 @@
                                 ))
                        (org-ql-block '(and (todo "TODO")
                                            (tags "@ontreadmill")
+					   (tags "@zfilmem")
+                                           (not (scheduled)))
+                                     ((org-ql-block-header "Zadania z filmem")))
+                       (org-ql-block '(and (todo "TODO")
+                                           (tags "@ontreadmill")
                                            (not (scheduled)))
                                      ((org-ql-block-header "Zadania")))
                        ))
@@ -730,60 +825,6 @@
                                      ((org-ql-block-header "Pozostałe do obejrzenia")))
                        )
                       )
-                     ("N" "Agenda and all TODOs, but better"
-                      (
-                       (org-ql-block '(and (todo "TODO")
-                                           (priority '= "A"))
-                                     ((org-ql-block-header "Most important things")))
-                       (org-ql-block '(and (todo "TODO")
-                                           (tags "poranek")
-                                           (or (priority '< "A")
-                                               (scheduled :to today)))
-                                     ((org-ql-block-header "Poranek")))
-                       (org-ql-block '(and (todo "TODO")
-                                           (tags "duringday")
-                                           (or (priority '<= "A")
-                                               (scheduled :to today)))
-                                     ((org-ql-block-header "Things which need to be done during the day")))
-                       (agenda "")
-                       (org-ql-block '(and (todo "TODO")
-                                           (tags "wieczor")
-                                           (or (priority '< "A")
-                                               (scheduled :to today)))
-                                     ((org-ql-block-header "Wieczór")))
-                       (org-ql-block '(and (todo "TODO")
-                                           (priority '= "B")
-                                           (not (tags "work"))
-                                           (not (scheduled)))
-                                     ((org-ql-block-header "Up to grab")))
-                       (org-ql-block '(and (todo "TODO")
-                                           (priority '= "B")
-                                           (tags "work")
-                                           (not (scheduled)))
-                                     ((org-ql-block-header "Up to grab (work)")))
-                       (org-ql-block '(and (todo "TODO")
-                                           (tags "workbreak")
-                                           (or (priority '< "A")
-                                               (scheduled :to today)))
-                                     ((org-ql-block-header "Things to do during work break")))
-                       (org-ql-block '(and (todo "WAITING")
-                                           (not (tags "emilka")))
-                                           ; (priority '< "A")
-                                           ; (not (scheduled)))
-                                     ((org-ql-block-header "Things waiting")))
-                       (tags-todo "emilka")
-                       (org-ql-block '(and (todo "TODO")
-                                           (priority '= "C")
-                                           (not (scheduled)))
-                                     ((org-ql-block-header "Next to grab")))
-                       (org-ql-block '(and (todo "TODO")
-                                           (tags "quarter")
-                                           (not (tags "archived")))
-                                     ((org-ql-block-header "Quarter goals")))
-                       ;                         (priority '<= "D"))
-                       ;                     (not (scheduled)))
-                       ;               ((org-ql-block-header "Other tasks")))
-                       ))
                      ("w" "Agenda for work"
                       (
                        (org-ql-block '(and (todo "TODO")
@@ -923,22 +964,24 @@
 			   (list
 			    (cons "Silverfin Tasks (sft)"
 				  (list :buffers-files "~/pnotes/sf/gtd.org"
-					:query '(and (todo "TODO" "WAITING") (tags "work"))
+					:query '(and (todo "TODO" "WAITING" "INPROGRESS") (tags "work"))
 					:title "Silverfin Tasks"
 					:sort nil
 					:narrow nil
 					:super-groups '((:discard (:scheduled future))
 							(:discard (:tag "template"))
+							(:name "Currently being worked on"
+							       :todo "INPROGRESS")
 							(:name "Extreme top priority"
 							       :priority "A")
 							(:name "Morning ticklers"
 							       :and (:tag "tickler" :tag "morning" :scheduled t))
-							(:name "Blocked & waiting"
-							       :todo "WAITING")
-							(:name "End of Day ticklers"
-							       :and (:tag "tickler" :tag "evening" :scheduled t))
 							(:name "Scheduled"
 							       :scheduled t)
+							(:name "End of Day ticklers"
+							       :and (:tag "tickler" :tag "evening" :scheduled t))
+							(:name "Blocked & waiting"
+							       :todo "WAITING")
 							(:priority "B")
 							(:name "Current projects"
 							       :tag "current")
