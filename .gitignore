@@ -41,3 +41,5 @@ emacs.d/.cache
 emacs.d/org-roam.db
 emacs.d/tree-sitter/*
 emacs.d/tramp
+
+.claude/settings.local.json

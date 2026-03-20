@@ -88,3 +88,5 @@
 	repo = /home/swistak35/projs/railseventstore/rails_event_store
 [fetch]
 	writeCommitGraph = true
+[init]
+	defaultBranch = main

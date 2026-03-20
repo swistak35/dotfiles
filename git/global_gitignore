@@ -31,3 +31,5 @@ custom_plan.rb
 .notes.rb
 .notes.sql
 .standup
+
+*.swistak
