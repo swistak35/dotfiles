@@ -433,7 +433,7 @@
              :config
              (require 'org-protocol)
              (unless (server-running-p) (server-start)) ; Required for org-protocol to receive information
-             (setq org-agenda-files '("~/notes" "~/pnotes/sf" "~/pnotes/res" "~/gnotes" "~/projs/silverfin/people_management/notes"))
+             (setq org-agenda-files '("~/notes" "~/pnotes/res" "~/projs/silverfin/people_management"))
              (setq org-default-notes-file "~/notes/inbox.org")
              (setq org-log-done t)
 	     (setq org-log-into-drawer t) ; Causes to log the CLOSED timestamps into the LOGBOOK property, instead of the entry content
@@ -466,19 +466,26 @@
              (setq org-capture-templates
                    '(
 		     ("m" "Movie")
-                     ("mu" "Movie from Upflix" entry (file+headline "~/gnotes/movies.org" "Inbox")
+                     ("mu" "Movie from Upflix" entry (file+headline "~/notes/movies.org" "Inbox")
                       "** TOWATCH \n:PROPERTIES:\n:UPFLIX_LINK: %^{Please enter upflix link}\n:CREATED_AT: %U\n:END:%i\n")
-                     ("mf" "Movie from Filmweb" entry (file+headline "~/gnotes/movies.org" "Inbox")
+                     ("mf" "Movie from Filmweb" entry (file+headline "~/notes/movies.org" "Inbox")
                       "** TOWATCH \n:PROPERTIES:\n:FILMWEB_LINK: %^{Please enter filmweb link}\n:CREATED_AT: %U\n:END:%i\n")
-                     ("mi" "Inbox" entry (file+headline "~/gnotes/movies.org" "Inbox")
+                     ("mi" "Inbox" entry (file+headline "~/notes/movies.org" "Inbox")
                       "** TOWATCH :movie:new:\n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n"
 		      :before-finalize (emacs-movies-refresh-tmdb-data emacs-movies-search-upflix-and-set-link))
-                     ("mm" "Movie from The Movie DB" entry (file+headline "~/gnotes/movies.org" "Filmy")
+                     ("mm" "Movie from The Movie DB" entry (file+headline "~/notes/movies.org" "Filmy")
                       "** TOWATCH :movie:new:\n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n"
 		      :before-finalize (emacs-movies-refresh-tmdb-data emacs-movies-search-upflix-and-set-link))
-                     ("mt" "TV Show from The Movie DB" entry (file+headline "~/gnotes/movies.org" "Seriale")
+                     ("mt" "TV Show from The Movie DB" entry (file+headline "~/notes/movies.org" "Seriale")
                       "** TOWATCH :tvshow:new:\n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n"
 		      :before-finalize (emacs-movies-refresh-tmdb-data emacs-movies-search-upflix-and-set-link))
+		     ("s" "Szychta")
+		     ("sl" "Read later" entry (file+headline "~/projs/silverfin/notes/gtd.org" "Inbox")
+		      "** TODO Read [[%:link][%:description]]\n  :PROPERTIES:\n  :DATE: %U\n  :END:\n%i\n"
+                      :prepend t)
+		     ("sc" "Check" entry (file+headline "~/projs/silverfin/notes/gtd.org" "Inbox")
+		      "** TODO Check [[%:link][%:description]]\n  :PROPERTIES:\n  :DATE: %U\n  :END:\n%i\n"
+                      :prepend t)
                      ("w" "Web")
 		     ("wa" "Archive" entry (file+headline "~/notes/bookmarks.org" "Archive")
 		      "** READ %:description\n%i\n"
@@ -963,7 +970,8 @@
 		   (append
 			   (list
 			    (cons "Silverfin Tasks (sft)"
-				  (list :buffers-files "~/pnotes/sf/gtd.org"
+				  (list :buffers-files (append
+							(directory-files-recursively "~/projs/silverfin/people_management/" "\\.org$"))
 					:query '(and (todo "TODO" "WAITING" "INPROGRESS") (tags "work"))
 					:title "Silverfin Tasks"
 					:sort nil
@@ -980,6 +988,8 @@
 							       :scheduled t)
 							(:name "End of Day ticklers"
 							       :and (:tag "tickler" :tag "evening" :scheduled t))
+							(:name "Inbox"
+							       :and (:tag "inbox"))
 							(:name "Blocked & waiting"
 							       :todo "WAITING")
 							(:priority "B")
