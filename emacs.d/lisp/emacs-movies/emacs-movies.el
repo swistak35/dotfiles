@@ -54,7 +54,7 @@ Signals an error if no API key is found."
 machine api.themoviedb.org login apikey password YOUR_API_KEY
 Or set emacs-movies-tmdb-api-key variable")))
 
-(defvar emacs-movies-upflix-request-delay 2
+(defvar emacs-movies-upflix-request-delay 15
   "Number of seconds to wait between Upflix requests during bulk refresh.
 This helps avoid triggering rate limiting. Set to 0 to disable delay.")
 
