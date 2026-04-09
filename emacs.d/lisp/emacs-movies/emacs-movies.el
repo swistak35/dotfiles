@@ -54,7 +54,7 @@ Signals an error if no API key is found."
 machine api.themoviedb.org login apikey password YOUR_API_KEY
 Or set emacs-movies-tmdb-api-key variable")))
 
-(defvar emacs-movies-upflix-request-delay 15
+(defvar emacs-movies-upflix-request-delay 30
   "Number of seconds to wait between Upflix requests during bulk refresh.
 This helps avoid triggering rate limiting. Set to 0 to disable delay.")
 
@@ -1013,6 +1013,108 @@ on disk but are not referenced in any org entry's DOWNLOADED_FILEPATH property."
       ;; Return combined results
       (append (mapcar (lambda (file) (list 'movie file)) unreferenced-files)
               (mapcar (lambda (dir) (list 'tvshow dir)) unreferenced-dirs)))))
+
+(defun emacs-movies-link-unreferenced-files ()
+  "Find unreferenced files and link them to their matching org entries.
+For each unreferenced file/directory with a TMDB tag, finds the org entry
+with the same TMDB ID and calls `emacs-movies-find-downloaded-file' on it."
+  (interactive)
+  (let ((unreferenced-items (emacs-movies-find-unreferenced-files))
+        (linked-count 0)
+        (skipped-count 0))
+    (dolist (item unreferenced-items)
+      (let* ((item-type (car item))
+             (filepath (cadr item))
+             (tmdb-id (extract-tmdb-id-from-filepath filepath)))
+        (if (not tmdb-id)
+            (progn
+              (message "Skipping (no TMDB tag): %s" (file-name-nondirectory filepath))
+              (cl-incf skipped-count))
+          ;; Find org entry with matching TMDB ID and content type
+          (let ((found nil))
+            (org-map-entries
+             (lambda ()
+               (unless found
+                 (let* ((tmdb-url (org-entry-get nil "TMDB_URL"))
+                        (tmdb-data (when tmdb-url (extract-tmdb-id tmdb-url))))
+                   (when (and tmdb-data
+                              (string= (car tmdb-data) tmdb-id)
+                              (eq (cadr tmdb-data) item-type))
+                     (setq found (point)))))))
+            (if found
+                (progn
+                  (goto-char found)
+                  (emacs-movies-find-downloaded-file)
+                  (cl-incf linked-count))
+              (message "No org entry found for TMDB ID %s: %s"
+                       tmdb-id (file-name-nondirectory filepath))
+              (cl-incf skipped-count))))))
+    (message "Done. Linked: %d, Skipped: %d" linked-count skipped-count)))
+
+(defun emacs-movies-create-entries-for-unreferenced-files ()
+  "Create org entries under Inbox for unreferenced files that have no org entry.
+For each unreferenced file/directory with a TMDB tag, checks if an org entry
+with the same TMDB ID already exists.  If not, creates a new TOWATCH entry
+under Inbox with the appropriate tag and TMDB_URL, refreshes TMDB data,
+and searches Upflix to set the link.  Processes entries one by one."
+  (interactive)
+  (let ((unreferenced-items (emacs-movies-find-unreferenced-files))
+        (created-count 0)
+        (skipped-count 0))
+    (dolist (item unreferenced-items)
+      (let* ((item-type (car item))
+             (filepath (cadr item))
+             (tmdb-id (extract-tmdb-id-from-filepath filepath)))
+        (if (not tmdb-id)
+            (progn
+              (message "Skipping (no TMDB tag): %s" (file-name-nondirectory filepath))
+              (cl-incf skipped-count))
+          ;; Check if an org entry with this TMDB ID and type already exists
+          (let ((existing nil)
+                (content-type-str (if (eq item-type 'movie) "movie" "tv")))
+            (org-map-entries
+             (lambda ()
+               (unless existing
+                 (let* ((tmdb-url (org-entry-get nil "TMDB_URL"))
+                        (tmdb-data (when tmdb-url (extract-tmdb-id tmdb-url))))
+                   (when (and tmdb-data
+                              (string= (car tmdb-data) tmdb-id)
+                              (eq (cadr tmdb-data) item-type))
+                     (setq existing t))))))
+            (if existing
+                (progn
+                  (message "Skipping (org entry exists for TMDB %s): %s"
+                           tmdb-id (file-name-nondirectory filepath))
+                  (cl-incf skipped-count))
+              ;; Create new entry under Inbox
+              (save-excursion
+                (goto-char (point-min))
+                (unless (re-search-forward "^\\*+ Inbox" nil t)
+                  (goto-char (point-max))
+                  (unless (bolp) (insert "\n"))
+                  (insert "* Inbox\n"))
+                (org-end-of-subtree)
+                (let* ((filename (file-name-nondirectory filepath))
+                       (tag (if (eq item-type 'movie) "movie" "tvshow"))
+                       (tmdb-url (format "https://www.themoviedb.org/%s/%s"
+                                         content-type-str tmdb-id)))
+                  (insert (format "\n** TOWATCH %s :%s:\n" filename tag))
+                  (org-back-to-heading t)
+                  (org-set-property "TMDB_URL" tmdb-url)
+                  ;; Refresh TMDB data
+                  (condition-case err
+                      (emacs-movies-refresh-tmdb-data)
+                    (error
+                     (message "Warning: Could not refresh TMDB data for %s: %s"
+                              filename (error-message-string err))))
+                  ;; Search Upflix and set link
+                  (condition-case err
+                      (emacs-movies-search-upflix-and-set-link)
+                    (error
+                     (message "Warning: Could not set Upflix link for %s: %s"
+                              filename (error-message-string err))))))
+              (cl-incf created-count))))))
+    (message "Done. Created: %d, Skipped: %d" created-count skipped-count)))
 
 (defun emacs-movies-find-duplicate-tmdb-entries ()
   "Find and list org entries with duplicate TMDB IDs."
