@@ -665,33 +665,33 @@
                        )
                      ("X" "Super agenda"
                       (
-                       (org-ql-block '(and (todo "TODO")
-                                           (priority '= "A")
-					   (not (tags "work")))
-                                     ((org-ql-block-header "Najważniejsze")))
                        (agenda ""
                                (
+                                ;; (org-agenda-span 2)
                                 (org-agenda-span 'day)
                                 (org-super-agenda-groups
                                   '(
-                                    (:discard (:priority "A"))
-                                    (:discard (:and (:priority<= "B" :tag ("@zaudio" "@zfilmem"))))
-                                    (:discard (:and (:not (:priority) :tag ("@zaudio" "@zfilmem"))))
+				    (:name "Najważniejsze na dziś"
+					   :priority "A")
+                                    ;; (:discard (:and (:priority<= "B" :tag ("@zaudio" "@zfilmem"))))
+                                    ;; (:discard (:and (:not (:priority) :tag ("@zaudio" "@zfilmem"))))
                                     (:discard (:tag "work"))
-				    (:name "Ćwiczenia"
-					   :tag "@exercises"
-					   :order 101)
-                                    (:name "Poranek"
+				    ;; (:name "Ćwiczenia"
+				    ;; 	   :tag "@exercises"
+				    ;; 	   :order 101)
+				    (:name "Świt (06-08)"
+					   :tag "swit")
+                                    (:name "Poranek (09-11)"
                                            :tag "poranek")
-                                    (:name "During day"
+				    (:name "Spacer na bieżni"
+					   :tag "treadmillwalk")
+                                    (:name "During day (11-15)"
                                            :face (:append t)
                                            :tag "@duringday")
-				    (:name "Popołudnie"
-					   :tag "popoludnie"
-					   :order 99)
-                                    (:name "Wieczór"
-                                           :tag "wieczor"
-					   :order 100)
+				    (:name "Popołudnie (16-19)"
+					   :tag "popoludnie")
+                                    (:name "Wieczór (19-22)"
+                                           :tag "wieczor")
 				    (:name "Codzienne"
 					   :tag "daily")
                                     (:name "Dzisiejsze"
@@ -703,50 +703,9 @@
                                     (:discard (:todo "WAITING"))
                                    ))
                                   ))
-                       (org-ql-block '(and (todo "TODO")
-                                           (priority '= "B")
-                                           (not (tags "@emilka" "work"))
-                                           (not (scheduled)))
-                                     ((org-ql-block-header "Next to grab")))
-                       ;; (org-ql-block '(and (priority)
-                       ;;                     (tags "@cooking"))
-                       ;;               ((org-ql-block-header "Gotowanie")))
                        (org-ql-block '(and (todo "WAITING")
                                            (not (tags "@emilka" "work")))
                                      ((org-ql-block-header "Zadania zablokowane")))
-                       (org-ql-block '(and (todo "TODO")
-                                           (priority '= "C")
-					   (not (tags "@emilka" "work"))
-                                           (not (scheduled)))
-                                     ((org-ql-block-header "Up next")))
-                       (org-ql-block '(and (todo "TODO")
-					   (not (tags "@emilka" "work"))
-                                           (or (not (scheduled))
-                                               (scheduled :to today))
-                                           (tags "@zaudio" "@zfilmem"))
-                                     ((org-super-agenda-groups
-                                        '(
-                                          (:name "Istotniejsze"
-                                                 :scheduled past
-                                                 :scheduled today)
-                                         ))
-                                      (org-ql-block-header "Zadania do zrobienia na audio")))
-                       (org-ql-block '(and (todo)
-                                           (not (scheduled))
-                                           (tags "@emilka"))
-                                     ((org-ql-block-header "Zadania dla Emilki")))
-		       (org-ql-block '(or (and (todo "TODO" "DONE")
-					       (closed :on today))
-					  ;; Not possible to implement correctly (looking at LAST_REPEAT being on today)
-					  ;; because of this: https://github.com/alphapapa/org-ql/issues/192
-					  ;; (and (todo "TODO")
-					  ;;      (property "LAST_REPEAT")
-					  ;;      (ts :on today))
-					  )
-				     ((org-ql-block-header "Zrobione dzisiaj")))
-		       (org-ql-block '(and (tags "inbox")
-    				           (not (tags "work")))
-				     ((org-ql-block-header "Inbox")))
 
 		       ; Random Quote block
 		       ; need to add :sort (random) but as of 0.8 still not implemented
@@ -759,6 +718,71 @@
 		       ; also need to add "pick 1", but also not implemented
 		       (org-ql-block '(tags "rule")
 		        		     ((org-ql-block-header "Random Rule of the day")))
+		       )
+                       )
+                     ("J" "Planowanie jutra"
+                      (
+		       ; Inbox
+		       (tags "+inbox"
+			     (
+			      (org-super-agenda-groups
+			       '(
+				 (:discard (:tag "work"))
+				 ))))
+		       ; Agenda for next days
+                       (agenda ""
+                               (
+                                (org-agenda-span 2)
+                                (org-super-agenda-groups
+                                  '(
+				    (:name "Najważniejsze na dziś"
+					   :priority "A")
+                                    (:discard (:tag "work"))
+				    (:name "Świt (06-08)"
+					   :tag "swit")
+                                    (:name "Poranek (09-11)"
+                                           :tag "poranek")
+				    (:name "Spacer na bieżni"
+					   :tag "treadmillwalk")
+                                    (:name "During day (11-15)"
+                                           :face (:append t)
+                                           :tag "@duringday")
+				    (:name "Popołudnie (16-19)"
+					   :tag "popoludnie")
+                                    (:name "Wieczór (19-22)"
+                                           :tag "wieczor")
+				    (:name "Codzienne"
+					   :tag "daily")
+                                    (:name "Dzisiejsze"
+                                           :scheduled today)
+                                    (:discard (:tag "@emilka"))
+                                    (:discard (:todo "WAITING"))
+                                   ))
+                                  ))
+                       (org-ql-block '(and (todo "WAITING")
+                                           (not (tags "@emilka" "work")))
+                                     ((org-ql-block-header "Zadania zablokowane")))
+		       (org-ql-block '(or (and (todo "TODO" "DONE")
+					       (closed :on today))
+					  ;; Not possible to implement correctly (looking at LAST_REPEAT being on today)
+					  ;; because of this: https://github.com/alphapapa/org-ql/issues/192
+					  ;; (and (todo "TODO")
+					  ;;      (property "LAST_REPEAT")
+					  ;;      (ts :on today))
+					  )
+				     ((org-ql-block-header "Zrobione dzisiaj")))
+
+		       (todo "TODO"
+			       (
+				(org-super-agenda-groups
+                                  '(
+                                    (:discard (:tag "work"))
+				    (:discard (:scheduled t))
+				    (:discard (:priority<= "D"))
+				    ;; (:discard (:priority<= "D"))
+				    (:auto-priority)
+				    (:discard (:anything))
+				    ))))
 		       )
                        )
                      ("T" "Treadmill"
