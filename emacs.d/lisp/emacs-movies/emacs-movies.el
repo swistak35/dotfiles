@@ -54,9 +54,9 @@ Signals an error if no API key is found."
 machine api.themoviedb.org login apikey password YOUR_API_KEY
 Or set emacs-movies-tmdb-api-key variable")))
 
-(defvar emacs-movies-upflix-request-delay 30
-  "Number of seconds to wait between Upflix requests during bulk refresh.
-This helps avoid triggering rate limiting. Set to 0 to disable delay.")
+(defvar emacs-movies-upflix-request-delay 600
+  "Number of seconds to wait after hitting rate limiting during bulk refresh.
+When rate limited, the bulk refresh pauses for this many seconds, then continues.")
 
 (defvar emacs-movies-tmdb-language "pl-PL"
   "Language code for TMDB API requests (e.g., 'pl-PL' for Polish, 'en-US' for English).")
@@ -1751,13 +1751,13 @@ Returns t if found, nil otherwise."
 Iterates over all org headlines in the current buffer, skipping entries without UPFLIX_LINK property.
 For entries with UPFLIX_LINK, refreshes them in order: entries without LAST_REFRESHED timestamp first,
 then entries with timestamps from oldest to newest.
-Adds a delay between requests to avoid rate limiting. Stops processing if rate limited."
+When rate limited, sleeps for `emacs-movies-upflix-request-delay' seconds and then continues."
   (interactive)
   (let ((headlines-with-timestamps '())
         (headlines-without-timestamps '())
         (processed 0)
         (total 0)
-        (rate-limited nil))
+        (rate-limit-hits 0))
     ;; Step 1: Iterate over all headlines and store UPFLIX_LINK values
     (org-map-entries
      (lambda ()
@@ -1797,70 +1797,42 @@ Adds a delay between requests to avoid rate limiting. Stops processing if rate l
           (setq count (1+ count)))))
     (message "=== END DEBUG ===\n")
 
-    ;; Step 3: Process entries without timestamp first
-    (catch 'rate-limited
-      (dolist (upflix-link headlines-without-timestamps)
-        (if (emacs-movies-find-entry-by-upflix-link upflix-link)
-            (progn
-              (setq processed (1+ processed))
-              (let ((last-refreshed (org-entry-get nil "LAST_REFRESHED")))
-                (message "[%d/%d] Processing entry (LAST_REFRESHED: %s): %s"
-                         processed total
-                         (or last-refreshed "NO TIMESTAMP")
-                         (org-get-heading t t t t)))
-              (condition-case err
-                  (progn
-                    (emacs-movies-refresh-upflix-data)
-                    ;; Add delay between requests (but not after the last one)
-                    (when (and (> emacs-movies-upflix-request-delay 0)
-                              (< processed total))
-                      (message "Waiting %d seconds before next request..." emacs-movies-upflix-request-delay)
-                      (sleep-for emacs-movies-upflix-request-delay)))
-                (error
-                 (let ((err-msg (error-message-string err)))
-                   (if (string-match-p "Rate limited" err-msg)
-                       (progn
-                         (message "Rate limiting detected! Stopping bulk refresh. Processed %d/%d entries." processed total)
-                         (setq rate-limited t)
-                         (throw 'rate-limited nil))
-                     ;; Re-signal non-rate-limit errors
-                     (message "Error refreshing entry: %s" err-msg))))))
-          (message "Warning: Could not find entry with UPFLIX_LINK: %s" upflix-link)))
+    ;; Step 3: Build combined list: entries without timestamps first, then by oldest timestamp
+    (let ((all-upflix-links (append
+                            (mapcar (lambda (link) link) headlines-without-timestamps)
+                            (mapcar #'cdr headlines-with-timestamps))))
 
-      ;; Step 4: Process entries with timestamps (only if not rate limited)
-      (unless rate-limited
-        (dolist (headline headlines-with-timestamps)
-          (let ((upflix-link (cdr headline)))
-            (if (emacs-movies-find-entry-by-upflix-link upflix-link)
-                (progn
-                  (setq processed (1+ processed))
-                  (let ((last-refreshed (org-entry-get nil "LAST_REFRESHED")))
-                    (message "[%d/%d] Processing entry (LAST_REFRESHED: %s): %s"
-                             processed total
-                             (or last-refreshed "NO TIMESTAMP")
-                             (org-get-heading t t t t)))
-                  (condition-case err
-                      (progn
-                        (emacs-movies-refresh-upflix-data)
-                        ;; Add delay between requests (but not after the last one)
-                        (when (and (> emacs-movies-upflix-request-delay 0)
-                                  (< processed total))
-                          (message "Waiting %d seconds before next request..." emacs-movies-upflix-request-delay)
-                          (sleep-for emacs-movies-upflix-request-delay)))
-                    (error
-                     (let ((err-msg (error-message-string err)))
-                       (if (string-match-p "Rate limited" err-msg)
-                           (progn
-                             (message "Rate limiting detected! Stopping bulk refresh. Processed %d/%d entries." processed total)
-                             (setq rate-limited t)
-                             (throw 'rate-limited nil))
-                         ;; Re-signal non-rate-limit errors
-                         (message "Error refreshing entry: %s" err-msg))))))
-              (message "Warning: Could not find entry with UPFLIX_LINK: %s" upflix-link))))))
+      ;; Step 4: Process all entries, retrying on rate limit
+      (while all-upflix-links
+        (let ((upflix-link (car all-upflix-links)))
+          (if (emacs-movies-find-entry-by-upflix-link upflix-link)
+              (progn
+                (let ((last-refreshed (org-entry-get nil "LAST_REFRESHED")))
+                  (message "[%d/%d] Processing entry (LAST_REFRESHED: %s): %s"
+                           (1+ processed) total
+                           (or last-refreshed "NO TIMESTAMP")
+                           (org-get-heading t t t t)))
+                (condition-case err
+                    (progn
+                      (emacs-movies-refresh-upflix-data)
+                      (setq processed (1+ processed))
+                      (setq all-upflix-links (cdr all-upflix-links)))
+                  (error
+                   (let ((err-msg (error-message-string err)))
+                     (if (string-match-p "Rate limited" err-msg)
+                         (progn
+                           (setq rate-limit-hits (1+ rate-limit-hits))
+                           (message "Rate limited at %d/%d. Waiting %d seconds..."
+                                    processed total emacs-movies-upflix-request-delay)
+                           (sleep-for emacs-movies-upflix-request-delay))
+                       ;; Non-rate-limit error: skip this entry
+                       (message "Error refreshing entry: %s" err-msg)
+                       (setq all-upflix-links (cdr all-upflix-links)))))))
+            (message "Warning: Could not find entry with UPFLIX_LINK: %s" upflix-link)
+            (setq all-upflix-links (cdr all-upflix-links))))))
 
-    (if rate-limited
-        (message "Bulk refresh stopped due to rate limiting. Successfully processed %d/%d entries." processed total)
-      (message "Bulk refresh completed! Successfully processed %d/%d entries." processed total))))
+    (message "Bulk refresh completed! Successfully processed %d/%d entries (rate limited %d times)."
+             processed total rate-limit-hits)))
 
 (defun rl-movies-refresh-entry ()
   "Refresh movie information for the current entry using Upflix API."
@@ -2201,7 +2173,7 @@ Tests with The Godfather (1972) page."
     ;; Track which entries were visited in what order
     (let ((visited-order '())
           (original-refresh-fn (symbol-function 'emacs-movies-refresh-upflix-data))
-          (emacs-movies-upflix-request-delay 0))  ; Disable delay for test
+          (emacs-movies-upflix-request-delay 0))  ; Disable rate-limit sleep for test
 
       ;; Mock the refresh function to track calls without making HTTP requests
       (cl-letf (((symbol-function 'emacs-movies-refresh-upflix-data)
