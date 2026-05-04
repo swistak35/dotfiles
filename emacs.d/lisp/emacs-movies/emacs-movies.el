@@ -19,7 +19,7 @@
   '("netflix" "disney" "viaplay" "skyshowtime" "canalplus" "cineman" "appletv" "hbomax" "cdapremium" "amazon" "tvpvod")
   "List of supported streaming service subscriptions.")
 
-(defvar emacs-movies-directory '("/media/plex/Wideo")
+(defvar emacs-movies-directory '("/media/plex/Wideo" "/media/plex1/Wideo")
   "List of directories containing video files.
 Each element should be an absolute path to a directory containing movies or TV shows.
 Multiple directories allow managing video collections across different locations.")
@@ -1512,6 +1512,56 @@ Iterates over all org entries in the current buffer. For each entry with DOWNLOA
 
     (message "Processed %d entries with DOWNLOADED_FILEPATH. Found %d needing fixes, fixed %d, skipped %d"
              processed needs-fixing fixed skipped)))
+
+(defun emacs-movies-relocate-moved-files ()
+  "Update DOWNLOADED_FILEPATH when files have moved between configured video directories.
+For each org entry whose DOWNLOADED_FILEPATH points to a non-existent path:
+1. Determine which directory in `emacs-movies-directory' the path is rooted in.
+2. Try replacing that prefix with each other directory in the list.
+3. If a candidate path exists on disk, overwrite DOWNLOADED_FILEPATH without prompting."
+  (interactive)
+  (emacs-movies-validate-directories)
+  (let* ((normalized-dirs (mapcar #'file-name-as-directory emacs-movies-directory))
+         ;; Try the most specific (longest) directory first to handle nested configurations
+         (sorted-dirs (sort (copy-sequence normalized-dirs)
+                            (lambda (a b) (> (length a) (length b)))))
+         (processed 0)
+         (missing 0)
+         (relocated 0)
+         (unresolved 0))
+    (org-map-entries
+     (lambda ()
+       (let ((downloaded-filepath (org-entry-get nil "DOWNLOADED_FILEPATH")))
+         (when (and downloaded-filepath
+                    (string-match "\\[\\[file:\\([^]]+\\)\\]\\[\\([^]]*\\)\\]\\]" downloaded-filepath))
+           (setq processed (1+ processed))
+           (let ((old-path (match-string 1 downloaded-filepath))
+                 (display-name (match-string 2 downloaded-filepath)))
+             (unless (file-exists-p old-path)
+               (setq missing (1+ missing))
+               (let* ((heading (org-get-heading t t t t))
+                      (source-dir (cl-find-if (lambda (dir) (string-prefix-p dir old-path))
+                                              sorted-dirs)))
+                 (if (not source-dir)
+                     (progn
+                       (setq unresolved (1+ unresolved))
+                       (message "No matching base directory for [%s]: %s" heading old-path))
+                   (let* ((relative-path (substring old-path (length source-dir)))
+                          (new-path (cl-some (lambda (candidate-dir)
+                                               (unless (string= candidate-dir source-dir)
+                                                 (let ((candidate (concat candidate-dir relative-path)))
+                                                   (when (file-exists-p candidate)
+                                                     candidate))))
+                                             normalized-dirs)))
+                     (if new-path
+                         (let ((new-link (format "[[file:%s][%s]]" new-path display-name)))
+                           (org-set-property "DOWNLOADED_FILEPATH" new-link)
+                           (setq relocated (1+ relocated))
+                           (message "Relocated [%s]: %s -> %s" heading old-path new-path))
+                       (setq unresolved (1+ unresolved))
+                       (message "No replacement found for [%s]: %s" heading old-path)))))))))))
+    (message "Processed %d entries, %d missing, %d relocated, %d unresolved"
+             processed missing relocated unresolved)))
 
 (defun emacs-movies-set-upflix-link ()
   "Set UPFLIX_LINK property for current entry.
