@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 
 require "json"
+require "optparse"
+
+$quiet = false
 
 # Function to check if required tracks exist in an MKV file
 def check_tracks(mkv_file, required_audio_langs, required_subtitle_langs)
@@ -18,12 +21,22 @@ def check_tracks(mkv_file, required_audio_langs, required_subtitle_langs)
   subtitles = json_result["tracks"].select { |t| t["type"] == "subtitles" }
   audio_tracks = json_result["tracks"].select { |t| t["type"] == "audio" }
 
-  # Extract languages from tracks
+  # Extract languages and names from tracks
   subtitle_langs = subtitles.map { |sub| sub["properties"]["language_ietf"] || sub["properties"]["language"] || "und" }
+  subtitle_labels = subtitles.map { |sub|
+    lang = sub["properties"]["language_ietf"] || sub["properties"]["language"] || "und"
+    name = sub["properties"]["track_name"]
+    name ? "#{lang} (#{name})" : lang
+  }
   audio_langs = audio_tracks.map { |aud| aud["properties"]["language_ietf"] || aud["properties"]["language"] || "und" }
+  audio_labels = audio_tracks.map { |aud|
+    lang = aud["properties"]["language_ietf"] || aud["properties"]["language"] || "und"
+    name = aud["properties"]["track_name"]
+    name ? "#{lang} (#{name})" : lang
+  }
 
-  puts "Checking: #{mkv_file}"
-  
+  puts "Checking: #{mkv_file}" unless $quiet
+
   # Check audio tracks
   missing_audio = []
   required_audio_langs.each do |required_lang|
@@ -40,20 +53,26 @@ def check_tracks(mkv_file, required_audio_langs, required_subtitle_langs)
 
   # Report results
   if missing_audio.empty? && missing_subtitles.empty?
-    puts "  ✓ All required tracks present"
+    puts "  ✓ All required tracks present" unless $quiet
   else
-    puts "  ⚠ MISSING TRACKS:"
-    unless missing_audio.empty?
-      puts "    Missing audio: #{missing_audio.join(', ')}"
-    end
-    unless missing_subtitles.empty?
-      puts "    Missing subtitles: #{missing_subtitles.join(', ')}"
+    if $quiet
+      puts mkv_file
+    else
+      puts "  ⚠ MISSING TRACKS:"
+      unless missing_audio.empty?
+        puts "    Missing audio: #{missing_audio.join(', ')}"
+      end
+      unless missing_subtitles.empty?
+        puts "    Missing subtitles: #{missing_subtitles.join(', ')}"
+      end
     end
   end
-  
-  puts "    Available audio: #{audio_langs.join(', ')}" if audio_langs.any?
-  puts "    Available subtitles: #{subtitle_langs.join(', ')}" if subtitle_langs.any?
-  puts
+
+  unless $quiet
+    puts "    Available audio: #{audio_labels.join(', ')}" if audio_labels.any?
+    puts "    Available subtitles: #{subtitle_labels.join(', ')}" if subtitle_labels.any?
+    puts
+  end
 end
 
 # Function to iterate over all MKV files in a given directory
@@ -76,10 +95,17 @@ def process_directory(directory, required_audio_langs, required_subtitle_langs)
   end
 end
 
+OptionParser.new do |opts|
+  opts.banner = "Usage: check_subtitles_and_audio.rb [options] AUDIO_LANGS SUBTITLE_LANGS /path/to/directory"
+  opts.on("-q", "--quiet", "Only output files with missing tracks") do
+    $quiet = true
+  end
+end.parse!
+
 # Check if the user provided the required arguments
 if ARGV.length < 3
-  puts "Usage: ruby check_subtitles_and_audio.rb AUDIO_LANGS SUBTITLE_LANGS /path/to/directory"
-  puts "Example: ruby check_subtitles_and_audio.rb pl,en pl,en /path/to/videos"
+  puts "Usage: check_subtitles_and_audio.rb [--quiet] AUDIO_LANGS SUBTITLE_LANGS /path/to/directory"
+  puts "Example: check_subtitles_and_audio.rb pl,en pl,en /path/to/videos"
   exit 1
 end
 
@@ -92,10 +118,12 @@ directory = ARGV[2]
 required_audio_langs = audio_langs_str.split(',').map(&:strip)
 required_subtitle_langs = subtitle_langs_str.split(',').map(&:strip)
 
-puts "Checking for audio languages: #{required_audio_langs.join(', ')}"
-puts "Checking for subtitle languages: #{required_subtitle_langs.join(', ')}"
-puts "Directory: #{directory}"
-puts "=" * 50
+unless $quiet
+  puts "Checking for audio languages: #{required_audio_langs.join(', ')}"
+  puts "Checking for subtitle languages: #{required_subtitle_langs.join(', ')}"
+  puts "Directory: #{directory}"
+  puts "=" * 50
+end
 
 # Process the directory
 process_directory(directory, required_audio_langs, required_subtitle_langs)
