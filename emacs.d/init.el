@@ -102,6 +102,12 @@
 ; https://emacs.stackexchange.com/questions/9583/how-to-treat-underscore-as-part-of-the-word
 (modify-syntax-entry ?_ "w")
 
+(defun sort-lines-reverse (beg end)
+  "Sort lines in region, then reverse their order."
+  (interactive "r")
+  (sort-lines nil beg end)
+  (reverse-region beg end))
+
 (use-package transient
              :straight t)
 
