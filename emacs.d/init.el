@@ -189,7 +189,19 @@
 	     )
 
 (use-package gptel
-             :straight t)
+  :straight t
+  :init
+  ;; Key read from ~/.authinfo: machine generativelanguage.googleapis.com login apikey
+  (gptel-make-gemini "Gemini" :key 'gptel-api-key :stream t)
+
+  ;; Local model via Ollama (http://localhost:11434). Start with: ollama serve
+  (setq gptel-model 'qwen2.5-coder:7b
+        gptel-backend (gptel-make-ollama "Ollama"
+                        :host "localhost:11434"
+                        :stream t
+                        :models '(qwen2.5-coder:7b)))
+  )
+
 
 
 ;; (use-package flycheck
