@@ -486,10 +486,10 @@
                       "** TOWATCH :tvshow:new:\n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n"
 		      :before-finalize (emacs-movies-refresh-tmdb-data emacs-movies-search-upflix-and-set-link))
 		     ("s" "Szychta")
-		     ("sl" "Read later" entry (file+headline "~/projs/silverfin/notes/gtd.org" "Inbox")
+		     ("sl" "Read later" entry (file+headline "~/projs/silverfin/people_management/gtd.org" "Inbox")
 		      "** TODO Read [[%:link][%:description]]\n  :PROPERTIES:\n  :DATE: %U\n  :END:\n%i\n"
                       :prepend t)
-		     ("sc" "Check" entry (file+headline "~/projs/silverfin/notes/gtd.org" "Inbox")
+		     ("sc" "Check" entry (file+headline "~/projs/silverfin/people_management/gtd.org" "Inbox")
 		      "** TODO Check [[%:link][%:description]]\n  :PROPERTIES:\n  :DATE: %U\n  :END:\n%i\n"
                       :prepend t)
                      ("w" "Web")
@@ -507,7 +507,7 @@
 		      :create-id t
 		      :prepend t)
                      ("wt" "Task" entry (file "~/notes/inbox.org")
-                      "** TODO %:description\n:PROPERTIES:\n:ID: %:foo\n:URL: %:link\n:CREATED_AT: %U\n:END:\n%i\n"
+		      "** TODO %i [[%:link][%:description]]\n  :PROPERTIES:\n  :CREATED_AT: %U\n  :END:\n%i\n"
                       :prepend t
 		      :create-id t)
                      ("wu" "To Read" entry (file+headline "~/notes/bookmarks.org" "To Read")
@@ -569,6 +569,7 @@
                      (not (cl-set-exclusive-or (org-get-tags-at) valid-tags))
                      (= (nth 0 (org-heading-components)) 2)))))
              (setq org-refile-target-verify-function 'my-org-refile-target-verify-function)
+	     (setq org-agenda-sorting-strategy '(habit-up time-up priority-down))
              (setq org-agenda-custom-commands
                    '(
                      ("D" "Daily agenda"
