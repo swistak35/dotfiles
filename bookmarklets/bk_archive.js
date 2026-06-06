@@ -1,5 +1,5 @@
 function is_singlefile_page() {
-    return window.location.href.startsWith("moz-extension://15c35088-8d27-4349-be2a-f9c5336b947f")
+    return window.location.href.startsWith("moz-extension://0754d746-9983-43bf-9597-004e3b487efd")
 }
 
 function format_org_mode_date(date) {
