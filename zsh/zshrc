@@ -160,6 +160,9 @@ export LOCALE_ARCHIVE=/home/swistak35/.locale-archive
 ###########
 
 
+alias emc='emacsclient -t .'
+
+
 # Funny aliases
 alias wtf='dmesg'
 alias rtfm='man'
