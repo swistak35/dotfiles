@@ -275,8 +275,11 @@ alias gsp='git stash pop'
 alias gds='gd --staged'
 alias go='git show'
 alias goh='git show HEAD'
+alias grecb='git for-each-ref --sort=-committerdate --format="%(committerdate:short) %(committerdate:relative) %(refname:short)" refs/heads/ | while read date relative branch; do [[ "$(date -d "$date" +%s)" -ge "$(date -d "2 weeks ago" +%s)" ]] && echo "$date ($relative) $branch"; done'
 
 
+alias cc='claude --add-dir ../myskills'
+alias ccc='claude --add-dir ../myskills --dangerously-skip-permissions'
 
 ###########
 # HISTORY #
