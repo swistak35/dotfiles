@@ -1,6 +1,12 @@
 
 # zmodload zsh/zprof
 
+# Emacs keybindings. Must run before plugins load: zsh defaults the main
+# keymap to viins when $EDITOR contains "vi" (we export EDITOR=vim), and
+# plugins like history-search-multi-word bind their keys (^R) into whatever
+# keymap is main at load time. Selecting emacs later would orphan them.
+bindkey -e
+
 #########
 # ZINIT #
 #########

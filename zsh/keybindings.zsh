@@ -1,6 +1,5 @@
-# Wtf?
-bindkey -e
-# zstyle :compinstall filename '/home/swistak35/.zshrc'
+# bindkey -e (emacs mode) lives at the top of zshrc — it must run before
+# plugins bind their keys.
 
 # ========================
 # === KEY SHORTCUTS SETUP
