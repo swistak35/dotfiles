@@ -288,7 +288,10 @@ alias ccc='claude --add-dir ../myskills --dangerously-skip-permissions'
 # HISTORY #
 ###########
 
-HISTFILE=~/.zshhistory
+# Points directly into dotfiles-private instead of a ~/.zshhistory symlink:
+# zsh rewrites the history file via rename() on every clean exit, which would
+# replace the symlink with a regular file.
+HISTFILE=~/projs/swistak35/dotfiles-private/histories/zshhistory
 HISTSIZE=5000000
 export SAVEHIST=$HISTSIZE
 
