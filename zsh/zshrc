@@ -108,11 +108,11 @@ autoload zmv
 # COMPLETIONS #
 ###############
 
-# source ~/.zsh/completion.zsh
+# fpath + zstyles only; compinit runs via zicompinit in the turbo block above
+source ~/.zsh/completion.zsh
 
-# source ~/.zsh/completions/tmuxinator.zsh
-# # source ~/.zsh/completions/zeus.zsh
-# source ~/.zsh/completions/_bw
+# compctl-based, independent of compinit
+source ~/.zsh/completions/tmuxinator.zsh
 
 
 

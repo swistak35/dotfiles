@@ -1,0 +1,5 @@
+# Ubuntu's /etc/zsh/zshrc runs compinit before ~/.zshrc executes, so the
+# compdump gets built before our fpath additions and custom completions
+# (~/.zsh/completions) never register. It also means compinit ran twice
+# (again via zinit's zicompinit). This variable is the documented opt-out.
+skip_global_compinit=1
