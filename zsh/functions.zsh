@@ -1,10 +1,10 @@
-urlencode() { python2.7 -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])" $1 }
+urlencode() { ruby -rcgi -e 'puts CGI.escape(ARGV[0])' "$1" }
 
-urldecode() { python2.7 -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])" $1 }
+urldecode() { ruby -rcgi -e 'puts CGI.unescape(ARGV[0])' "$1" }
 
 rot13() { echo $1 | tr "A-Za-z" "N-ZA-Mn-za-m" }
 
-ppjson() { python -mjson.tool }
+ppjson() { ruby -rjson -e 'puts JSON.pretty_generate(JSON.parse(STDIN.read))' }
 
 mcd() { mkdir -p "$1" && cd "$1"; }
 
@@ -39,4 +39,16 @@ be_rspec_with_notification() {
   bundle exec rspec $*
   tput bel
   notify-send "Tests are done." "Back to Coding!"
+}
+
+# Plaintext HTTP sniffers. Interface defaults to the default-route one,
+# pass another as $1 to override.
+sniff() {
+  local iface=${1:-$(ip route | awk '/^default/ {print $5; exit}')}
+  sudo tcpdump -i $iface -nn -l -A -s0 'tcp port 80' | grep -a --line-buffered -E '^(GET|POST) '
+}
+
+httpdump() {
+  local iface=${1:-$(ip route | awk '/^default/ {print $5; exit}')}
+  sudo tcpdump -i $iface -n -s 0 -w - | grep -a -o -E 'Host: .*|GET /.*'
 }

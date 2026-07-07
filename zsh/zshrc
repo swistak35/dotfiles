@@ -126,36 +126,27 @@ source ~/.zsh/completions/tmuxinator.zsh
 # EXPORTS #
 ###########
 
-export PATH=/opt/chefdk/bin:$PATH
-export PATH=/usr/lib/smlnj/bin:$PATH
+# No duplicate PATH entries (keeps the first occurrence, so prepends win)
+typeset -U path PATH
+
 export PATH=$HOME/.bin:$PATH
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/.rbenv/bin:$PATH
 export PATH=$HOME/apps/bin:$PATH
 export PATH=$HOME/.yarn/bin:$PATH
-export PATH=/opt/android-sdk/tools:$PATH
-export PATH=/usr/local/bin:$PATH
-export PATH=/home/swistak35/.cargo/bin:$PATH
-export PATH=/snap/bin:$PATH
-export LD_LIBRARY_PATH=/usr/lib32/nvidia-375/
+export PATH=$HOME/.cargo/bin:$PATH
 export LESS='-FRSX -i-P%f (%i/%m) Line %lt/%L'
 export EDITOR="vim"
 export BROWSER="firefox"
 export XTERM="konsole"
-export ANDROID_HOME=/home/swistak35/android-sdk-linux
 export MANPATH=/usr/local/man:$MANPATH
 export LANG=pl_PL.UTF-8
 export LC_ALL=pl_PL.UTF-8
 export WORDCHARS='|*?[]~=&;!#$%^(){}<>'
 export DISABLE_AUTO_TITLE=true
-export N_PREFIX=/home/swistak35/.nodeenvs
 
 # which program to use when asking for password to ssh key
 export SSH_ASKPASS=ksshaskpass
-
-# temporarily for nixos
-# https://github.com/NixOS/nix/issues/599
-export LOCALE_ARCHIVE=/home/swistak35/.locale-archive
 
 # fzf settings
 # export FZF_DEFAULT_COMMAND='ag -l' # to ignore files from .gitignore
@@ -187,11 +178,9 @@ else
 fi
 alias l1='ls -A1'
 alias ll='ls -Al'
-alias emu='emulator -avd'
 alias bakemeup='sudo rdiff-backup --include-filelist /home/swistak35/.rdiff-backup-filelist / /media/backup/rdiffbackup'
 alias grep='grep --colour=auto'
 alias egrep='egrep --colour=auto'
-alias kcrsa="eval \$(keychain --eval --agents ssh -Q --quiet ~/.ssh/id_rsa)"
 alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
 alias diff='colordiff'
 alias rubysrv='ruby -run -e httpd . -p5000'
@@ -200,8 +189,7 @@ alias mkdir='mkdir -p'
 alias timer='echo "Timer started. Stop with Ctrl-D." && date && time cat && date'
 alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
 alias netdebug='mtr google.com'
-alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
-alias httpdump="sudo tcpdump -i wlp3s0 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+# sniff and httpdump are functions now, see functions.zsh
 alias mapx="xargs -n1"
 alias reload!='. ~/.zshrc'
 alias pubkey="more ~/.ssh/id_rsa.pub | cb | echo '=> Public key copied to pasteboard.'"
@@ -211,12 +199,10 @@ alias leavejobs="disown && exit"
 alias iplocation="curl ipinfo.io"
 alias checkport="nc -zv localhost"
 alias pstree_="pstree -ap"
-alias prb="pry -r '/home/swistak35/.rozne/myhomelib.rb'"
+alias prb="pry -r ~/.zsh/myhomelib.rb"
 alias :q="exit"
-alias adb_cleandb="adb shell pm clear"
 alias fd='fdfind'
 alias ff='find . -type f -name'
-alias muo="/home/swistak35/projs/oss/muon/bin/muon2"
 alias fsum="paste -sd+ | bc"
 alias lst="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/ /' -e 's/-/|/'"
 alias be='bundle exec'
@@ -340,30 +326,27 @@ source ~/.zsh/keybindings.zsh
 # 	add-zsh-hook precmd switch_term_colors
 # fi
 
-# SSH Agent - auto-load SSH keys with GUI password prompt
-if [ -z "$SSH_AUTH_SOCK" ]; then
-    eval "$(ssh-agent -s)" > /dev/null
+# One shared ssh-agent for all shells, run as a systemd user service with a
+# stable socket (ssh/ssh-agent.service) — instead of spawning an agent per
+# shell. Keep a forwarded agent when SSHing in from another machine.
+if [[ -z "$SSH_CONNECTION" || -z "$SSH_AUTH_SOCK" ]]; then
+  export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR:-/run/user/$UID}/ssh-agent.socket"
 fi
 
-# Add SSH keys if not already loaded, using GUI password prompt
+# Load keys in the first shell after boot, with GUI passphrase prompt
+# (ssh-add -l exit 1 = agent reachable but has no identities yet)
 ssh-add -l > /dev/null 2>&1
-if [ $? = 2 ]; then
+if [ $? = 1 ]; then
     SSH_ASKPASS=ksshaskpass ssh-add ~/.ssh/id_rsa < /dev/null 2>/dev/null || true
     SSH_ASKPASS=ksshaskpass ssh-add ~/.ssh/id_ed25519 < /dev/null 2>/dev/null || true
 fi
 
-# rbenv
-eval "$(rbenv init -)"
-
-# OCaml
-# . /home/swistak35/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
-
-# Node
-# export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-
-# ASDF
+# ASDF (node, yarn, claude, ... — not used for ruby)
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 zinit snippet OMZP::asdf
+
+# rbenv — must come after asdf so rbenv shims win for ruby
+eval "$(rbenv init -)"
 
 # This one is not committed to dotfiles repository.
 # There I keep secret env variables.
