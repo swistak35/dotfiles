@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Toggle an enlarged framebuffer on the laptop panel for NoMachine streaming.
+# The desktop monitor is bigger than the panel, so render at ~monitor size and
+# let NoMachine capture the larger framebuffer. The panel itself then shows a
+# squished downscale - irrelevant, the lid is closed when this is in use.
+set -e
+
+OUTPUT=eDP
+SCALE=1.79x1.31
+
+# The output's on-screen geometry equals its picked mode at scale 1x1 and
+# diverges from it when a scale is active - that's the toggle state.
+geometry=$(xrandr --query | sed -n "s/^$OUTPUT connected\( primary\)\? \([0-9]\+x[0-9]\+\)+.*/\2/p")
+mode=$(xrandr --query | awk "/^$OUTPUT /{found=1; next} found && /\*/{print \$1; exit}")
+
+if [[ -z $geometry || -z $mode ]]; then
+  echo "laptop-screen: output $OUTPUT not found or off" >&2
+  exit 1
+fi
+
+if [[ $geometry == "$mode" ]]; then
+  xrandr --output "$OUTPUT" --scale "$SCALE"
+  echo "laptop-screen: scaled $mode by $SCALE (framebuffer $(xrandr --query | sed -n "s/^$OUTPUT connected\( primary\)\? \([0-9]\+x[0-9]\+\)+.*/\2/p"))"
+else
+  xrandr --output "$OUTPUT" --scale 1x1
+  echo "laptop-screen: back to native $mode"
+fi
