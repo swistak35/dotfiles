@@ -16,7 +16,7 @@
   "Hostname to replace in Upflix URLs for API calls.")
 
 (defvar rl-movies-supported-subscriptions
-  '("netflix" "disney" "viaplay" "skyshowtime" "canalplus" "cineman" "appletv" "hbomax" "cdapremium" "amazon" "tvpvod")
+  '("netflix" "disney" "viaplay" "skyshowtime" "canalplus" "cineman" "appletv" "hbomax" "cdapremium" "amazon" "tvpvod" "crunchyroll")
   "List of supported streaming service subscriptions.")
 
 (defvar emacs-movies-directory '("/media/plex/Wideo" "/media/plex1/Wideo")
