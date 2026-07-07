@@ -79,6 +79,19 @@
 (setq make-backup-files nil)
 (setq auto-save-file-name-transforms
   `((".*" "~/.emacs.d/saves/" t)))
+
+; Auto-revert buffers when the file changes on disk. With a two-machine setup
+; the same file (e.g. ~/pnotes/silverfin, an sshfs mount from the laptop) gets
+; edited from either machine at different times; this pulls in the other side's
+; changes. Note sshfs has no inotify, so auto-revert falls back to polling there.
+(global-auto-revert-mode 1)
+(setq global-auto-revert-non-file-buffers t) ; also revert dired etc.
+
+; Don't create .#file lock symlinks. They exist to warn about concurrent edits
+; by two Emacsen, but they litter shared/mounted/synced dirs (and confuse tools
+; watching those dirs) more than they help here.
+(setq create-lockfiles nil)
+
 (global-unset-key "\M-l") ; that was "downcase word" by default
 ; Disable built-in VC manager
 (setq vc-handled-backends nil)
