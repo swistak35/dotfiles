@@ -465,7 +465,7 @@
              :config
              (require 'org-protocol)
              (unless (server-running-p) (server-start)) ; Required for org-protocol to receive information
-             (setq org-agenda-files '("~/notes" "~/pnotes/res" "~/projs/silverfin/people_management"))
+             (setq org-agenda-files '("~/notes" "~/pnotes/res" "~/pnotes/silverfin"))
              (setq org-default-notes-file "~/notes/inbox.org")
              (setq org-log-done t)
 	     (setq org-log-into-drawer t) ; Causes to log the CLOSED timestamps into the LOGBOOK property, instead of the entry content
@@ -512,10 +512,10 @@
                       "** TOWATCH :tvshow:new:\n:PROPERTIES:\n:TMDB_URL: %^{Please enter TMDB URL}\n:CREATED_AT: %U\n:END:%i\n"
 		      :before-finalize (emacs-movies-refresh-tmdb-data emacs-movies-search-upflix-and-set-link))
 		     ("s" "Szychta")
-		     ("sl" "Read later" entry (file+headline "~/projs/silverfin/people_management/gtd.org" "Inbox")
+		     ("sl" "Read later" entry (file+headline "~/pnotes/silverfin/gtd.org" "Inbox")
 		      "** TODO Read [[%:link][%:description]]\n  :PROPERTIES:\n  :DATE: %U\n  :END:\n%i\n"
                       :prepend t)
-		     ("sc" "Check" entry (file+headline "~/projs/silverfin/people_management/gtd.org" "Inbox")
+		     ("sc" "Check" entry (file+headline "~/pnotes/silverfin/gtd.org" "Inbox")
 		      "** TODO Check [[%:link][%:description]]\n  :PROPERTIES:\n  :DATE: %U\n  :END:\n%i\n"
                       :prepend t)
                      ("w" "Web")
@@ -1031,7 +1031,7 @@
 			   (list
 			    (cons "Silverfin Tasks (sft)"
 				  (list :buffers-files (append
-							(directory-files-recursively "~/projs/silverfin/people_management/" "\\.org$"))
+							(directory-files-recursively "~/pnotes/silverfin/" "\\.org$"))
 					:query '(and (todo "TODO" "WAITING" "INPROGRESS") (tags "work"))
 					:title "Silverfin Tasks"
 					:sort nil
