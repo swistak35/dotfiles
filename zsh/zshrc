@@ -38,12 +38,6 @@ zinit light-mode for \
 
 setopt promptsubst
 
-# Plugins needed for themes
-zinit wait lucid for \
-    OMZL::git.zsh \
-  atload"unalias grv" \
-    OMZP::git
-
 # Provide a simple prompt till the theme loads
 PS1="READY >"
 
@@ -130,6 +124,7 @@ source ~/.zsh/completions/tmuxinator.zsh
 typeset -U path PATH
 
 export PATH=$HOME/.bin:$PATH
+export PATH=$HOME/projs/swistak35/dotfiles-private/pscripts:$PATH # private scripts (work-specific)
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/.rbenv/bin:$PATH
 export PATH=$HOME/apps/bin:$PATH
@@ -287,16 +282,28 @@ HISTFILE=~/projs/swistak35/dotfiles-private/histories/zshhistory
 HISTSIZE=5000000
 export SAVEHIST=$HISTSIZE
 
-# Ignoring dups in ZSH history
+# When a new command duplicates an older one, drop the older entry
 setopt hist_ignore_all_dups
 
-# Ignoring commands with pre-space in ZSH history
+# Don't record commands typed with a leading space
 setopt hist_ignore_space
 
-# Share history
-setopt append_history
-setopt inc_append_history
+# One live history shared across all running shells (tmux panes, terminals):
+# writes each command immediately and re-reads others' commands before each
+# prompt. This subsumes append_history and inc_append_history, so they're
+# not set — see the manual's note under SHARE_HISTORY.
 setopt share_history
+
+# Store timestamp + duration per command (share_history forces this format on
+# write anyway; setting it explicitly makes it not depend on that side-effect)
+setopt extended_history
+
+# Trim redundant whitespace from a command before saving it
+setopt hist_reduce_blanks
+
+# History expansion (!!, !vim, ...) drops the result into the edit buffer to
+# confirm, instead of running it immediately
+setopt hist_verify
 
 
 
@@ -307,6 +314,7 @@ setopt share_history
 hash -d db="/media/magazyn/Dropbox"
 hash -d tmp="/media/magazyn/tmp"
 hash -d scripts="/home/swistak35/.bin/scripts"
+hash -d psc="$HOME/projs/swistak35/dotfiles-private/pscripts"
 
 
 
