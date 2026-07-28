@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=org-protocol-remote
+Comment=Forward org-protocol capture to Emacs on a remote host over SSH
+Categories=Other;
+Keywords=org-protocol;
+Icon=emacs
+Type=Application
+Exec=/home/swistak35/projs/swistak35/dotfiles/emacs.d/org-protocol-remote.sh %u
+Terminal=false
+StartupWMClass=Emacs
+MimeType=x-scheme-handler/org-protocol-remote;

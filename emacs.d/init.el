@@ -1362,9 +1362,9 @@
  '(package-selected-packages
    '(list-packages-ext solarized-theme dired-subtree dired-collapse dired-hacks-utils))
  '(safe-local-variable-values
-   '((browse-url-chromium-arguments "--user-data-dir=/home/swistak35/projs/silverfin/chromium")
-     (browse-url-chromium-arguments quote
-				    ("--user-data-dir=/home/swistak35/projs/silverfin/chromium")))))
+   '((browse-url-browser-function . browse-url-generic)
+     (browse-url-generic-program . "/home/swistak35/projs/swistak35/dotfiles-private/pscripts/open-on-tuor")
+     (org-refile-targets . ((nil . (:maxlevel . 2)))))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
