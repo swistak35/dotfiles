@@ -352,8 +352,10 @@ if [ $? = 1 ]; then
 fi
 
 # ASDF (node, yarn, claude, ... — not used for ruby)
+# The binary itself lives in ~/apps/bin (installed by configure_ubuntu, pinned
+# there); ~/.asdf only holds the data. No OMZP::asdf snippet: it exists to
+# source asdf.sh from the pre-0.16 shell install, which is gone.
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-zinit snippet OMZP::asdf
 
 # rbenv — must come after asdf so rbenv shims win for ruby
 eval "$(rbenv init -)"

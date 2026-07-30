@@ -58,6 +58,12 @@ Or set emacs-movies-tmdb-api-key variable")))
   "Number of seconds to wait after hitting rate limiting during bulk refresh.
 When rate limited, the bulk refresh pauses for this many seconds, then continues.")
 
+(defvar emacs-movies-upflix-max-consecutive-rate-limits 5
+  "How many rate limits in a row abort a bulk refresh.
+Upflix blocks clients site-wide and such a block can outlast several
+`emacs-movies-upflix-request-delay' waits, so give up instead of
+retrying the same entry forever.  Set to nil to retry indefinitely.")
+
 (defvar emacs-movies-tmdb-language "pl-PL"
   "Language code for TMDB API requests (e.g., 'pl-PL' for Polish, 'en-US' for English).")
 
@@ -1236,20 +1242,52 @@ returns '(1972 tvshow)'."
 
 ;;; Upflix HTML parsing helpers
 
-(defun emacs-movies-fetch-html-from-url (url)
-  "Fetch HTML from URL and return parsed DOM tree.
-Returns nil if fetch fails or URL is invalid."
+(defun emacs-movies-fetch-html-response (url)
+  "Fetch URL and return a plist describing the whole HTTP response.
+The plist has these keys:
+  :status  HTTP status code as an integer (nil if unavailable)
+  :headers alist of (LOWERCASED-HEADER-NAME . VALUE)
+  :dom     parsed DOM tree of the response body (nil if unparseable)
+Returns nil if URL is nil/empty or the request could not be made.
+
+Unlike `emacs-movies-fetch-html-from-url' this also returns error
+responses, which is what lets callers tell an Upflix traffic block
+\(HTTP 403) apart from a plain network failure."
   (when (and url (not (string-empty-p url)))
     (let ((response-buffer (url-retrieve-synchronously url)))
       (when response-buffer
         (with-current-buffer response-buffer
           (url-http-parse-response)
-          (when (eq url-http-response-status 200)
+          (let ((status url-http-response-status)
+                (headers '())
+                (dom nil))
             (goto-char (point-min))
             (when (re-search-forward "\n\n" nil t)
-              (let ((dom (libxml-parse-html-region (point) (point-max))))
-                (kill-buffer)
-                dom))))))))
+              (let ((body-start (point)))
+                ;; Collect the response headers, skipping the status line
+                (save-restriction
+                  (narrow-to-region (point-min) body-start)
+                  (goto-char (point-min))
+                  (while (re-search-forward
+                          "^\\([A-Za-z0-9-]+\\)[ \t]*:[ \t]*\\(.*\\)$" nil t)
+                    (push (cons (downcase (match-string 1))
+                                (string-trim (match-string 2)))
+                          headers)))
+                (setq dom (libxml-parse-html-region body-start (point-max)))))
+            (kill-buffer)
+            (list :status status :headers (nreverse headers) :dom dom)))))))
+
+(defun emacs-movies-response-header (response name)
+  "Return the value of header NAME in RESPONSE, or nil if absent.
+NAME is matched case-insensitively."
+  (cdr (assoc (downcase name) (plist-get response :headers))))
+
+(defun emacs-movies-fetch-html-from-url (url)
+  "Fetch HTML from URL and return parsed DOM tree.
+Returns nil if fetch fails, URL is invalid, or the status is not 200."
+  (let ((response (emacs-movies-fetch-html-response url)))
+    (when (and response (eql (plist-get response :status) 200))
+      (plist-get response :dom))))
 
 (defun emacs-movies-fetch-json-from-url (url)
   "Fetch JSON from URL and return parsed data structure.
@@ -1298,16 +1336,67 @@ Returns nil if search fails or no results found."
        (message "Upflix search failed: %s" (error-message-string err))
        nil))))
 
+(defconst emacs-movies-upflix-traffic-block-header "x-upflix-traffic-block"
+  "Response header Upflix sets when it blocks a client for excessive traffic.")
+
+(defun emacs-movies-detect-block-page (dom)
+  "Check if DOM is the Upflix \"403 - Brak dostepu\" traffic block page.
+That page is served site-wide (including the front page) once Upflix
+decides a client makes too many requests.  It is identified by the
+`upflix-not-found--system' container, the `system-error-title' heading,
+or a document title of the form \"403 - Brak dostepu\".  Genuine 404
+pages, which reuse the `upflix-not-found' class without the `--system'
+modifier, are not treated as blocks.  The title must pair the status code
+with the error wording, so a film actually named e.g. \"403\" is not
+mistaken for an error page.
+Returns t if DOM is a block page, nil otherwise."
+  (when dom
+    (let ((title (car (dom-strings (car (dom-by-tag dom 'title))))))
+      (and (or (dom-by-class dom "upflix-not-found--system")
+               (dom-by-id dom "system-error-title")
+               (and title (string-match-p "40[39][ \t]*[-–][ \t]*Brak dost" title)))
+           t))))
+
 (defun emacs-movies-detect-rate-limiting (dom)
   "Check if DOM represents a rate limiting response from Upflix.
-Upflix returns a prepared page about 'Miss Christmas' when rate limiting.
-Returns t if rate limited, nil otherwise."
+Current Upflix versions serve a \"403 - Brak dostepu\" system error page
+\(see `emacs-movies-detect-block-page'); older versions served a prepared
+page about 'Miss Christmas'.  Both are recognised.
+Returns t if rate limited, nil otherwise.
+
+Note that the current block is signalled by an HTTP 403 status, so
+prefer `emacs-movies-response-rate-limited-p' when the full response is
+available - the body alone is not always conclusive."
   (when dom
-    (let* ((h2-elements (dom-by-tag dom 'h2))
-           (english-title (when h2-elements
-                           (string-trim (dom-text (car h2-elements))))))
-      (and english-title
-           (string= english-title "Miss Christmas")))))
+    (or (emacs-movies-detect-block-page dom)
+        (let* ((h2-elements (dom-by-tag dom 'h2))
+               (english-title (when h2-elements
+                                (string-trim (dom-text (car h2-elements))))))
+          (and english-title
+               (string= english-title "Miss Christmas"))))))
+
+(defun emacs-movies-response-rate-limited-p (response)
+  "Check if RESPONSE is an Upflix rate limit / traffic block.
+RESPONSE is a plist as returned by `emacs-movies-fetch-html-response'.
+A block is recognised by the `x-upflix-traffic-block' response header, by
+an HTTP 403/429 status, or by the served error page itself.
+Returns t if rate limited, nil otherwise."
+  (when response
+    (and (or (emacs-movies-response-header
+              response emacs-movies-upflix-traffic-block-header)
+             (memql (plist-get response :status) '(403 429))
+             (emacs-movies-detect-rate-limiting (plist-get response :dom)))
+         t)))
+
+(defun emacs-movies-rate-limit-description (response)
+  "Return a human readable description of the block reported by RESPONSE."
+  (let ((status (plist-get response :status))
+        (block-code (emacs-movies-response-header
+                     response emacs-movies-upflix-traffic-block-header)))
+    (concat (format "HTTP %s" (or status "?"))
+            (when block-code
+              (format ", %s: %s"
+                      emacs-movies-upflix-traffic-block-header block-code)))))
 
 (defun emacs-movies-follow-redirect (url)
   "Follow HTTP redirect for URL and return final destination.
@@ -1746,15 +1835,25 @@ Also updates subscription tags (on_netflix, on_disney, etc.)."
 
     ;; Wrap in condition-case for error handling
     (condition-case err
-        (let* ((dom (emacs-movies-fetch-html-from-url upflix-url)))
+        (let* ((response (emacs-movies-fetch-html-response upflix-url))
+               (dom (plist-get response :dom)))
 
-          ;; Check if HTML fetch/parse succeeded
+          ;; Check if the request itself succeeded
+          (unless response
+            (error "Failed to fetch HTML from Upflix"))
+
+          ;; Check for rate limiting before anything else: a blocked request
+          ;; still returns a well-formed page, just not the one we asked for
+          (when (emacs-movies-response-rate-limited-p response)
+            (error "Rate limited by Upflix (%s). Please wait before retrying"
+                   (emacs-movies-rate-limit-description response)))
+
+          (unless (eql (plist-get response :status) 200)
+            (error "Upflix returned %s" (emacs-movies-rate-limit-description response)))
+
+          ;; Check if HTML parse succeeded
           (unless dom
-            (error "Failed to fetch or parse HTML from Upflix"))
-
-          ;; Check for rate limiting
-          (when (emacs-movies-detect-rate-limiting dom)
-            (error "Rate limited by Upflix (detected 'Miss Christmas' page). Please wait 10 minutes before retrying"))
+            (error "Failed to parse HTML from Upflix"))
 
           ;; Extract data from DOM
           (let* ((subscriptions (emacs-movies-extract-subscriptions-from-dom dom))
@@ -1831,7 +1930,9 @@ When rate limited, sleeps for `emacs-movies-upflix-request-delay' seconds and th
         (headlines-without-timestamps '())
         (processed 0)
         (total 0)
-        (rate-limit-hits 0))
+        (rate-limit-hits 0)
+        (consecutive-rate-limits 0)
+        (aborted nil))
     ;; Step 1: Iterate over all headlines and store UPFLIX_LINK values
     (org-map-entries
      (lambda ()
@@ -1890,22 +1991,36 @@ When rate limited, sleeps for `emacs-movies-upflix-request-delay' seconds and th
                     (progn
                       (emacs-movies-refresh-upflix-data)
                       (setq processed (1+ processed))
+                      (setq consecutive-rate-limits 0)
                       (setq all-upflix-links (cdr all-upflix-links)))
                   (error
                    (let ((err-msg (error-message-string err)))
                      (if (string-match-p "Rate limited" err-msg)
                          (progn
                            (setq rate-limit-hits (1+ rate-limit-hits))
-                           (message "Rate limited at %d/%d. Waiting %d seconds..."
-                                    processed total emacs-movies-upflix-request-delay)
-                           (sleep-for emacs-movies-upflix-request-delay))
+                           (setq consecutive-rate-limits (1+ consecutive-rate-limits))
+                           (if (and emacs-movies-upflix-max-consecutive-rate-limits
+                                    (>= consecutive-rate-limits
+                                        emacs-movies-upflix-max-consecutive-rate-limits))
+                               ;; Block outlasted our patience: stop instead of spinning
+                               (progn
+                                 (message "Rate limited %d times in a row (%s). Giving up at %d/%d."
+                                          consecutive-rate-limits err-msg processed total)
+                                 (setq all-upflix-links nil)
+                                 (setq aborted t))
+                             (message "Rate limited at %d/%d (%s). Waiting %d seconds..."
+                                      processed total err-msg
+                                      emacs-movies-upflix-request-delay)
+                             (sleep-for emacs-movies-upflix-request-delay)))
                        ;; Non-rate-limit error: skip this entry
                        (message "Error refreshing entry: %s" err-msg)
+                       (setq consecutive-rate-limits 0)
                        (setq all-upflix-links (cdr all-upflix-links)))))))
             (message "Warning: Could not find entry with UPFLIX_LINK: %s" upflix-link)
             (setq all-upflix-links (cdr all-upflix-links))))))
 
-    (message "Bulk refresh completed! Successfully processed %d/%d entries (rate limited %d times)."
+    (message "Bulk refresh %s! Successfully processed %d/%d entries (rate limited %d times)."
+             (if aborted "aborted (still blocked by Upflix)" "completed")
              processed total rate-limit-hits)))
 
 (defun rl-movies-refresh-entry ()
@@ -2210,6 +2325,135 @@ Tests with The Godfather (1972) page."
 (ert-deftest test-rate-limiting-detection-nil-dom ()
   "Test that rate limiting detection handles nil DOM gracefully (unit test)."
   (should-not (emacs-movies-detect-rate-limiting nil)))
+
+(defun emacs-movies--mock-block-page-dom ()
+  "Return a mock DOM mimicking the Upflix \"403 - Brak dostepu\" page."
+  '(html ()
+         (head () (title () "403 - Brak dostępu | Upflix.pl"))
+         (body ()
+               (div ((class . "container upflix-not-found upflix-not-found--system"))
+                    (h1 ((id . "system-error-title")) (strong () "403") "Brak dostępu")
+                    (p () "Ten fragment serwisu jest poza zasięgiem Twojej sesji albo uprawnień.")))))
+
+(ert-deftest test-rate-limiting-detection-block-page ()
+  "Test that the current Upflix 403 block page is detected (unit test)."
+  (should (emacs-movies-detect-block-page (emacs-movies--mock-block-page-dom)))
+  (should (emacs-movies-detect-rate-limiting (emacs-movies--mock-block-page-dom))))
+
+(ert-deftest test-block-page-detection-normal-page ()
+  "Test that a normal movie page is not mistaken for a block page (unit test)."
+  (let ((mock-dom '(html ()
+                         (head () (title () "Shall We Dance? (2004) | Upflix.pl"))
+                         (body () (h2 () "Shall We Dance?")
+                               (div ((id . "sc")))))))
+    (should-not (emacs-movies-detect-block-page mock-dom))
+    (should-not (emacs-movies-detect-rate-limiting mock-dom))))
+
+(ert-deftest test-block-page-detection-title-containing-error-code ()
+  "Test that a film whose title contains 403 is not treated as a block page."
+  (let ((mock-dom '(html ()
+                         (head () (title () "403 - film o pokoju (1999) | Upflix.pl"))
+                         (body () (div ((id . "sc")))))))
+    (should-not (emacs-movies-detect-block-page mock-dom))
+    (should-not (emacs-movies-detect-rate-limiting mock-dom))))
+
+(ert-deftest test-block-page-detection-by-title-only ()
+  "Test that the block page title alone is enough, if the markup changes."
+  (let ((mock-dom '(html ()
+                         (head () (title () "403 - Brak dostępu | Upflix.pl"))
+                         (body () (div ((class . "something-else")))))))
+    (should (emacs-movies-detect-block-page mock-dom))))
+
+(ert-deftest test-block-page-detection-not-found-page ()
+  "Test that a plain 404 page is not treated as a traffic block (unit test).
+Upflix reuses the `upflix-not-found' class for genuine missing titles,
+only the `--system' variant means we were blocked."
+  (let ((mock-dom '(html ()
+                         (head () (title () "404 - Nie znaleziono | Upflix.pl"))
+                         (body ()
+                               (div ((class . "container upflix-not-found"))
+                                    (h1 () "404"))))))
+    (should-not (emacs-movies-detect-block-page mock-dom))
+    (should-not (emacs-movies-detect-rate-limiting mock-dom))))
+
+(ert-deftest test-response-rate-limited-by-header ()
+  "Test that the x-upflix-traffic-block header marks a response as blocked."
+  (let ((response (list :status 403
+                        :headers '(("content-type" . "text/html; charset=UTF-8")
+                                   ("x-upflix-traffic-block" . "18"))
+                        :dom (emacs-movies--mock-block-page-dom))))
+    (should (emacs-movies-response-rate-limited-p response))
+    (should (string-match-p "x-upflix-traffic-block: 18"
+                            (emacs-movies-rate-limit-description response)))))
+
+(ert-deftest test-response-rate-limited-by-status ()
+  "Test that a bare 403/429 status marks a response as blocked (unit test)."
+  (should (emacs-movies-response-rate-limited-p (list :status 403 :headers nil :dom nil)))
+  (should (emacs-movies-response-rate-limited-p (list :status 429 :headers nil :dom nil))))
+
+(ert-deftest test-response-rate-limited-normal-response ()
+  "Test that a successful response is not reported as blocked (unit test)."
+  (let ((response (list :status 200
+                        :headers '(("content-type" . "text/html; charset=UTF-8"))
+                        :dom '(html () (body () (div ((id . "sc"))))))))
+    (should-not (emacs-movies-response-rate-limited-p response))))
+
+(ert-deftest test-response-rate-limited-nil-response ()
+  "Test that a nil response is handled gracefully (unit test)."
+  (should-not (emacs-movies-response-rate-limited-p nil)))
+
+(ert-deftest test-response-header-lookup ()
+  "Test case-insensitive response header lookup (unit test)."
+  (let ((response (list :status 403 :headers '(("x-upflix-traffic-block" . "18")))))
+    (should (string= (emacs-movies-response-header response "X-Upflix-Traffic-Block") "18"))
+    (should-not (emacs-movies-response-header response "retry-after"))))
+
+(ert-deftest test-fetch-html-from-url-ignores-error-responses ()
+  "Test that `emacs-movies-fetch-html-from-url' still returns nil on non-200."
+  (cl-letf (((symbol-function 'emacs-movies-fetch-html-response)
+             (lambda (_url) (list :status 403
+                                  :headers '(("x-upflix-traffic-block" . "18"))
+                                  :dom (emacs-movies--mock-block-page-dom)))))
+    (should-not (emacs-movies-fetch-html-from-url "https://upflix.pl/film/zobacz/whatever")))
+  (cl-letf (((symbol-function 'emacs-movies-fetch-html-response)
+             (lambda (_url) (list :status 200 :headers nil :dom '(html () (body ()))))))
+    (should (emacs-movies-fetch-html-from-url "https://upflix.pl/film/zobacz/whatever"))))
+
+(ert-deftest test-refresh-upflix-data-reports-rate-limit ()
+  "Test that a blocked response raises a `Rate limited' error (unit test).
+The bulk refresh keys off that wording to decide whether to wait."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Shall We Dance?\n:PROPERTIES:\n")
+    (insert ":UPFLIX_LINK: https://upflix.pl/film/zobacz/shall-we-dance-2004\n")
+    (insert ":END:\n")
+    (goto-char (point-min))
+    (cl-letf (((symbol-function 'emacs-movies-fetch-html-response)
+               (lambda (_url) (list :status 403
+                                    :headers '(("x-upflix-traffic-block" . "18"))
+                                    :dom (emacs-movies--mock-block-page-dom)))))
+      (let ((err (should-error (emacs-movies-refresh-upflix-data) :type 'error)))
+        (should (string-match-p "Rate limited" (error-message-string err)))))
+    ;; Properties must be left untouched when we were blocked
+    (should-not (org-entry-get nil "LAST_REFRESHED"))
+    (should-not (org-entry-get nil "SUBSCRIPTIONS"))))
+
+(ert-deftest test-bulk-refresh-aborts-after-repeated-rate-limits ()
+  "Test that bulk refresh gives up instead of looping on a persistent block."
+  (with-temp-buffer
+    (org-mode)
+    (insert "* Blocked entry\n:PROPERTIES:\n:UPFLIX_LINK: https://upflix.pl/test1\n:END:\n\n")
+    (let ((attempts 0)
+          (emacs-movies-upflix-request-delay 0)
+          (emacs-movies-upflix-max-consecutive-rate-limits 3))
+      (cl-letf (((symbol-function 'emacs-movies-refresh-upflix-data)
+                 (lambda ()
+                   (setq attempts (1+ attempts))
+                   (error "Rate limited by Upflix (HTTP 403, x-upflix-traffic-block: 18)"))))
+        (goto-char (point-min))
+        (emacs-movies-refresh-all-upflix-by-timestamp)
+        ;; Stops after the configured number of consecutive rate limits
+        (should (= attempts 3))))))
 
 (ert-deftest test-update-subscription-tags ()
   "Test subscription tag management (unit test)."

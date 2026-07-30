@@ -52,3 +52,12 @@ install-weechat:
 	ln -s `pwd`/weechat ~/.weechat
 	[ -e "$$HOME/.weechat/logs" ] || ln -s ~/.weechat-logs ~/.weechat/logs
 	[ -f "$$HOME/.weechat/sec.conf" ] || cp ~/.weechat/sec.conf.example ~/.weechat/sec.conf
+
+# One statusline shared by every CLAUDE_CONFIG_DIR. Only the script is linked —
+# each settings.json stays local, since it holds per-account model/effort choices.
+install-claude:
+	for d in ~/.claude ~/.claude-personal ~/.claude-silverfin; do \
+		mkdir -p $$d; \
+		rm -f $$d/statusline.sh; \
+		ln -s `pwd`/claude/statusline.sh $$d/statusline.sh; \
+	done

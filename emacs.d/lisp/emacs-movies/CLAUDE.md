@@ -80,7 +80,8 @@ The `extract-tmdb-id-from-filepath` function parses these tags to match files wi
    - Match files to org entries: `find-files-with-tmdb-id`
 
 3. **Upflix HTML Parsing** (lines 1064-1296)
-   - HTML fetching and parsing: `emacs-movies-fetch-html-from-url`
+   - HTML fetching and parsing: `emacs-movies-fetch-html-from-url` (DOM only, 200 responses)
+   - Full response fetching: `emacs-movies-fetch-html-response` (returns `:status`, `:headers`, `:dom`)
    - Subscription extraction: `emacs-movies-extract-subscriptions-from-dom`
    - Rental service extraction: `emacs-movies-extract-rents-from-dom`
    - External link extraction: `emacs-movies-extract-filmweb-link`, `emacs-movies-extract-imdb-link`
@@ -89,6 +90,37 @@ The `extract-tmdb-id-from-filepath` function parses these tags to match files wi
    - **Main refresh function**: `emacs-movies-refresh-upflix-data` - Fetches HTML from upflix.pl and updates subscription/rental availability data
    - **Note**: This is a focused refresh that updates only SUBSCRIPTIONS, RENTS, FILMWEB_URL, IMDB_URL, and LAST_REFRESHED properties
    - Requires valid UPFLIX_LINK property in org entry
+
+### Upflix Rate Limiting / Traffic Blocks
+
+When Upflix decides a client makes too many requests it blocks it **site-wide**
+(even the front page) rather than per-URL. A blocked request returns:
+
+- HTTP status **403**
+- an `x-upflix-traffic-block` response header (e.g. `18`)
+- a "403 - Brak dostępu" error page, marked up with the
+  `upflix-not-found--system` class and a `#system-error-title` heading
+
+Detection lives in:
+- `emacs-movies-response-rate-limited-p` - **preferred**, checks header, status, and body
+- `emacs-movies-detect-block-page` - body-only check for the 403 page
+- `emacs-movies-detect-rate-limiting` - body-only, also matches the *legacy* block
+  page (a prepared "Miss Christmas" entry) that older Upflix versions served
+
+Because the block is signalled by an HTTP status, the body alone is not
+conclusive - use `emacs-movies-fetch-html-response` and
+`emacs-movies-response-rate-limited-p` when the full response is available.
+
+Note that `https://upflix.pl/api/video/index` (used by `emacs-movies-search-upflix`)
+kept working while HTML pages were blocked, so a block does not necessarily
+affect search.
+
+Bulk refresh behaviour on a block:
+- errors carry the string `"Rate limited"`, which `emacs-movies-refresh-all-upflix-by-timestamp`
+  matches to decide whether to wait and retry
+- it waits `emacs-movies-upflix-request-delay` seconds (default 600) and retries the same entry
+- after `emacs-movies-upflix-max-consecutive-rate-limits` consecutive blocks (default 5)
+  it aborts instead of looping forever; set to nil to retry indefinitely
 
 4. **Org-mode Operations** (lines 379-642)
    - Set TMDB metadata: `emacs-movies-set-tmdb-url-from-heading`, `emacs-movies-set-tmdb-by-id`
@@ -209,6 +241,7 @@ M-x eval-buffer
   - Updates: SUBSCRIPTIONS, RENTS, FILMWEB_URL, IMDB_URL, LAST_REFRESHED
   - Updates subscription tags (on_netflix, on_disney, etc.)
   - Requires UPFLIX_LINK property to be set
+  - Signals a `"Rate limited"` error and leaves properties untouched when Upflix blocks the request
 - `emacs-movies-find-orphaned-files`: Identify files with TMDB tags but no org entries
 - `emacs-movies-find-unreferenced-files`: Identify files not linked in any DOWNLOADED_FILEPATH
 
