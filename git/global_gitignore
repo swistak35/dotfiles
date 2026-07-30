@@ -33,3 +33,5 @@ custom_plan.rb
 .standup
 
 *.swistak
+
+**/.claude/settings.local.json

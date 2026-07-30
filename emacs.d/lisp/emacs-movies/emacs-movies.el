@@ -1425,21 +1425,45 @@ Modifies current entry's tags."
 (defun emacs-movies-sync-all-subscription-tags ()
   "Sync subscription tags for all entries that have SUBSCRIPTIONS property.
 Iterates over all org entries in the current buffer and updates on_SERVICE tags
-based on the SUBSCRIPTIONS property value."
+based on the SUBSCRIPTIONS property value. Also manages three extra tags:
+- on_other: SUBSCRIPTIONS lists a service not in `rl-movies-supported-subscriptions'.
+- on_rental: SUBSCRIPTIONS is present but empty, while RENTS is non-empty.
+- on_nowhere: SUBSCRIPTIONS and RENTS are both present but empty."
   (interactive)
   (let ((processed 0)
         (updated 0))
     (org-map-entries
      (lambda ()
        (let ((subscriptions-prop (org-entry-get nil "SUBSCRIPTIONS")))
-         (when (and subscriptions-prop (not (string-empty-p subscriptions-prop)))
+         (when subscriptions-prop
            (setq processed (1+ processed))
-           (let ((subscriptions-list (split-string subscriptions-prop)))
+           (let* ((rents-prop (org-entry-get nil "RENTS"))
+                  (subscriptions-list (split-string subscriptions-prop))
+                  (rents-list (and rents-prop (split-string rents-prop)))
+                  (current-local-tags nil))
              (message "[%d] Syncing tags for: %s (subscriptions: %s)"
                       processed
                       (org-get-heading t t t t)
                       subscriptions-prop)
              (emacs-movies-update-subscription-tags subscriptions-list)
+             (setq current-local-tags (org-get-tags nil t))
+             ;; on_other: a listed subscription service isn't in the supported list
+             (if (cl-some (lambda (s) (not (member s rl-movies-supported-subscriptions)))
+                          subscriptions-list)
+                 (unless (member "on_other" current-local-tags)
+                   (push "on_other" current-local-tags))
+               (setq current-local-tags (delete "on_other" current-local-tags)))
+             ;; on_rental: no subscriptions, but rentable
+             (if (and (null subscriptions-list) rents-list)
+                 (unless (member "on_rental" current-local-tags)
+                   (push "on_rental" current-local-tags))
+               (setq current-local-tags (delete "on_rental" current-local-tags)))
+             ;; on_nowhere: RENTS known to be present too, and both are empty
+             (if (and (null subscriptions-list) rents-prop (null rents-list))
+                 (unless (member "on_nowhere" current-local-tags)
+                   (push "on_nowhere" current-local-tags))
+               (setq current-local-tags (delete "on_nowhere" current-local-tags)))
+             (org-set-tags (delete-dups current-local-tags))
              (setq updated (1+ updated)))))))
     (message "Processed %d entries, updated %d entries with subscription tags" processed updated)))
 

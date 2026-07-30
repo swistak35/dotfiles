@@ -39,6 +39,14 @@ When nil the model configured on the chosen backend (or the current
   :type 'integer
   :group 'org-capture-summarize)
 
+(defcustom org-capture-summarize-download-dir "~/Pobrane"
+  "Directory where captured source files are initially downloaded.
+`org-capture-summarize-move-source-file' looks here for the freshly
+downloaded file before moving it to the location named in the
+entry's SOURCE_FILE property."
+  :type 'directory
+  :group 'org-capture-summarize)
+
 (defcustom org-capture-summarize-system-message
   "You are a helpful assistant that summarizes web pages for a personal \
 note-taking system based on Emacs org-mode. The text you are given is the \
@@ -265,6 +273,38 @@ Intended for use in `org-capture-mode-hook'."
   (when (org-capture-summarize--entry-file)
     (when (y-or-n-p "Summarize the referenced file with the LLM? ")
       (org-capture-summarize-file))))
+
+;;;###autoload
+(defun org-capture-summarize-move-source-file ()
+  "Move the current entry's SOURCE_FILE from the download dir into place.
+
+The SOURCE_FILE property holds the *destination* path of the archived
+file (normally under ~/bookmarks).  The freshly downloaded file is
+expected to live under `org-capture-summarize-download-dir' with the
+same basename; this moves it to the destination.
+
+Intended as an org-capture template `:before-finalize' function so that
+it only runs for the templates that opt in, and only when the capture is
+completed (not aborted).  It is a no-op when the entry has no
+SOURCE_FILE, when the destination file already exists, or when the
+source file cannot be found."
+  (let ((dest (org-capture-summarize--entry-file)))
+    (when dest
+      (setq dest (expand-file-name dest))
+      (let ((source (expand-file-name (file-name-nondirectory dest)
+                                      org-capture-summarize-download-dir)))
+        (cond
+         ((file-exists-p dest)
+          (message "org-capture-summarize: %s already in place"
+                   (file-name-nondirectory dest)))
+         ((not (file-exists-p source))
+          (message "org-capture-summarize: source file not found: %s" source))
+         (t
+          (make-directory (file-name-directory dest) t)
+          (rename-file source dest)
+          (message "org-capture-summarize: moved %s into %s"
+                   (file-name-nondirectory dest)
+                   (abbreviate-file-name (file-name-directory dest)))))))))
 
 (provide 'org-capture-summarize)
 

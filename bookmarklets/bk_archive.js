@@ -45,8 +45,8 @@ function capture_singlefile_page() {
     lines = single_file_comment.split('\n').map(line => line.trimStart())
 
 
-    file_line = lines.find(line => line.startsWith('FILE:'))
-    file_path = file_line.replace('FILE:', '').trim()
+    file_line = lines.find(line => line.startsWith('SOURCE_FILE:'))
+    file_path = file_line.replace('SOURCE_FILE:', '').trim()
 
     url_line = lines.find(line => line.startsWith('URL:'))
     url = url_line.replace('URL:', '').trim()
@@ -87,7 +87,7 @@ function capture_singlefile_page() {
         ':PROPERTIES:',
         `:ID: ${id}`,
         `:URL: [[${url}]]`,
-        `:FILE: [[~/bookmarks/${file_path}]]`,
+        `:SOURCE_FILE: [[~/bookmarks/${file_path}]]`,
         `:TITLE: ${title}`,
         `:ARCHIVED_AT: ${format_org_mode_date(archival_date)}`,
     ]

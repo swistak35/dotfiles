@@ -204,6 +204,8 @@ alias be='bundle exec'
 alias jsonify='ruby -rjson -e "puts JSON.pretty_generate(JSON.parse(STDIN.read))"'
 alias rm='rm -I'
 alias gen-uuid='ruby -rsecurerandom -e "print SecureRandom.uuid"'
+alias pclaude='CLAUDE_CONFIG_DIR=~/.claude-personal claude'
+alias sclaude='CLAUDE_CONFIG_DIR=~/.claude-silverfin claude --add-dir ../myskills'
 
 # Ruby
 alias rake="noglob rake" # allows square brackts for rake task invocation

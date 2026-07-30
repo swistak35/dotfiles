@@ -521,7 +521,8 @@
                      ("w" "Web")
 		     ("wa" "Archive" entry (file+headline "~/notes/bookmarks.org" "Archive")
 		      "** READ %:description\n%i\n"
-                      :prepend t)
+                      :prepend t
+		      :before-finalize org-capture-summarize-move-source-file)
 		     ("wr" "Read Later" entry (file+headline "~/notes/bookmarks.org" "Read Later")
 		      "** TOREAD [[%:link][%:description]]\n  :PROPERTIES:\n  :DATE: %U\n  :END:\n%i\n"
                       :prepend t)
@@ -1282,6 +1283,10 @@
 (use-package asdf
  	     :straight (:host github :repo "tabfugnic/asdf.el" :files ("*.el"))
 	     :config
+	     ;; Defaults to ~/.asdf/bin/asdf, which was the old shell install.
+	     ;; asdf-enable derives the PATH entry it adds from this, and the
+	     ;; shims now just call `asdf exec`, so they need it to be findable.
+	     (setq asdf-binary "$HOME/apps/bin/asdf")
 	     (asdf-enable)
 	     )
 
@@ -1333,6 +1338,10 @@
 (use-package vue-ts-mode
   :straight (:host github :repo "8uff3r/vue-ts-mode" :branch "main"))
 
+(use-package agent-shell
+    :straight t)
+
+
 
 ;; Themes
 (use-package solarized-theme
@@ -1357,10 +1366,14 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" default))
+   '("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879"
+     "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4"
+     "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0"
+     default))
  '(org-fold-core-style 'overlays)
  '(package-selected-packages
-   '(list-packages-ext solarized-theme dired-subtree dired-collapse dired-hacks-utils))
+   '(list-packages-ext solarized-theme dired-subtree dired-collapse
+		       dired-hacks-utils))
  '(safe-local-variable-values
    '((browse-url-browser-function . browse-url-generic)
      (browse-url-generic-program . "/home/swistak35/projs/swistak35/dotfiles-private/pscripts/open-on-tuor")
