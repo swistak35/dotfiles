@@ -7,6 +7,34 @@
 # keymap is main at load time. Selecting emacs later would orphan them.
 bindkey -e
 
+########
+# IRIS #
+########
+
+# iris (terminal autocomplete overlay) works by `exec iris` — the shell we're
+# in is replaced by iris, which then starts a child zsh that re-sources this
+# file with $IRIS_PID set. Hence the placement, before zinit: everything above
+# this point is the only work the outer shell does before being exec'd away,
+# so keeping it early avoids paying for the whole plugin load twice per
+# terminal. The single eval emits both halves — the `exec` for the outer shell
+# and the ZLE hooks for the child — guarded on $IRIS_PID so only one applies.
+#
+# configure_ubuntu installs iris as a .deb, so it lands in /usr/bin. The
+# ~/.local/bin prepend is for machines where it went in by hand instead: a
+# terminal launched from the desktop starts with only /etc/environment's PATH,
+# and the PATH block further down runs too late for the exec. The $commands
+# lookup then doubles as the guard that keeps this file usable where iris was
+# never installed, and IRIS_RESCUE=1 skips the exec if iris itself goes bad.
+#
+# $ZSH_EXECUTION_STRING is set only for `zsh -c '...'`, which stays interactive
+# under -i: without this, `zsh -ic 'some command'` would exec into iris and hand
+# back an interactive session instead of running the command. The -t 0 test
+# covers the same class of caller when there's no tty to draw an overlay on.
+path=($HOME/.local/bin $path)
+if [[ -z $ZSH_EXECUTION_STRING && -t 0 ]] && (( $+commands[iris] )); then
+  eval "$(iris init zsh)"
+fi
+
 #########
 # ZINIT #
 #########
@@ -72,8 +100,9 @@ zinit wait lucid light-mode atinit"zicompinit; zicdreplay" for \
 zinit wait lucid blockf atpull'zinit creinstall -q .' for \
   zsh-users/zsh-completions
 
-zinit wait lucid atload"_zsh_autosuggest_start" for \
-  zsh-users/zsh-autosuggestions
+# zsh-autosuggestions removed: iris draws the inline ghost text now ([ui]
+# ghost-text in ~/.config/iris/config.toml), and it suggests from context, not
+# just history. Running both put two greyed suggestions on the same line.
 
 # Ctrl+R fancy prompt
 zstyle :plugin:history-search-multi-word reset-prompt-protect 1
