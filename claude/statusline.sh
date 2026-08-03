@@ -44,7 +44,16 @@ case "$cur_dir" in
   *)             proj=$(basename "$cur_dir") ;;
 esac
 
-loc="${B}${CYN}${proj}${R}"
+# ---- which config dir ---------------------------------------------------
+# Several configs live side by side (~/.claude-personal, ~/.claude-silverfin);
+# CLAUDE_CONFIG_DIR is inherited from the shell that launched claude.
+cfg=$(basename "${CLAUDE_CONFIG_DIR:-$HOME/.claude}")
+case "$cfg" in
+  .claude|"") cfg="default" ;;
+  .claude-*)  cfg="${cfg#.claude-}" ;;
+esac
+
+loc="${D}[${R}${YEL}${cfg}${R}${D}]${R}  ${B}${CYN}${proj}${R}"
 [ -n "$sub" ] && loc+="${D}${sub}${R}"
 
 # A linked worktree is worth flagging — it's easy to forget which one you're in.
