@@ -1,4 +1,9 @@
-install: install-vim install-bin install-other install-nvim install-xfce
+install: install-vim install-bin install-other install-nvim install-xfce install-environment
+
+install-environment:
+	mkdir -p ~/.config/environment.d
+	rm -f ~/.config/environment.d/90-colorterm.conf
+	ln -s `pwd`/other/colorterm.conf ~/.config/environment.d/90-colorterm.conf
 
 install-vim:
 	rm -rf ~/.vim ~/.vimrc

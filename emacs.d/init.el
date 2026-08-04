@@ -1350,7 +1350,16 @@
              (setq x-underline-at-descent-line t) ; Underline is more under than usual
              )
 
-(load-theme 'solarized-dark t)
+;; (load-theme 'solarized-dark t)
+
+;; Catppuccin. Flavors: 'latte (light), 'frappe, 'macchiato, 'mocha (darkest).
+;; To switch at runtime: (setq catppuccin-flavor 'frappe) then M-x catppuccin-reload
+(use-package catppuccin-theme
+             :straight t
+             :init
+             (setq catppuccin-flavor 'mocha)
+             :config
+             (load-theme 'catppuccin t))
 
 ; ;; Highlight in gutter git changes
 ; (require-package 'diff-hl)
