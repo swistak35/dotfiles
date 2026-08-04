@@ -32,19 +32,19 @@ bindkey -e
 # covers the same class of caller when there's no tty to draw an overlay on.
 path=($HOME/.local/bin $path)
 
-# iris marks its own child shell by exporting IRIS_PID/IRIS_FD, and skips
-# starting when it already sees them. Launch a multiplexer from inside iris and
-# every pane it spawns inherits those, so the pane neither starts its own iris
-# nor has a usable IRIS_FD — it just installs hooks writing to whatever that
-# descriptor happens to be in the new process (here, a zinit .zwc file opened
-# read-only). iris clears them itself, but only for tmux; herdr needs the same.
-# Keyed on the parent process rather than $HERDR_PANE_ID, which stays set in the
-# child shell iris re-execs and would send this into an exec loop.
-if [[ -n $IRIS_PID && -r /proc/$PPID/comm && "$(</proc/$PPID/comm)" == herdr ]]; then
-  unset IRIS_PID IRIS_IS_CHILD IRIS_FD
-fi
-
-if [[ -z $ZSH_EXECUTION_STRING && -t 0 ]] && (( $+commands[iris] )); then
+# Deliberately not in herdr panes. iris works by putting its own pty between
+# the terminal and the shell, and that blinds herdr: herdr tracks a pane's
+# directory from the pane process's cwd, but that process becomes iris, whose
+# own cwd never moves — measured with a shell sitting in /usr/share while herdr
+# still reported /tmp — so directory-driven workspace switching stops firing.
+# Agent detection goes the same way, since an agent started in the pane runs on
+# iris's inner pty instead of as the pane's foreground process.
+#
+# Skipping the eval outright also avoids the half-configured state these panes
+# land in otherwise: they inherit IRIS_PID/IRIS_FD from the shell herdr was
+# launched from, so iris never starts, yet its ZLE hooks still install and write
+# to whatever fd 13 happens to be in that pane (a zinit .zwc, read-only, here).
+if [[ -z $HERDR_PANE_ID && -z $ZSH_EXECUTION_STRING && -t 0 ]] && (( $+commands[iris] )); then
   eval "$(iris init zsh)"
 fi
 
