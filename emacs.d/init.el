@@ -1268,6 +1268,40 @@
 	     (define-key projectile-rails-mode-map (kbd "C-c r") 'projectile-rails-command-map)
 	     )
 
+(use-package treemacs
+	     :straight t
+	     :config
+	     ; Highlight the file of the currently visited buffer in the tree
+	     (treemacs-follow-mode t)
+	     ; Refresh the tree when files change on disk
+	     (treemacs-filewatch-mode t)
+	     ; Git status decorations, computed asynchronously
+	     (treemacs-git-mode 'deferred)
+	     (define-key evil-normal-state-leader-map "t" 'treemacs)
+	     )
+
+(use-package treemacs-evil
+	     :after (treemacs evil)
+	     :straight t
+	     )
+
+(use-package treemacs-projectile
+	     :after (treemacs projectile)
+	     :straight t
+	     )
+
+(use-package treemacs-magit
+	     :after (treemacs magit)
+	     :straight t
+	     )
+
+(use-package treemacs-nerd-icons
+	     :after (treemacs nerd-icons)
+	     :straight t
+	     :config
+	     (treemacs-load-theme "nerd-icons")
+	     )
+
 (use-package ag
   	     :straight t
 	     :init
