@@ -17,7 +17,7 @@ install-nvim:
 	ln -s `pwd`/nvim ~/.config/nvim
 	mkdir -p ~/.cache/nvim/swp
 	mkdir -p ~/.cache/nvim/tmp
-	mkdir -p ~/.cache/nvim/undo
+	mkdir -p ~/.config/nvim/undo
 	nvim +PlugInstall +qall
 
 install-bin:

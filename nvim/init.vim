@@ -275,7 +275,7 @@ set colorcolumn=80
 set t_Co=256                    "256colors support. Required by airline
 " set t_AB=^[[48;5;%dm
 " set t_AF=^[[38;5;%dm
-set undodir=~/.cache/nvim/undo,.
+set undodir=~/.config/nvim/undo,.
 set undofile
 set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.pyc,*.class,.svn,*.gem
 set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
