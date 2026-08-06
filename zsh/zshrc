@@ -359,6 +359,7 @@ hash -d db="/media/magazyn/Dropbox"
 hash -d tmp="/media/magazyn/tmp"
 hash -d scripts="/home/swistak35/.bin/scripts"
 hash -d psc="$HOME/projs/swistak35/dotfiles-private/pscripts"
+hash -d sf="$HOME/projs/silverfin/dotfiles/sfscripts"
 
 
 
