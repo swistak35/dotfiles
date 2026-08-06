@@ -479,6 +479,8 @@
              (setq org-agenda-start-on-weekday nil)
              (setq org-agenda-show-future-repeats nil)
              (setq org-startup-truncated nil) ; enable line wrap
+             (setq org-startup-with-inline-images t) ; display images inline when opening a file
+             (setq org-image-actual-width '(600)) ; scale images down to 600px, unless #+ATTR_ORG says otherwise
 	     (setq org-id-link-to-org-use-id 'create-if-interactive) ; Try to store ID links, if ID is not there, create one
              (add-hook 'org-mode-hook (lambda () (run-with-idle-timer 600 t 'org-save-all-org-buffers))) ; autosave every 10 minutes
              (setq org-todo-keywords
@@ -487,6 +489,16 @@
                'org-babel-load-languages
                '((emacs-lisp . t)
                  (ruby . t)))
+             ;; Follow links (incl. id: links between org-roam nodes) in the
+             ;; current window instead of splitting into another one.
+             (setf (alist-get 'file org-link-frame-setup) #'find-file)
+             (defun my/org-open-at-point-other-window ()
+               "Open the link at point in another window."
+               (interactive)
+               (let ((org-link-frame-setup
+                      (cons '(file . find-file-other-window) org-link-frame-setup)))
+                 (org-open-at-point)))
+             (define-key org-mode-map (kbd "C-c O") #'my/org-open-at-point-other-window)
              (global-set-key (kbd "C-c l") #'org-store-link)
              (global-set-key (kbd "C-c a") #'org-agenda)
              (global-set-key (kbd "C-c c") #'org-capture)
