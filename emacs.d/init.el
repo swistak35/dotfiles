@@ -1021,6 +1021,8 @@
 		 (add-hook 'after-save-hook 'org-html-export-to-html nil t)
 		 (message "Enabled org html export on save for current buffer...")))
 
+	     ;; TMDB API key comes from ~/.authinfo (-> dotfiles-secret/authinfo),
+	     ;; see `emacs-movies-get-tmdb-api-key'.
 	     ;; Load movie database management functions when org-mode is loaded
 	     (eval-after-load 'org
 	       '(require 'emacs-movies nil t))
