@@ -1,0 +1,146 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# eo-herdr — open files in the emacs client frame of the CURRENT Herdr tab.
+# The Herdr equivalent of `eo`, which does the same for a tmux window.
+#
+# Model: one long-lived emacs server/daemon, one `emacsclient -t` frame per
+# Herdr tab. The script does these steps:
+#   1. Finds the panes of the current Herdr tab.
+#   2. Finds the pane whose foreground process is emacsclient.
+#   3. Reads the tty of that process and the Emacs server socket it uses.
+#   4. Tells the Emacs server to show the files in the frame of that tty.
+
+require "optparse"
+require "json"
+require "shellwords"
+
+options = {
+  pane: nil,
+}
+
+parser = OptionParser.new do |opts|
+  opts.banner = <<~BANNER
+    Usage: eo-herdr [options] FILE[:LINE] [FILE[:LINE] ...]
+
+    Opens the given files in the emacsclient which already runs in a pane of
+    the current Herdr tab. The script does not start Emacs and does not start
+    a new emacsclient.
+  BANNER
+
+  opts.on("--pane PANE_ID", "Use this pane instead of the automatic search (for example w4:p6)") do |value|
+    options[:pane] = value
+  end
+
+  opts.on("-h", "--help", "Show this message") do
+    puts opts
+    exit 0
+  end
+end
+
+parser.parse!
+
+def die(message)
+  warn "Error: #{message}"
+  exit 1
+end
+
+def run_json(*command)
+  output = IO.popen(command, err: [:child, :out], &:read)
+  die("command failed: #{command.join(' ')}\n#{output}") unless $?.success?
+  JSON.parse(output)
+rescue JSON::ParserError
+  die("command did not return JSON: #{command.join(' ')}\n#{output}")
+end
+
+die("this script must run inside Herdr (HERDR_ENV is not 1)") unless ENV["HERDR_ENV"] == "1"
+
+workspace_id = ENV["HERDR_WORKSPACE_ID"]
+tab_id = ENV["HERDR_TAB_ID"]
+die("HERDR_WORKSPACE_ID or HERDR_TAB_ID is not set") if workspace_id.nil? || tab_id.nil?
+
+die("give at least one file path\n\n#{parser}") if ARGV.empty?
+
+# Each argument is a path with an optional :LINE suffix.
+targets = ARGV.map do |argument|
+  # A file which does not exist yet is allowed: find-file makes the buffer.
+  path, line = argument.match(/\A(.*?)(?::(\d+))?\z/).captures
+  { path: File.expand_path(path), line: line&.to_i }
+end
+
+# Step 1 and 2: find the pane with emacsclient in the current tab.
+def emacsclient_process(pane_id)
+  info = run_json("herdr", "pane", "process-info", "--pane", pane_id)
+  processes = info.dig("result", "process_info", "foreground_processes") || []
+  processes.find { |process| process["name"] == "emacsclient" }
+end
+
+if options[:pane]
+  pane_id = options[:pane]
+  process = emacsclient_process(pane_id)
+  die("pane #{pane_id} does not run emacsclient") if process.nil?
+else
+  panes = run_json("herdr", "pane", "list", "--workspace", workspace_id)
+    .dig("result", "panes")
+    .select { |pane| pane["tab_id"] == tab_id }
+
+  matches = panes.filter_map do |pane|
+    process = emacsclient_process(pane["pane_id"])
+    [pane["pane_id"], process] if process
+  end
+
+  if matches.empty?
+    die("no emacsclient pane found in the current tab (#{tab_id})")
+  elsif matches.size > 1
+    die("more than one emacsclient pane found: #{matches.map(&:first).join(', ')}. Use --pane to select one.")
+  end
+
+  pane_id, process = matches.first
+end
+
+pid = process["pid"]
+
+# Step 3: read the tty and the Emacs server socket of that emacsclient.
+tty = File.readlink("/proc/#{pid}/fd/0") rescue nil
+die("cannot read the tty of emacsclient (pid #{pid})") if tty.nil? || !tty.start_with?("/dev/")
+
+argv = process["argv"] || []
+socket = nil
+argv.each_with_index do |argument, index|
+  socket = argv[index + 1] if argument == "-s" || argument == "--socket-name"
+  socket = argument.split("=", 2).last if argument.start_with?("--socket-name=")
+end
+if socket.nil?
+  environment = File.read("/proc/#{pid}/environ").split("\0") rescue []
+  entry = environment.find { |item| item.start_with?("EMACS_SOCKET_NAME=") }
+  socket = entry.split("=", 2).last if entry
+end
+
+# Step 4: show the files in the frame which belongs to that tty.
+def elisp_string(value)
+  %("#{value.gsub('\\', '\\\\\\\\').gsub('"', '\"')}")
+end
+
+open_forms = targets.map do |target|
+  form = "(find-file #{elisp_string(target[:path])})"
+  form += " (goto-line #{target[:line]})" if target[:line]
+  form
+end.join(" ")
+
+elisp = <<~ELISP.gsub(/\s+/, " ").strip
+  (let ((frame (seq-find
+                 (lambda (f) (equal (frame-parameter f 'tty) #{elisp_string(tty)}))
+                 (frame-list))))
+    (if frame
+        (with-selected-frame frame #{open_forms} (buffer-name))
+      (error "No Emacs frame for tty %s" #{elisp_string(tty)})))
+ELISP
+
+command = ["emacsclient"]
+command += ["-s", socket] if socket
+command += ["-e", elisp]
+
+output = IO.popen(command, err: [:child, :out], &:read)
+die("emacsclient failed:\n#{output}") unless $?.success?
+
+puts "Opened #{targets.map { |t| t[:path] }.join(', ')} in pane #{pane_id} (#{tty})"
