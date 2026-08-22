@@ -148,7 +148,15 @@
      (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 (setq major-mode-remap-alist
  '((yaml-mode . yaml-ts-mode)
-   (ruby-mode . ruby-ts-mode)))
+   (ruby-mode . ruby-ts-mode)
+   ; auto-mode-alist maps .js to javascript-mode (an alias of js-mode), and the
+   ; remap is looked up under that alias, so both need an entry
+   (js-mode         . js-ts-mode)
+   (javascript-mode . js-ts-mode)
+   (js2-mode        . js-ts-mode)))
+; typescript-mode isn't built in, so there is nothing to remap - hook the ts modes directly
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.ts\\'"  . typescript-ts-mode))
 
 (use-package evil
              :straight t
@@ -440,12 +448,87 @@
 
 
 
-;; JSX mode
-(use-package rjsx-mode
-             :straight t
+;; LSP
+;; Eglot is built into Emacs 30, so no :straight here.
+;; Servers to install out-of-band:
+;;   Ruby: gem install ruby-lsp   (plus ruby-lsp-rails in the Gemfile for Rails repos)
+;;   JS/TS: npm i -g typescript-language-server typescript
+(use-package eglot
+             :hook ((ruby-ts-mode js-ts-mode typescript-ts-mode tsx-ts-mode vue-ts-mode) . eglot-ensure)
              :config
-             (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
+             ; Emacs 30 still defaults Ruby to solargraph
+             (add-to-list 'eglot-server-programs
+                          '((ruby-mode ruby-ts-mode) . ("ruby-lsp")))
+             (add-to-list 'eglot-server-programs
+                          '((vue-ts-mode :language-id "vue") . my/vue-eglot-contact))
+             (setq eglot-autoshutdown t
+                   eglot-report-progress nil
+                   ; Not logging the jsonrpc traffic is a big performance win
+                   eglot-events-buffer-config '(:size 0 :format full))
+             (define-key evil-normal-state-leader-map "lr" 'eglot-rename)
+             (define-key evil-normal-state-leader-map "la" 'eglot-code-actions)
+             (define-key evil-normal-state-leader-map "lf" 'eglot-format-buffer)
+             (define-key evil-normal-state-leader-map "ld" 'xref-find-definitions)
+             (define-key evil-normal-state-leader-map "lu" 'xref-find-references)
              )
+
+;; Vue. @vue/language-server 3.x no longer runs standalone: it expects the editor
+;; to proxy its requests to a separate tsserver (custom tsserver/request
+;; notifications), which Eglot cannot do - it just hangs with no diagnostics.
+;; So point vue-ts-mode at typescript-language-server with the Vue TS plugin
+;; instead. One server, and it checks the <script> block and the template.
+;; Needs: npm i -g @vue/typescript-plugin
+(defun my/vue-ts-plugin-location ()
+  "Path to @vue/typescript-plugin: the project's copy if it has one, else the global one."
+  (or (when-let* ((proj (project-current))
+                  (local (expand-file-name "node_modules/@vue/typescript-plugin"
+                                           (project-root proj))))
+        (and (file-directory-p local) local))
+      (let ((global (expand-file-name "@vue/typescript-plugin"
+                                      (string-trim (shell-command-to-string "npm root -g")))))
+        (and (file-directory-p global) global))))
+
+(defun my/vue-eglot-contact ()
+  "Eglot contact for .vue buffers: tsserver carrying the Vue TS plugin."
+  (let ((loc (my/vue-ts-plugin-location)))
+    (unless loc
+      (user-error "No @vue/typescript-plugin found - run: npm i -g @vue/typescript-plugin"))
+    `("typescript-language-server" "--stdio"
+      :initializationOptions
+      (:plugins [(:name "@vue/typescript-plugin" :location ,loc :languages ["vue"])]))))
+
+;; In-buffer completion popup
+(use-package corfu
+             :straight t
+             :init
+             (global-corfu-mode)
+             :config
+             (setq corfu-auto t
+                   corfu-auto-delay 0.15
+                   corfu-cycle t
+                   tab-always-indent 'complete))
+
+(use-package cape
+             :straight t
+             :init
+             (add-hook 'completion-at-point-functions #'cape-file))
+
+;; Eglot only runs one server per buffer, so eslint is wired in through flymake directly
+(use-package flymake-eslint
+             :straight t
+             :init
+             ; The eslint on PATH is an ancient system one (v6, .eslintrc-era), so
+             ; only lint when the project ships its own binary - that is the one
+             ; that understands the repo's config
+             (defun my/flymake-eslint-enable-maybe ()
+               "Enable `flymake-eslint' using the project-local eslint, if there is one."
+               (when-let* ((proj (project-current))
+                           (bin (expand-file-name "node_modules/.bin/eslint"
+                                                  (project-root proj))))
+                 (when (file-executable-p bin)
+                   (setq-local flymake-eslint-executable-name bin)
+                   (flymake-eslint-enable))))
+             :hook ((js-ts-mode typescript-ts-mode tsx-ts-mode vue-ts-mode) . my/flymake-eslint-enable-maybe))
 
 ;; Elm mode
 (use-package elm-mode
