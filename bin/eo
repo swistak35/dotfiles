@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# eo — open files in the emacs client frame of the CURRENT tmux window.
+#
+# Model: one long-lived emacs server/daemon, one `emacsclient -t` frame per
+# tmux window. This finds the sibling pane running emacs in the current tmux
+# window, grabs its tty, and asks the daemon to open the given files in the
+# frame bound to that tty (see `my/open-in-tty` in ~/.emacs.d/init.el).
+#
+# Usage: eo FILE [FILE...]
+
+set -euo pipefail
+
+if [[ $# -eq 0 ]]; then
+  echo "usage: eo FILE [FILE...]" >&2
+  exit 2
+fi
+
+if [[ -z ${TMUX:-} ]]; then
+  echo "eo: not inside tmux" >&2
+  exit 1
+fi
+
+# tty of the pane running emacs/emacsclient in the current tmux window
+etty=$(tmux list-panes -F '#{pane_tty} #{pane_current_command}' \
+         | awk '$2 ~ /^emacs/ { print $1; exit }')
+
+if [[ -z ${etty} ]]; then
+  echo "eo: no emacs pane found in the current tmux window" >&2
+  exit 1
+fi
+
+# Build an elisp list of absolute, quoted paths. -m allows not-yet-existing
+# files (find-file just creates the buffer).
+lisp_files=""
+for f in "$@"; do
+  abs=$(realpath -m -- "$f")
+  esc=${abs//\\/\\\\}   # escape backslashes
+  esc=${esc//\"/\\\"}   # escape double quotes
+  lisp_files+="\"${esc}\" "
+done
+
+emacsclient -n --eval "(my/open-in-tty \"${etty}\" '(${lisp_files}))"

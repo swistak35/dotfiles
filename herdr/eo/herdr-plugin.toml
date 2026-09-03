@@ -1,0 +1,30 @@
+# Herdr plugin: open a clicked file link in the emacsclient of that tab.
+#
+# Herdr only makes http:// and https:// text clickable, so a file link must
+# look like a http URL. The host is a dummy one which no browser ever sees,
+# because this plugin claims the link before Herdr opens a browser:
+#
+#   http://eo/open?path=/abs/path/file.org&line=12
+#
+# Print such links with the `eo-link` script, which wraps them in an OSC 8
+# escape so that the visible text stays a normal file path.
+
+id = "eo"
+name = "eo"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+platforms = ["linux"]
+description = "Open clicked file links in the emacsclient of the current tab"
+
+[[actions]]
+id = "open-in-emacs"
+title = "Open in Emacs"
+description = "Open the clicked file link, or the selected file path, in the emacsclient of the tab"
+command = ["./eo-open-link"]
+contexts = ["selection", "pane"]
+
+[[link_handlers]]
+id = "eo-file-link"
+title = "Open in Emacs"
+pattern = '^https?://eo(\.[a-z0-9.-]+)?/open\?'
+action = "open-in-emacs"

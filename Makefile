@@ -24,6 +24,9 @@ install-bin:
 	rm -rf ~/.bin
 	ln -s `pwd`/bin ~/.bin
 
+install-herdr:
+	herdr plugin link `pwd`/herdr/eo
+
 install-other:
 	rm -f ~/.ghci
 	ln -s `pwd`/other/ghci ~/.ghci

@@ -1500,6 +1500,20 @@
 
 ; (require-package 'haml-mode)
 
+;; Route files into a specific emacsclient frame by its tty.
+;; Used by the `eo` shell script (~/.bin/eo): given the tty of the emacs pane
+;; in the current tmux window, open the files in the frame bound to that tty,
+;; so files always land in *this* window's frame rather than a random one.
+(defun my/open-in-tty (tty files)
+  "Open each of FILES in the emacsclient frame attached to TTY."
+  (let ((frame (seq-find (lambda (f) (equal (frame-parameter f 'tty) tty))
+                         (frame-list))))
+    (if frame
+        (with-selected-frame frame
+          (dolist (file files) (find-file file))
+          (raise-frame frame))
+      (message "my/open-in-tty: no emacs frame on tty %s" tty))))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

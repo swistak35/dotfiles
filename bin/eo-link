@@ -1,0 +1,94 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# eo-link — print file paths as links which Herdr can open in Emacs.
+#
+# Herdr makes only http:// and https:// text clickable, so a file link must
+# look like a http URL. The URL is wrapped in an OSC 8 escape, which keeps the
+# visible text a normal file path. The `eo` Herdr plugin claims these links
+# and gives them to `eo-herdr`, so no browser ever sees them.
+#
+# Usage:
+#   eo-link FILE[:LINE] [FILE[:LINE] ...]   print one link per file
+#   <command> | eo-link                     make the file paths in the output links
+
+require "optparse"
+require "uri"
+
+HOST = "eo"
+
+options = {
+  cwd: Dir.pwd,
+  plain: false,
+}
+
+parser = OptionParser.new do |opts|
+  opts.banner = <<~BANNER
+    Usage: eo-link FILE[:LINE] [FILE[:LINE] ...]
+           <command> | eo-link
+
+    Prints file paths as links which the Herdr `eo` plugin opens in the
+    emacsclient of the tab. With no arguments, it reads standard input and
+    makes every file path in it a link.
+  BANNER
+
+  opts.on("--cwd PATH", "Resolve relative paths against this directory") do |value|
+    options[:cwd] = value
+  end
+
+  opts.on("--plain", "Print the bare URL instead of an OSC 8 link") do
+    options[:plain] = true
+  end
+
+  opts.on("-h", "--help", "Show this message") do
+    puts opts
+    exit 0
+  end
+end
+
+parser.parse!
+
+def url_for(path, line)
+  query = { "path" => path }
+  query["line"] = line if line
+  "http://#{HOST}/open?#{URI.encode_www_form(query)}"
+end
+
+def link(text, path, line, plain)
+  url = url_for(path, line)
+  return url if plain
+
+  "\e]8;;#{url}\e\\#{text}\e]8;;\e\\"
+end
+
+def absolute(path, cwd)
+  File.expand_path(path, cwd)
+end
+
+if ARGV.empty? && !$stdin.tty?
+  # A candidate is a path-like token. Only tokens which are really a file
+  # become links, so ordinary words in the output stay untouched.
+  candidate = %r{(?<![\w/.~-])(~?[\w.@+-]*(?:/[\w.@+-]+)+|[\w@+-]+\.[\w@+-]+)(?::(\d+))?(?=$|[\s:,;'")\]])}
+
+  $stdin.each_line do |line|
+    linked = line.chomp.gsub(candidate) {
+      text = Regexp.last_match(0)
+      path = Regexp.last_match(1)
+      number = Regexp.last_match(2)
+      full = absolute(path, options[:cwd])
+      File.file?(full) ? link(text, full, number, options[:plain]) : text
+    }
+    puts linked
+  end
+  exit 0
+end
+
+if ARGV.empty?
+  warn parser.to_s
+  exit 2
+end
+
+ARGV.each do |argument|
+  path, line = argument.match(/\A(.*?)(?::(\d+))?\z/).captures
+  puts link(argument, absolute(path, options[:cwd]), line, options[:plain])
+end

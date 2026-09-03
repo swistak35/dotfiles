@@ -13,10 +13,15 @@
 
 require "optparse"
 require "json"
-require "shellwords"
+require "pathname"
+
+# Name of the dired buffer which lists the files, shown in a left side window.
+SIDEBAR_BUFFER = "*eo-files*"
 
 options = {
   pane: nil,
+  sidebar: false,
+  tab: nil,
 }
 
 parser = OptionParser.new do |opts|
@@ -30,6 +35,14 @@ parser = OptionParser.new do |opts|
 
   opts.on("--pane PANE_ID", "Use this pane instead of the automatic search (for example w4:p6)") do |value|
     options[:pane] = value
+  end
+
+  opts.on("--tab TAB_ID", "Use this tab instead of the tab of the caller (for example w4:t1)") do |value|
+    options[:tab] = value
+  end
+
+  opts.on("--sidebar", "With two files or more, list them in a dired side window (#{SIDEBAR_BUFFER})") do
+    options[:sidebar] = true
   end
 
   opts.on("-h", "--help", "Show this message") do
@@ -53,11 +66,16 @@ rescue JSON::ParserError
   die("command did not return JSON: #{command.join(' ')}\n#{output}")
 end
 
-die("this script must run inside Herdr (HERDR_ENV is not 1)") unless ENV["HERDR_ENV"] == "1"
-
-workspace_id = ENV["HERDR_WORKSPACE_ID"]
-tab_id = ENV["HERDR_TAB_ID"]
-die("HERDR_WORKSPACE_ID or HERDR_TAB_ID is not set") if workspace_id.nil? || tab_id.nil?
+# A Herdr plugin action runs outside a pane, so it must name its tab itself.
+if options[:tab]
+  tab_id = options[:tab]
+  workspace_id = tab_id.split(":").first
+else
+  die("this script must run inside Herdr (HERDR_ENV is not 1)") unless ENV["HERDR_ENV"] == "1"
+  workspace_id = ENV["HERDR_WORKSPACE_ID"]
+  tab_id = ENV["HERDR_TAB_ID"]
+  die("HERDR_WORKSPACE_ID or HERDR_TAB_ID is not set") if workspace_id.nil? || tab_id.nil?
+end
 
 die("give at least one file path\n\n#{parser}") if ARGV.empty?
 
@@ -127,12 +145,48 @@ open_forms = targets.map do |target|
   form
 end.join(" ")
 
+# The sidebar is a dired buffer which holds exactly the given files. The names
+# are relative to their common parent directory, to keep the lines short.
+def sidebar_forms(targets)
+  paths = targets.map { |target| Pathname.new(target[:path]) }
+  parts = paths.map { |path| path.dirname.to_s.split("/") }
+  common = parts.reduce { |a, b| a.zip(b).take_while { |x, y| x == y }.map(&:first) }
+  directory = common.join("/")
+  directory = "/" if directory.empty?
+  names = paths.map { |path| path.relative_path_from(Pathname.new(directory)).to_s }
+
+  <<~ELISP
+    (let ((old (get-buffer #{elisp_string(SIDEBAR_BUFFER)})))
+      (when (and old (not (buffer-local-value 'server-buffer-clients old)))
+        (kill-buffer old)))
+    (let* ((dired-buffers nil)
+           (buffer (dired-noselect
+                     (cons #{elisp_string(directory + "/")}
+                           (list #{names.map { |name| elisp_string(name) }.join(" ")})))))
+      (with-current-buffer buffer
+        (rename-buffer #{elisp_string(SIDEBAR_BUFFER)} t)
+        (dired-hide-details-mode 1))
+      (display-buffer-in-side-window buffer '((side . left) (window-width . 35))))
+  ELISP
+end
+
+# Never let a side window be the target of find-file.
+select_main_window = <<~ELISP
+  (let ((window (seq-find (lambda (w) (not (window-parameter w 'window-side)))
+                          (window-list frame 'no-minibuf))))
+    (when window (select-window window)))
+ELISP
+
+body = select_main_window.dup
+body << sidebar_forms(targets) if options[:sidebar] && targets.size > 1
+body << open_forms
+
 elisp = <<~ELISP.gsub(/\s+/, " ").strip
   (let ((frame (seq-find
                  (lambda (f) (equal (frame-parameter f 'tty) #{elisp_string(tty)}))
                  (frame-list))))
     (if frame
-        (with-selected-frame frame #{open_forms} (buffer-name))
+        (with-selected-frame frame #{body} (buffer-name))
       (error "No Emacs frame for tty %s" #{elisp_string(tty)})))
 ELISP
 

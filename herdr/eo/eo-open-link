@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Herdr plugin action: open a clicked file link, or a selected file path, in
+# the emacsclient of the tab where the click or the selection happened.
+#
+# Herdr gives the action these environment variables:
+#   HERDR_PLUGIN_CLICKED_URL      the clicked link, for a link handler
+#   HERDR_PLUGIN_CONTEXT_JSON     workspace, tab, pane, selected text
+#   HERDR_ACTIVE_TAB_ID           the tab which was active at the click
+#
+# The work itself is done by `eo-herdr`, which finds the emacsclient pane.
+
+require "json"
+require "uri"
+require "shellwords"
+
+context = begin
+  JSON.parse(ENV["HERDR_PLUGIN_CONTEXT_JSON"].to_s)
+rescue JSON::ParserError
+  {}
+end
+
+def die(message)
+  warn "eo-open-link: #{message}"
+  exit 1
+end
+
+url = ENV["HERDR_PLUGIN_CLICKED_URL"].to_s
+selection = context["selected_text"].to_s
+
+# A link gives path and line as query parameters. A selection is plain text
+# such as "notes/plan.org:12" or "/home/me/plan.org".
+if !url.empty?
+  query = URI.decode_www_form(URI.parse(url).query.to_s).to_h
+  path = query["path"].to_s
+  line = query["line"]
+  die("link has no path parameter: #{url}") if path.empty?
+elsif !selection.empty?
+  match = selection.strip.match(/\A(\S+?)(?::(\d+))?(?::\d+)?\z/)
+  die("selection is not a file path: #{selection.inspect}") if match.nil?
+  path, line = match.captures
+else
+  die("neither a clicked link nor a selection was given")
+end
+
+# A relative path is relative to the pane where the click happened.
+unless path.start_with?("/")
+  base = context["focused_pane_cwd"] || context["workspace_cwd"] || Dir.pwd
+  path = File.join(base, path)
+end
+
+tab_id = context["tab_id"] || ENV["HERDR_ACTIVE_TAB_ID"]
+die("no tab id in the plugin context") if tab_id.nil? || tab_id.empty?
+
+target = line ? "#{path}:#{line}" : path
+command = [File.expand_path("~/.bin/eo-herdr"), "--tab", tab_id, target]
+
+output = IO.popen(command, err: [:child, :out], &:read)
+unless $?.success?
+  die("eo-herdr failed: #{output.strip}")
+end
+puts output
