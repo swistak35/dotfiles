@@ -1738,7 +1738,9 @@ Handles case of no results."
                                                    (format " - %s" alt)
                                                  ""))))
                                     top-results))
-                   (choices-with-none (append choices '("None of these")))
+                   (none-choice "None of these")
+                   (none-tag-choice "None of these (set not_on_upflix tag)")
+                   (choices-with-none (append choices (list none-choice none-tag-choice)))
                    (prompt-title (if (and title (not (string= title original-title)))
                                      (format "\"%s\" / \"%s\"" original-title title)
                                    (format "\"%s\"" original-title)))
@@ -1747,17 +1749,97 @@ Handles case of no results."
                              choices-with-none)))
 
               ;; Handle selection
-              (unless (string= selected "None of these")
+              (cond
+               ;; No match, leave the entry untouched
+               ((string= selected none-choice) nil)
+
+               ;; No match, and remember that so future backfills skip this entry
+               ((string= selected none-tag-choice)
+                (save-excursion
+                  (org-back-to-heading t)
+                  (org-toggle-tag "not_on_upflix" 'on)
+                  (message "No Upflix match, tagged entry as not_on_upflix")))
+
+               (t
                 (let* ((selected-index (cl-position selected choices :test #'string=))
                        (selected-result (nth selected-index top-results))
                        (upflix-url (plist-get selected-result :url)))
                   (save-excursion
                     (org-back-to-heading t)
                     (org-set-property "UPFLIX_LINK" upflix-url)
-                    (message "Set UPFLIX_LINK to: %s" upflix-url)))))))
+                    (message "Set UPFLIX_LINK to: %s" upflix-url))))))))
 
       (error
        (message "Failed to search Upflix: %s" (error-message-string err))))))
+
+(defun emacs-movies--backfill-upflix-links (skip-not-on-upflix)
+  "Backfill UPFLIX_LINK for movie/tvshow entries missing it.
+When SKIP-NOT-ON-UPFLIX is non-nil, entries tagged `not_on_upflix' are
+left alone.  See `emacs-movies-backfill-upflix-links' for details."
+  (let ((markers '())
+        (processed 0)
+        (linked 0)
+        (failed 0))
+
+    ;; First pass: collect entries needing a link (markers survive buffer edits)
+    (org-map-entries
+     (lambda ()
+       (let ((upflix-link (org-entry-get nil "UPFLIX_LINK")))
+         (when (and (or (emacs-movies-has-tag-p "movie")
+                        (emacs-movies-has-tag-p "tvshow"))
+                    (or (null upflix-link) (string-empty-p upflix-link))
+                    (not (and skip-not-on-upflix
+                              (emacs-movies-has-tag-p "not_on_upflix"))))
+           (push (copy-marker (point)) markers)))))
+    (setq markers (nreverse markers))
+
+    (message "Found %d entries without UPFLIX_LINK" (length markers))
+
+    ;; Second pass: process them
+    (unwind-protect
+        (save-excursion
+          (dolist (marker markers)
+            (goto-char marker)
+            (setq processed (1+ processed))
+            (let ((heading (org-get-heading t t t t)))
+              (message "[%d/%d] Processing: %s" processed (length markers) heading)
+              (condition-case err
+                  (progn
+                    (emacs-movies-search-upflix-and-set-link)
+                    (let ((new-link (org-entry-get nil "UPFLIX_LINK")))
+                      (if (and new-link (not (string-empty-p new-link)))
+                          (setq linked (1+ linked))
+                        (message "  -> No link set for: %s" heading))))
+                (error
+                 (setq failed (1+ failed))
+                 (message "  -> Failed for [%s]: %s"
+                          heading (error-message-string err)))))))
+      (dolist (marker markers)
+        (set-marker marker nil))
+      (message "Backfill complete: %d visited, %d linked, %d failed"
+               processed linked failed))))
+
+(defun emacs-movies-backfill-upflix-links ()
+  "Backfill UPFLIX_LINK for all movie/tvshow entries missing it.
+Iterates over every entry tagged `movie' or `tvshow' in the current buffer,
+skips those that already have a non-empty UPFLIX_LINK property, and calls
+`emacs-movies-search-upflix-and-set-link' on the rest.
+
+Since that function prompts for a match, this runs interactively: pick
+\"None of these\" to leave an entry without a link, or press \\[keyboard-quit]
+to abort the whole backfill.
+
+See `emacs-movies-backfill-upflix-links-skip-known-missing' for a variant
+that also skips entries tagged `not_on_upflix'."
+  (interactive)
+  (emacs-movies--backfill-upflix-links nil))
+
+(defun emacs-movies-backfill-upflix-links-skip-known-missing ()
+  "Like `emacs-movies-backfill-upflix-links', but skip `not_on_upflix' entries.
+Useful for repeated backfill runs: tag an entry `not_on_upflix' once you
+have confirmed it has no Upflix page, and it will not be offered again."
+  (interactive)
+  (emacs-movies--backfill-upflix-links t))
 
 (defun rl-movies-refresh-all-by-timestamp ()
   "Refresh all movie entries, processing those without timestamps first, then by timestamp order."
