@@ -4,6 +4,7 @@
 ;; Add lisp subdirectory to load path
 (add-to-list 'load-path (expand-file-name "lisp/emacs-movies" user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "lisp/org-capture-summarize" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "lisp/org-rotation" user-emacs-directory))
 
 ;;; Packaging
 
@@ -1110,7 +1111,12 @@
 	       '(require 'emacs-movies nil t))
 
 	     ;; Summarize files referenced from org-capture entries via gptel/Ollama
-	     (require 'org-capture-summarize nil t))
+	     (require 'org-capture-summarize nil t)
+
+	     ;; Repeating tasks that cycle through the variants listed as their
+	     ;; children (e.g. Brzuch — Sesja A/B/C), see `org-rotation'.
+	     (when (require 'org-rotation nil t)
+	       (org-rotation-setup)))
 
 ; These two look great, but org-quick-peek don't work right now
 ; (use-package quick-peek
