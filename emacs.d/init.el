@@ -328,6 +328,14 @@
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
 
+  ;; Project-wide search, like ack.vim: ",a" or ":Ack pattern"
+  (define-key evil-normal-state-leader-map "a" 'consult-ripgrep)
+  (evil-define-command my/evil-ack (pattern)
+    "Search the current project for PATTERN with ripgrep."
+    (interactive "<a>")
+    (consult-ripgrep nil pattern))
+  (evil-ex-define-cmd "Ack" 'my/evil-ack)
+
   :config
 
   ;; Optionally configure the narrowing key.
