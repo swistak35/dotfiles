@@ -1143,32 +1143,42 @@
 			    (cons "Silverfin Tasks (sft)"
 				  (list :buffers-files (append
 							(directory-files-recursively "~/pnotes/silverfin/" "\\.org$"))
-					:query '(and (todo "TODO" "WAITING" "INPROGRESS") (tags "work"))
+					;; Like the GTD agenda: whatever is scheduled up to today, plus
+					;; the undated tasks which should stay in sight anyway.
+					:query '(and (todo "TODO" "WAITING" "INPROGRESS")
+						     (tags "work")
+						     (not (tags "template"))
+						     (or (scheduled :to today)
+							 (and (not (scheduled))
+							      (or (todo "WAITING" "INPROGRESS")
+								  (priority '= "A")
+								  (tags "inbox")))))
 					:title "Silverfin Tasks"
-					:sort nil
+					;; Sorts are stable, so the last one is the primary key
+					:sort '(priority scheduled)
 					:narrow nil
-					:super-groups '((:discard (:scheduled future))
-							(:discard (:tag "template"))
+					;; The first matching group wins, :order only moves a group down
+					:super-groups '((:name "Blocked & waiting"
+							       :todo "WAITING"
+							       :order 30)
 							(:name "Currently being worked on"
 							       :todo "INPROGRESS")
 							(:name "Extreme top priority"
 							       :priority "A")
-							(:name "Morning ticklers"
-							       :and (:tag "tickler" :tag "morning" :scheduled t))
-							(:name "Scheduled"
-							       :scheduled t)
-							(:name "End of Day ticklers"
-							       :and (:tag "tickler" :tag "evening" :scheduled t))
 							(:name "Inbox"
-							       :and (:tag "inbox"))
-							(:name "Blocked & waiting"
-							       :todo "WAITING")
-							(:priority "B")
-							(:name "Current projects"
-							       :tag "current")
-							(:priority "C")
-							(:discard (:scheduled t))
-							(:auto-outline-path))))
+							       :tag "inbox"
+							       :order 20)
+							(:name "Morning"
+							       :tag ("morning" "poranek"))
+							(:name "End of day"
+							       :tag "evening"
+							       :order 10)
+							(:name "Ticklers"
+							       :tag "tickler")
+							(:name "Scheduled for today"
+							       :scheduled today)
+							(:name "Overdue"
+							       :scheduled past))))
 			    (cons "Cooking plans"
 				  (list :buffers-files "~/notes/cooking.org"
 					:query '(and (tags "@cooking"))
