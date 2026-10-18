@@ -3,3 +3,8 @@
 # (~/.zsh/completions) never register. It also means compinit ran twice
 # (again via zinit's zicompinit). This variable is the documented opt-out.
 skip_global_compinit=1
+
+# Where the notes repository lives on this machine. Claude skills read this instead
+# of a hardcoded path, so the same skill works on Rivendell, where the checkout is
+# /home/dev/repos/notes-private. In zshenv, not zshrc: non-interactive shells too.
+export NOTES_DIR="$HOME/Dropbox/notes"
