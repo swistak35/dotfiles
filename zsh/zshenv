@@ -8,3 +8,8 @@ skip_global_compinit=1
 # of a hardcoded path, so the same skill works on Rivendell, where the checkout is
 # /home/dev/repos/notes-private. In zshenv, not zshrc: non-interactive shells too.
 export NOTES_DIR="$HOME/Dropbox/notes"
+
+# org-task (zadania z plików org, `org-task next NAZWA`) i jego uzupełnianie.
+# fpath tutaj, bo compinit (zinit turbo) czyta go dopiero po zshrc.
+path=("$NOTES_DIR/scripts/org-task" $path)
+fpath=("$NOTES_DIR/scripts/org-task/completion" $fpath)
