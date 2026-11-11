@@ -4,7 +4,7 @@
 # Reads the Status hook JSON on stdin and prints two lines, each split into a
 # left half (who/where you are) and a right half (what it's costing you):
 #
-#   [personal]  project/sub  ·  branch* ↑2          my-session   PR #412 ✓
+#   [personal]  project/sub  ·  branch* +12 -3 ↑2   my-session   PR #412 ✓
 #   Opus 5 · high   ▓▓▓░░░░ 34% ctx        5h 42%  7d 61%   $1.24  +156/-23
 #
 # Schema verified against claude 2.1.221 by reading the payload builder in the
@@ -121,10 +121,13 @@ esac
 
 # ---- which config dir ---------------------------------------------------
 # Several configs live side by side (~/.claude-personal, ~/.claude-silverfin);
-# CLAUDE_CONFIG_DIR is inherited from the shell that launched claude.
+# CLAUDE_CONFIG_DIR is inherited from the shell that launched claude. A machine
+# with just the one, plain ~/.claude (Rivendell), is named by its hostname instead:
+# there, which machine is the question, not which profile.
 cfg=$(basename "${CLAUDE_CONFIG_DIR:-$HOME/.claude}")
 case "$cfg" in
-  .claude|"") cfg="default" ;;
+  .claude|"") cfg=$(cat /proc/sys/kernel/hostname 2>/dev/null); cfg=${cfg%%.*}
+              cfg=${cfg:-default} ;;
   .claude-*)  cfg="${cfg#.claude-}" ;;
 esac
 
@@ -144,6 +147,26 @@ if branch=$(git -C "$cur_dir" --no-optional-locks rev-parse --abbrev-ref HEAD 2>
   # head -1 short-circuits the scan as soon as anything dirty turns up.
   if [ -n "$(git -C "$cur_dir" --no-optional-locks status --porcelain 2>/dev/null | head -1)" ]; then
     git_part="${YEL}${branch}*${R}"
+
+    # Uncommitted lines, staged or not, against HEAD: what a commit right now would
+    # carry. Not the session's +N/-M on line 2, which counts Claude's own edits,
+    # committed or not. Untracked files count as added, since git diff cannot see
+    # them; binaries are skipped on both sides (numstat says "-", grep -I says 0).
+    # From the top level, because ls-files only lists below the directory it runs in.
+    # First line in: "added deleted" from the diff; the rest: untracked line counts.
+    top=$(git -C "$cur_dir" rev-parse --show-toplevel 2>/dev/null)
+    diffstat=$(
+      cd "$top" 2>/dev/null || exit
+      {
+        git --no-optional-locks diff --no-ext-diff --numstat HEAD 2>/dev/null |
+          awk '$1 != "-" { a += $1; d += $2 } END { print a + 0, d + 0 }'
+        git --no-optional-locks ls-files -z --others --exclude-standard 2>/dev/null |
+          xargs -0 -r grep -hIc '' -- 2>/dev/null
+      } | awk 'NR == 1 { a = $1; d = $2; next } { a += $1 } END { print a + 0, d + 0 }'
+    )
+    added=${diffstat% *}; removed=${diffstat#* }
+    [ "${added:-0}" -gt 0 ] 2>/dev/null && git_part+=" ${GRN}+${added}${R}"
+    [ "${removed:-0}" -gt 0 ] 2>/dev/null && git_part+=" ${RED}-${removed}${R}"
   else
     git_part="${GRN}${branch}${R}"
   fi
