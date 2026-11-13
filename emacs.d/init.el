@@ -516,6 +516,22 @@
                    corfu-cycle t
                    tab-always-indent 'complete))
 
+;; Docs of the selected corfu candidate in a side popup
+(use-package corfu-popupinfo
+             :straight nil
+             :after corfu
+             :hook (corfu-mode . corfu-popupinfo-mode)
+             :config
+             (setq corfu-popupinfo-delay '(0.5 . 0.2)))
+
+;; Eglot docs in a child frame in the top-right corner instead of the echo area,
+;; so it does not cover the corfu popup. Child frames need a GUI frame.
+(use-package eldoc-box
+             :straight t
+             :hook (eglot-managed-mode . eldoc-box-hover-mode)
+             :init
+             (define-key evil-normal-state-leader-map "lk" 'eldoc-box-help-at-point))
+
 (use-package cape
              :straight t
              :init
