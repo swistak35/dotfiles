@@ -1187,6 +1187,32 @@
 					:narrow nil
 					:super-groups nil))
 			    )))
+	     ;; :TAGS: in bookmarks.org is a list of words in the property drawer.
+	     ;; Org treats TAGS as a special property (the heading tags), so
+	     ;; neither `org-entry-get' nor the property predicate can see it.
+	     (org-ql-defpred bookmark-tag (tag)
+	       "Return non-nil if TAG is one of the words in the entry's :TAGS: drawer property."
+	       :body (let ((drawer (org-get-property-block)))
+		       (and drawer
+			    (save-excursion
+			      (goto-char (car drawer))
+			      (re-search-forward "^[ \t]*:TAGS:[ \t]*\\(.*\\)$" (cdr drawer) t))
+			    (member tag (split-string (match-string-no-properties 1) "[ ,]+" t)))))
+	     (defvar my/bookmarks-file "~/notes/bookmarks.org")
+	     (defun my/bookmark-tags ()
+	       "Distinct words from all :TAGS: properties in `my/bookmarks-file'."
+	       (with-current-buffer (find-file-noselect my/bookmarks-file)
+		 (org-with-wide-buffer
+		  (goto-char (point-min))
+		  (let (tags)
+		    (while (re-search-forward "^[ \t]*:TAGS:[ \t]*\\(.*\\)$" nil t)
+		      (setq tags (append (split-string (match-string-no-properties 1) "[ ,]+" t) tags)))
+		    (sort (delete-dups tags) #'string<)))))
+	     (defun my/bookmarks-by-tag (tag)
+	       "Show bookmarks whose :TAGS: contain exactly TAG, e.g. inflation-2024."
+	       (interactive (list (completing-read "Bookmark tag: " (my/bookmark-tags) nil t)))
+	       (org-ql-search my/bookmarks-file `(bookmark-tag ,tag)
+		 :title (format "Bookmarks: %s" tag)))
 	     )
 
 (use-package org-super-agenda
