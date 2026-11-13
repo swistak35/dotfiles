@@ -1242,6 +1242,31 @@
 	       (interactive (list (completing-read "Bookmark person: " (my/bookmark-people) nil t)))
 	       (org-ql-search my/bookmarks-file `(bookmark-person ,person)
 		 :title (format "Bookmarks: %s" person)))
+	     ;; :KIND: is a list of words too ("tweet video"), so "video" must
+	     ;; match it; "no kind" means a bookmark (has :URL:) without :KIND:.
+	     (defvar my/bookmark-no-kind "(no kind)")
+	     (org-ql-defpred bookmark-kind (kind)
+	       "Return non-nil if KIND is one of the words in the entry's :KIND:.
+With `my/bookmark-no-kind', match entries that have :URL: but no :KIND:."
+	       :body (let ((value (org-entry-get nil "KIND")))
+		       (if (equal kind my/bookmark-no-kind)
+			   (and (null value) (org-entry-get nil "URL"))
+			 (and value (member kind (split-string value "[ ,]+" t))))))
+	     (defun my/bookmark-kinds ()
+	       "Distinct words from all :KIND: properties in `my/bookmarks-file'."
+	       (with-current-buffer (find-file-noselect my/bookmarks-file)
+		 (org-with-wide-buffer
+		  (goto-char (point-min))
+		  (let (kinds)
+		    (while (re-search-forward "^[ \t]*:KIND:[ \t]*\\(.*\\)$" nil t)
+		      (setq kinds (append (split-string (match-string-no-properties 1) "[ ,]+" t) kinds)))
+		    (sort (delete-dups kinds) #'string<)))))
+	     (defun my/bookmarks-by-kind (kind)
+	       "Show bookmarks whose :KIND: contains KIND, e.g. video, or those without :KIND:."
+	       (interactive (list (completing-read "Bookmark kind: "
+						   (cons my/bookmark-no-kind (my/bookmark-kinds)) nil t)))
+	       (org-ql-search my/bookmarks-file `(bookmark-kind ,kind)
+		 :title (format "Bookmarks: %s" kind)))
 	     )
 
 (use-package org-super-agenda
