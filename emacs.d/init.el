@@ -71,6 +71,14 @@
 ; (add-hook 'dired-mode-hook
 ;           (lambda () (local-set-key (kbd "i") 'dired-subtree-toggle)))
 ; (require-package 'dired-narrow)
+; Rename/copy in dired to a path with missing directories creates them
+(setq dired-create-destination-dirs 'always)
+(setq dired-create-destination-dirs-on-trailing-dirsep t)
+; Same for M-x rename-visited-file
+(defun my/make-parent-directory (new-location &rest _)
+  "Create missing parent directories of NEW-LOCATION."
+  (make-directory (file-name-directory (expand-file-name new-location)) t))
+(advice-add 'rename-visited-file :before #'my/make-parent-directory)
 
 ;; General options
 
