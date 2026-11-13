@@ -416,6 +416,40 @@
              (define-key evil-normal-state-leader-map "tl" 'rspec-rerun)
              )
 
+;; Ruby: Enter on a line that opens a block (def, class, do |x|, if ...) also
+;; closes it with "end". Written for ruby-ts-mode: ruby-end does nothing there
+;; and ruby-electric leans on ruby-mode's own indentation. The end goes in only
+;; while the buffer fails to parse, so splitting a line inside an already closed
+;; block doesn't add a second one.
+(defconst my/ruby-block-opener-re
+  (concat "^[ \t]*\\(?:\\(?:private\\|protected\\|public\\|module_function\\)[ \t]+\\)?"
+          "\\_<\\(def\\|class\\|module\\|if\\|unless\\|while\\|until\\|case\\|begin\\|for\\)\\_>"
+          "\\|\\_<\\(do\\)\\_>[ \t]*\\(?:|[^|\n]*|\\)?[ \t]*$")
+  "A line opening a Ruby block; the keyword is group 1 or 2.")
+
+(defun my/ruby-newline-and-end ()
+  "Like `newline-and-indent', but also insert the \"end\" of a block just opened."
+  (interactive)
+  (let ((close (and (eolp)
+                    (treesit-node-check (treesit-buffer-root-node) 'has-error)
+                    (save-excursion
+                      (beginning-of-line)
+                      (and (re-search-forward my/ruby-block-opener-re (line-end-position) t)
+                           ;; a real keyword, not a word inside a comment or string
+                           (let ((kw (or (match-beginning 1) (match-beginning 2))))
+                             (equal (treesit-node-type (treesit-node-at kw))
+                                    (buffer-substring-no-properties
+                                     kw (or (match-end 1) (match-end 2))))))))))
+    ;; end first: the line in between indents right only once the block parses
+    (when close
+      (save-excursion
+        (insert "\nend")
+        (indent-according-to-mode)))
+    (newline-and-indent)))
+
+(with-eval-after-load 'ruby-ts-mode
+  (define-key ruby-ts-mode-map (kbd "RET") 'my/ruby-newline-and-end))
+
 (use-package yaml-mode
              :straight t)
 
@@ -1458,9 +1492,6 @@
 	     (define-key evil-normal-state-leader-map "wf" 'transpose-frame)
 	     (define-key evil-normal-state-leader-map "wr" 'rotate-frame-clockwise)
 	     )
-
-(use-package ruby-end
-             :straight t)
 
 (use-package nerd-icons
   :straight t)
