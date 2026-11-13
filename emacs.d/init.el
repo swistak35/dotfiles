@@ -1213,6 +1213,35 @@
 	       (interactive (list (completing-read "Bookmark tag: " (my/bookmark-tags) nil t)))
 	       (org-ql-search my/bookmarks-file `(bookmark-tag ,tag)
 		 :title (format "Bookmarks: %s" tag)))
+	     ;; People sit in several properties (one person per line, the key
+	     ;; repeated for each), so `org-entry-get' would only see the first.
+	     (defvar my/bookmark-person-regexp
+	       "^[ \t]*:\\(?:RELATED_PERSON\\|RELATED_PESON\\|RELATED_PEOPLE\\|PEOPLE\\|AUTHOR\\):[ \t]*\\(.*?\\)[ \t]*$")
+	     (org-ql-defpred bookmark-person (person)
+	       "Return non-nil if PERSON is the whole value of one of the entry's person properties."
+	       :body (let ((drawer (org-get-property-block)) found)
+		       (when drawer
+			 (save-excursion
+			   (goto-char (car drawer))
+			   (while (and (not found)
+				       (re-search-forward my/bookmark-person-regexp (cdr drawer) t))
+			     (setq found (string= person (match-string-no-properties 1))))))
+		       found))
+	     (defun my/bookmark-people ()
+	       "Distinct people from all person properties in `my/bookmarks-file'."
+	       (with-current-buffer (find-file-noselect my/bookmarks-file)
+		 (org-with-wide-buffer
+		  (goto-char (point-min))
+		  (let (people)
+		    (while (re-search-forward my/bookmark-person-regexp nil t)
+		      (unless (string-empty-p (match-string-no-properties 1))
+			(push (match-string-no-properties 1) people)))
+		    (sort (delete-dups people) #'string<)))))
+	     (defun my/bookmarks-by-person (person)
+	       "Show bookmarks about or by PERSON, e.g. Donald Tusk."
+	       (interactive (list (completing-read "Bookmark person: " (my/bookmark-people) nil t)))
+	       (org-ql-search my/bookmarks-file `(bookmark-person ,person)
+		 :title (format "Bookmarks: %s" person)))
 	     )
 
 (use-package org-super-agenda
