@@ -1422,6 +1422,41 @@
 	     (treemacs-load-theme "nerd-icons")
 	     )
 
+;; Dirvish: dired with icons, git info, subtrees and a preview pane.
+;; Every dired buffer (C-x d, `-` in evil) becomes a dirvish one.
+;; ,d opens it full-frame with preview, ,D as a side tree for the current project.
+;; In it: TAB expands a dir in place, h/l go up/in, M-t toggles the preview,
+;; ? lists everything else.
+(use-package dirvish
+	     :straight t
+	     :init
+	     (dirvish-override-dired-mode)
+	     :config
+	     ; nerd-icons is already used by treemacs and magit, so its font is there
+	     (setq dirvish-attributes '(vc-state subtree-state nerd-icons collapse git-msg file-size)
+		   dirvish-side-attributes '(vc-state nerd-icons collapse file-size)
+		   dirvish-mode-line-format '(:left (sort symlink) :right (omit yank index))
+		   dired-listing-switches "-l --almost-all --human-readable --group-directories-first --no-group")
+	     ; Preview file under cursor in the minibuffer, e.g. in find-file
+	     (dirvish-peek-mode)
+	     ; Side tree jumps to the file of the current buffer, like treemacs-follow-mode
+	     (dirvish-side-follow-mode)
+	     (define-key evil-normal-state-leader-map "d" 'dirvish)
+	     (define-key evil-normal-state-leader-map "D" 'dirvish-side)
+	     ; dirvish-mode-map inherits dired-mode-map, so evil-collection's dired keys still apply
+	     (evil-define-key 'normal dirvish-mode-map
+	       (kbd "TAB") 'dirvish-subtree-toggle
+	       "h" 'dired-up-directory
+	       "l" 'dired-find-file
+	       "q" 'dirvish-quit
+	       "?" 'dirvish-dispatch
+	       "s" 'dirvish-quicksort
+	       "f" 'dirvish-file-info-menu
+	       "y" 'dirvish-yank-menu
+	       "N" 'dirvish-narrow
+	       (kbd "M-t") 'dirvish-layout-toggle)
+	     )
+
 (use-package ag
   	     :straight t
 	     :init
